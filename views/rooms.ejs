@@ -13,6 +13,7 @@
                 <br />
             </div>
         </div>
+        <p id="loadingRooms">Loading rooms...</p>
         <button id="newRoomBtn" type="button" onclick="showNewRoomForm()">New Room</button>
         <div id="newRoomCon" style="display: none;">
             <input id="roomName" placeholder="Room Name"/>
@@ -45,6 +46,7 @@
                 }
                 $("#newRoomCon").hide();
                 $("#newRoomBtn").show();
+                $("#loadingRooms").hide();
                 rooms = res['rooms'];
                 var i;
                 for(i = 0; i < rooms.length; i++) {
