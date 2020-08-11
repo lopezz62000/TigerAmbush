@@ -19,11 +19,8 @@
             });
 
             socket.on('disperse'+roomID, function(data) {
-                alert("Received " + data);
-                alert($("#chatbox").val());
-                var messages = $("#chatbox").val() + "\n" + data;
-                alert(messages);
-                $("#chatbox").val(messages);
+                var messages = document.getElementById("chatbox").value + "\n" + data;
+                document.getElementById("chatbox").value = messages;
             });
 
             function send() {
