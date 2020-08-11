@@ -26,10 +26,10 @@ io.on('connection', (socket) => {
 
     socket.on('join', (data) => {
         console.log(data);
-        /*
+        
         if(rooms[data['roomID']]['count'] == 0 && rooms[data['roomID']]['interval'] != -1) {
             clearInterval(rooms[roomID]['interval']);
-        }*/
+        }
         rooms[data['roomID']]['count'] = rooms[data['roomID']]['count'] + 1;
         io.sockets.emit('disperse'+data['roomID'], data['message']);
     });
@@ -39,12 +39,12 @@ io.on('connection', (socket) => {
         console.log(rooms[roomID]['count']);
         if(rooms[roomID]['count'] == 0 && roomID != "HelloWorld") {
             delete rooms[roomID];
-            /*
+            
             rooms[roomID]['interval'] = setInterval(function(){
                 delete rooms[roomID];
-                socket.emit('refreshRooms', rooms);
+                io.sockets.emit('refreshRooms', rooms);
                 console.log("Removed room "+roomID);
-            },30000);*/
+            },30000);
         }
         console.log("Completed");
     });
