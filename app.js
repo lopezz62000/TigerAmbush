@@ -27,7 +27,7 @@ io.on('connection', (socket) => {
     console.log('New user connected');
     socket.on('join', (data) => {
         console.log(data);
-        if(rooms[data['roomID']]['count'] == 0) {
+        if(rooms[data['roomID']]['count'] == 0 && data['roomID'] != "HelloWorld") {
             clearInterval(rooms[roomID]['interval']);
         }
         rooms[data['roomID']]['count'] = rooms[data['roomID']]['count'] + 1;
