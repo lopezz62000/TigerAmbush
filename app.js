@@ -25,42 +25,36 @@ io.on('connection', (socket) => {
     console.log('New user connected');
 
     socket.on('join', (data) => {
-        console.log(data);
-        
+        /*
         if(rooms[data['roomID']]['count'] == 0 && rooms[data['roomID']]['interval'] != -1) {
             clearInterval(rooms[roomID]['interval']);
-        }
+        }*/
         rooms[data['roomID']]['count'] = rooms[data['roomID']]['count'] + 1;
         io.sockets.emit('disperse'+data['roomID'], data['message']);
     });
 
     socket.on('leave', (roomID) => {
         rooms[roomID]['count'] = rooms[roomID]['count'] - 1;
-        console.log(rooms[roomID]['count']);
         if(rooms[roomID]['count'] == 0 && roomID != "HelloWorld") {
             delete rooms[roomID];
-            
+            /*
             rooms[roomID]['interval'] = setInterval(function(){
                 delete rooms[roomID];
                 io.sockets.emit('refreshRooms', rooms);
                 console.log("Removed room "+roomID);
-            },30000);
+            },30000);*/
         }
-        console.log("Completed");
     });
 
     socket.on('send', (data) => {
-        console.log(data);
         io.sockets.emit('disperse'+data['roomID'], data['message']);
     });
 
     socket.on('getRooms', (userId) => {
-        console.log(userId);
         socket.emit(userId, rooms);
     });
 
     socket.on('createRoom', (roomName) => {
-        console.log("Creating room");
         var roomID = Buffer.from(roomName).toString('base64');
         rooms[roomID]={'link':'https://tigerambush.herokuapp.com/chat?roomID='+roomID, 'name': roomName, 'count':0, 'interval': -1};
         socket.emit('refreshRooms', rooms);
