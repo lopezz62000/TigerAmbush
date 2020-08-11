@@ -1,16 +1,14 @@
 <html lang="en">
   <head>
     <meta name="google-signin-scope" content="profile email">
-    <meta name="google-signin-client_id" content="YOUR_CLIENT_ID.apps.googleusercontent.com">
+    <meta name="google-signin-client_id" content="758290075776-i5a0a6680n51lo76p8qfignd0s5148jd.apps.googleusercontent.com">
     <script src="https://apis.google.com/js/platform.js" async defer></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.0.4/socket.io.js"></script>
     <script src="/socket.io/socket.io.js"></script>
   </head>
   <body>
-    <div style="display: none;" class="g-signin2" data-onsuccess="onSignIn" data-theme="dark"></div>
-    <button id="loginBtn" type="button" onclick="login()">Log In</button>
+    <div class="g-signin2" data-onsuccess="onSignIn" data-theme="dark"></div>
     <script>
-      /*
       function onSignIn(googleUser) {
         // Useful data for your client-side scripts:
         var profile = googleUser.getBasicProfile();
@@ -24,21 +22,15 @@
         // The ID token you need to pass to your backend:
         var id_token = googleUser.getAuthResponse().id_token;
         console.log("ID Token: " + id_token);
+        alert(id_token);
       }
-      */
-    </script>
-    <script>
-        var socket = io.connect('http://localhost:3000');
-        var id = Math.floor(Math.random() * 9007199254740990);
 
-        socket.on('connect', function(data) {
-            socket.emit('join', 'Hello World from client');
-        });
+      var socket = io.connect('http://localhost:3000');
+      var id = Math.floor(Math.random() * 9007199254740990);
 
-        function login() {
-          alert("Here");
-          socket.emit('login',id);
-        }
+      socket.on('connect', function(data) {
+          socket.emit('join', 'Hello World from client');
+      });
     </script>
   </body>
 </html>

@@ -21,6 +21,10 @@ app.get('/chat', (req, res) => {
     });
 });
 
+app.get('/login', (req, res) => {
+    res.render('login');
+});
+
 io.on('connection', (socket) => {
     console.log('New user connected');
 
