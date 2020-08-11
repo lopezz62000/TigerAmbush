@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.0.4/socket.io.js"></script>
+    <script src="/socket.io/socket.io.js"></script>
+    <body>
+        <h1>Welcome to TigerAmbush</h1>
+        <p id="roomID" style="display: none;"><%= roomID %></p>
+        <textarea id="chatbox" rows="4" cols="50">Connected.</textarea>
+        <br />
+        <br />
+        <input id="messagebox" placeholder="Type your message..."/>
+        <button type="button" onclick="send()">Send</button>
+        <script type="text/javascript" src="http://code.jquery.com/jquery-latest.min.js"></script>
+        <script type="text/javascript">
+            var socket = io.connect('http://localhost:3000');
+            var roomID = document.getElementById("roomID").innerHTML;
+            socket.on('connect', function(data) {
+                socket.emit('join', 'Hello World from client');
+            });
+
+            socket.on('disperse'+roomID, function(data) {
+                var messages = $("#chatbox").val() + "\n" + data;
+                $("#chatbox").val(messages);
+            });
+
+            function send() {
+                socket.emit('send', {"message": document.getElementById("messagebox").value, "roomID": roomID});
+                document.getElementById("messagebox").value = "";
+            }
+        </script>
+    </body>
+</html>

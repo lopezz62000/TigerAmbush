@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.0.4/socket.io.js"></script>
+    <script src="/socket.io/socket.io.js"></script>
+    <body>
+        <h1>Welcome to TigerAmbush</h1>
+        <h2>Rooms</h2>
+
+        <div class="roomsCon">
+            <div class="room" style="display: none;">
+                <a class="roomName" href="#">Room Name</a>
+                <br />
+                <br />
+            </div>
+        </div>
+        <button id="newRoomBtn" type="button" onclick="showNewRoomForm()">New Room</button>
+        <div id="newRoomCon" style="display: none;">
+            <input id="roomName" placeholder="Room Name"/>
+            <button type="button" onclick="createRoom()">Create Room</button>
+            <button type="button" onclick="closeForm()">Close Form</button>
+        </div>
+        <script type="text/javascript" src="http://code.jquery.com/jquery-latest.min.js"></script>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+        <script type="text/javascript">
+            var socket = io.connect('http://localhost:3000');
+            var id = Math.floor(Math.random() * 9007199254740990);
+            var rooms = new Array();
+            socket.on('connect', function(data) {
+                socket.emit('getRooms', id);
+            });
+
+            socket.on(id, function(data) {
+                refreshRooms(data);
+            });
+
+            socket.on('refreshRooms', function(data) {
+                refreshRooms(data);
+            });
+
+            function refreshRooms(res) {
+                var roomsCon = $(".roomsCon").eq(0);
+                var roomEntries = roomsCon.children();
+                for(i = 1; i < roomEntries.length; i++) {
+                    roomEntries.eq(i).remove();
+                }
+                $("#newRoomCon").hide();
+                $("#newRoomBtn").show();
+                rooms = res['rooms'];
+                var i;
+                for(i = 0; i < rooms.length; i++) {
+                    var newRoom = $(".room").eq(0).clone().show();
+                    $(".roomsCon").append(newRoom);
+                    newRoom.children(".roomName").eq(0).attr("href", rooms[i]['link']);
+                    newRoom.children(".roomName").eq(0).text(rooms[i]['name']);
+                }
+            }
+
+            function showNewRoomForm() {
+                $("#newRoomCon").show();
+                $("#newRoomBtn").hide();
+            }
+
+            function createRoom() {
+                var i;
+                for(i = 0; i < rooms.length; i++) {
+                    if(rooms[i]['name'] == document.getElementById("roomName").value) {
+                        alert("Room Name already taken.");
+                        return;
+                    }
+                }
+                socket.emit('createRoom', document.getElementById("roomName").value);
+            }
+
+            function closeForm() {
+                $("#newRoomCon").hide();
+                $("#newRoomBtn").show();
+            }
+        </script>
+    </body>
+</html>
