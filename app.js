@@ -13,7 +13,7 @@ app.use(express.static('public'));
 
 app.get('/', (req, res) => {
     console.log('Loaded page');
-    res.render('login');
+    res.render('rooms');
 });
 
 app.get('/chat', (req, res) => {
