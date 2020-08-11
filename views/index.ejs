@@ -20,7 +20,9 @@
 
             socket.on('disperse'+roomID, function(data) {
                 var messages = document.getElementById("chatbox").value + "\n" + data;
-                document.getElementById("chatbox").value = messages;
+                var chatbox = document.getElementById('chatbox'); 
+                chatbox.value = messages;
+                chatbox.scrollTop = chatbox.scrollHeight; 
             });
 
             function send() {

@@ -44,9 +44,12 @@
                 for(i = 1; i < roomEntries.length; i++) {
                     roomEntries.eq(i).remove();
                 }
+
                 $("#newRoomCon").hide();
                 $("#newRoomBtn").show();
                 $("#loadingRooms").hide();
+                document.getElementById("roomName").value = "";
+
                 var roomNames = Object.keys(res);
                 var i;
                 for(i = 0; i < roomNames.length; i++) {

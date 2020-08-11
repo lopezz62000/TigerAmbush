@@ -12,12 +12,10 @@ app.set('view engine', 'ejs');
 app.use(express.static('public'));
 
 app.get('/', (req, res) => {
-    console.log('Loaded page');
     res.render('rooms');
 });
 
 app.get('/chat', (req, res) => {
-    console.log('Loaded page');
     res.render('index', {
         "roomID": url.parse(req.url,true).query['roomID']
     });
@@ -39,8 +37,9 @@ io.on('connection', (socket) => {
         if(rooms[roomID]['count'] == 0 && roomID != "HelloWorld") {
             rooms[roomID]['interval'] = setInterval(function(){
                 delete rooms[roomID];
+                socket.emit('refreshRooms', rooms);
                 console.log("Removed room "+roomID);
-            },300000);
+            },30000);
         }
     });
 
