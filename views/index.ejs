@@ -21,6 +21,7 @@
             socket.on('disperse'+roomID, function(data) {
                 alert("Received " + data);
                 var messages = $("#chatbox").val() + "\n" + data;
+                alert(messages);
                 $("#chatbox").val(messages);
             });
 
