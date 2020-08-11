@@ -38,14 +38,14 @@ io.on('connection', (socket) => {
 
     socket.on('getRooms', (userId) => {
         console.log(userId);
-        socket.emit(userId, {'rooms': rooms});
+        socket.emit(userId, rooms);
     });
 
     socket.on('createRoom', (roomName) => {
         console.log("Creating room");
         var roomID = Buffer.from(roomName).toString('base64');
         rooms[roomID]={'link':'https://tigerambush.herokuapp.com/chat?roomID='+roomID, 'name': roomName, 'count':0};
-        socket.emit('refreshRooms', {'rooms': rooms});
+        socket.emit('refreshRooms', rooms);
     });
 
     socket.on('login',(id) => {

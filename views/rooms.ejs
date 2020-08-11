@@ -47,13 +47,13 @@
                 $("#newRoomCon").hide();
                 $("#newRoomBtn").show();
                 $("#loadingRooms").hide();
-                rooms = res['rooms'];
+                var roomNames = Object.keys(res);
                 var i;
-                for(i = 0; i < rooms.length; i++) {
+                for(i = 0; i < roomNames.length; i++) {
                     var newRoom = $(".room").eq(0).clone().show();
                     $(".roomsCon").append(newRoom);
-                    newRoom.children(".roomName").eq(0).attr("href", rooms[i]['link']);
-                    newRoom.children(".roomName").eq(0).text(rooms[i]['name']);
+                    newRoom.children(".roomName").eq(0).attr("href", res[roomNames[i]]['link']);
+                    newRoom.children(".roomName").eq(0).text(res[roomNames[i]]['name']);
                 }
             }
 
