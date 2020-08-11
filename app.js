@@ -34,6 +34,7 @@ io.on('connection', (socket) => {
 
     socket.on('leave', (roomID) => {
         rooms[roomID]['count'] = rooms[roomID]['count'] - 1;
+        console.log(rooms[roomID]['count']);
         if(rooms[roomID]['count'] == 0 && roomID != "HelloWorld") {
             rooms[roomID]['interval'] = setInterval(function(){
                 delete rooms[roomID];
@@ -41,6 +42,7 @@ io.on('connection', (socket) => {
                 console.log("Removed room "+roomID);
             },30000);
         }
+        console.log("Completed");
     });
 
     socket.on('send', (data) => {
