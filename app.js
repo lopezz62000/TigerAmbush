@@ -27,12 +27,21 @@ io.on('connection', (socket) => {
     console.log('New user connected');
     socket.on('join', (data) => {
         console.log(data);
+        if(rooms[data['roomID']]['count'] == 0) {
+            clearInterval(rooms[roomID]['interval']);
+        }
         rooms[data['roomID']]['count'] = rooms[data['roomID']]['count'] + 1;
         io.sockets.emit('disperse'+data['roomID'], data['message']);
     });
 
     socket.on('leave', (roomID) => {
         rooms[roomID]['count'] = rooms[roomID]['count'] - 1;
+        if(rooms[roomID]['count'] == 0 && roomID != "HelloWorld") {
+            rooms[roomID]['interval'] = setInterval(function(){
+                delete rooms[roomID];
+                console.log("Removed room "+roomID);
+            },300000);
+        }
     });
 
     socket.on('send', (data) => {
@@ -48,7 +57,7 @@ io.on('connection', (socket) => {
     socket.on('createRoom', (roomName) => {
         console.log("Creating room");
         var roomID = Buffer.from(roomName).toString('base64');
-        rooms[roomID]={'link':'https://tigerambush.herokuapp.com/chat?roomID='+roomID, 'name': roomName, 'count':0};
+        rooms[roomID]={'link':'https://tigerambush.herokuapp.com/chat?roomID='+roomID, 'name': roomName, 'count':0, 'interval':0};
         socket.emit('refreshRooms', rooms);
     });
 
