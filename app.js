@@ -5,7 +5,7 @@ var io = require('socket.io')(server);
 const url = require('url');
 const https = require('https');
 
-var rooms = [{'link':'https://tigerambush.herokuapp.com/chat?roomID=HelloWorld', 'name':'Default chat'}];
+var rooms = {'HelloWorld':{'link':'https://tigerambush.herokuapp.com/chat?roomID=HelloWorld', 'name':'Default chat', 'count': 0}};
 
 app.set('view engine', 'ejs');
 
@@ -27,6 +27,8 @@ io.on('connection', (socket) => {
     console.log('New user connected');
     socket.on('join', (data) => {
         console.log(data);
+        rooms[data['roomID']][count] = rooms[data['roomID']][count] + 1;
+        io.sockets.emit('disperse'+data['roomID'], data['message']);
     });
 
     socket.on('send', (data) => {
@@ -41,7 +43,8 @@ io.on('connection', (socket) => {
 
     socket.on('createRoom', (roomName) => {
         console.log("Creating room");
-        rooms.push({'link':'https://tigerambush.herokuapp.com/chat?roomID='+Buffer.from(roomName).toString('base64'), 'name': roomName});
+        var roomID = Buffer.from(roomName).toString('base64');
+        rooms[roomID]={'link':'https://tigerambush.herokuapp.com/chat?roomID='+roomID, 'name': roomName, 'count':0};
         socket.emit('refreshRooms', {'rooms': rooms});
     });
 
