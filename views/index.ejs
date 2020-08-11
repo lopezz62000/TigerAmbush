@@ -31,6 +31,7 @@
             }
 
             $(window).bind('beforeunload', function(){
+                alert("Goodbye");
                 socket.emit('leave', roomID);
             });
         </script>

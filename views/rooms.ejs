@@ -16,7 +16,7 @@
         <p id="loadingRooms">Loading rooms...</p>
         <button id="newRoomBtn" type="button" onclick="showNewRoomForm()">New Room</button>
         <div id="newRoomCon" style="display: none;">
-            <input id="roomName" placeholder="Room Name"/>
+            <input id="roomNameField" placeholder="Room Name"/>
             <button type="button" onclick="createRoom()">Create Room</button>
             <button type="button" onclick="closeForm()">Close Form</button>
         </div>
@@ -48,7 +48,7 @@
                 $("#newRoomCon").hide();
                 $("#newRoomBtn").show();
                 $("#loadingRooms").hide();
-                document.getElementById("roomName").value = "";
+                document.getElementById("roomNameField").value = "";
 
                 var roomNames = Object.keys(res);
                 var i;
@@ -68,12 +68,12 @@
             function createRoom() {
                 var i;
                 for(i = 0; i < rooms.length; i++) {
-                    if(rooms[i]['name'] == document.getElementById("roomName").value) {
+                    if(rooms[i]['name'] == document.getElementById("roomNameField").value) {
                         alert("Room Name already taken.");
                         return;
                     }
                 }
-                socket.emit('createRoom', document.getElementById("roomName").value);
+                socket.emit('createRoom', document.getElementById("roomNameField").value);
             }
 
             function closeForm() {
