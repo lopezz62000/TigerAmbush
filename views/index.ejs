@@ -30,7 +30,7 @@
                 document.getElementById("messagebox").value = "";
             }
 
-            $(window).bind('beforeunload', function(){
+            window.addEventListener("beforeunload", function (e) {
                 alert("Goodbye");
                 socket.emit('leave', roomID);
             });
