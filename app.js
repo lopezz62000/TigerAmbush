@@ -27,8 +27,12 @@ io.on('connection', (socket) => {
     console.log('New user connected');
     socket.on('join', (data) => {
         console.log(data);
-        rooms[data['roomID']][count] = rooms[data['roomID']][count] + 1;
+        rooms[data['roomID']]['count'] = rooms[data['roomID']]['count'] + 1;
         io.sockets.emit('disperse'+data['roomID'], data['message']);
+    });
+
+    socket.on('leave', (roomID) => {
+        rooms[roomID]['count'] = rooms[roomID]['count'] - 1;
     });
 
     socket.on('send', (data) => {

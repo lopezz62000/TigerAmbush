@@ -27,6 +27,10 @@
                 socket.emit('send', {"message": document.getElementById("messagebox").value, "roomID": roomID});
                 document.getElementById("messagebox").value = "";
             }
+
+            $(window).bind('beforeunload', function(){
+                socket.emit('leave', roomID);
+            });
         </script>
     </body>
 </html>
