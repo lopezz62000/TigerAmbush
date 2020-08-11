@@ -22,7 +22,7 @@
         <script type="text/javascript" src="http://code.jquery.com/jquery-latest.min.js"></script>
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
         <script type="text/javascript">
-            var socket = io.connect('http://localhost:3000');
+            var socket = io.connect('https://tigerambush.herokuapp.com/');
             var id = Math.floor(Math.random() * 9007199254740990);
             var rooms = new Array();
             socket.on('connect', function(data) {

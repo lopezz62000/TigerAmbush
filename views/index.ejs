@@ -12,7 +12,7 @@
         <button type="button" onclick="send()">Send</button>
         <script type="text/javascript" src="http://code.jquery.com/jquery-latest.min.js"></script>
         <script type="text/javascript">
-            var socket = io.connect('http://localhost:3000');
+            var socket = io.connect('https://tigerambush.herokuapp.com/');
             var roomID = document.getElementById("roomID").innerHTML;
             socket.on('connect', function(data) {
                 socket.emit('join', 'Hello World from client');

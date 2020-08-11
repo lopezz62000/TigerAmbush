@@ -5,7 +5,7 @@ var io = require('socket.io')(server);
 const url = require('url');
 const https = require('https');
 
-var rooms = [{'link':'http://localhost:3000/chat?roomID=HelloWorld', 'name':'Default chat'}];
+var rooms = [{'link':'https://tigerambush.herokuapp.com/chat?roomID=HelloWorld', 'name':'Default chat'}];
 
 app.set('view engine', 'ejs');
 
@@ -41,7 +41,7 @@ io.on('connection', (socket) => {
 
     socket.on('createRoom', (roomName) => {
         console.log("Creating room");
-        rooms.push({'link':'http://localhost:3000/chat?roomID='+Buffer.from(roomName).toString('base64'), 'name': roomName});
+        rooms.push({'link':'https://tigerambush.herokuapp.com/chat?roomID='+Buffer.from(roomName).toString('base64'), 'name': roomName});
         socket.emit('refreshRooms', {'rooms': rooms});
     });
 
