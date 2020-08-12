@@ -18,7 +18,7 @@ app.get('/', (req, res) => {
 app.get('/chat', (req, res) => {
     res.render('index', {
         "roomID": url.parse(req.url,true).query['roomID'],
-        "givenName": url.parse(req.url,true).query['givenName']
+        "fullName": url.parse(req.url,true).query['fullName']
     });
 });
 

@@ -65,7 +65,7 @@
                 for(i = 0; i < roomNames.length; i++) {
                     var newRoom = $(".room").eq(0).clone().show();
                     $(".roomsCon").append(newRoom);
-                    newRoom.children(".roomName").eq(0).attr("href", res[roomNames[i]]['link']+"&name="+fullName);
+                    newRoom.children(".roomName").eq(0).attr("href", res[roomNames[i]]['link']+"&fullName="+fullName);
                     newRoom.children(".roomName").eq(0).text(res[roomNames[i]]['name']);
                 }
             }

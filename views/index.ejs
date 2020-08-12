@@ -5,7 +5,7 @@
     <body>
         <h1>Welcome to TigerAmbush</h1>
         <p id="roomID" style="display: none;"><%= roomID %></p>
-        <p id="givenName" style="display: none;"><%= givenName %></p>
+        <p id="fullName" style="display: none;"><%= fullName %></p>
         <textarea id="chatbox" rows="4" cols="50"></textarea>
         <br />
         <br />
@@ -15,7 +15,7 @@
         <script type="text/javascript">
             var socket = io.connect('https://tigerambush.herokuapp.com/');
             var roomID = document.getElementById("roomID").innerHTML;
-            var givenName = document.getElementById("givenName").innerHTML;
+            var fullName = document.getElementById("fullName").innerHTML;
 
             socket.on('connect', function(data) {
                 socket.emit('join', {"message": "New user has entered the room.", "roomID": roomID});
@@ -29,7 +29,7 @@
             });
 
             function send() {
-                socket.emit('send', {"message": givenName + ": " + document.getElementById("messagebox").value, "roomID": roomID});
+                socket.emit('send', {"message": fullName + ": " + document.getElementById("messagebox").value, "roomID": roomID});
                 document.getElementById("messagebox").value = "";
             }
 
