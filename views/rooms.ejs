@@ -11,6 +11,8 @@
         <h1>Welcome to TigerAmbush</h1>
         <div class="g-signin2" data-onsuccess="onSignIn" data-theme="dark"></div>
         <br />
+        <h2 id="emailHeader" style="display: none;"></h2>
+        <br />
         <h2 id="roomHeader" style="display: none;">Rooms</h2>
 
         <div class="roomsCon" >
@@ -25,22 +27,21 @@
         <div id="newRoomFormCon" style="display: none;">
             <input id="roomNameField" placeholder="Room Name"/>
             <button type="button" onclick="createRoom()">Create Room</button>
-            <button type="button" onclick="closeForm()">Close Form</button>
+            <button type="button" onclick="hideNewRoomForm()">Close Form</button>
         </div>
         <script type="text/javascript" src="http://code.jquery.com/jquery-latest.min.js"></script>
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
         <script type="text/javascript">
             var socket = io.connect('https://tigerambush.herokuapp.com/');
             //var id = Math.floor(Math.random() * 9007199254740990);
-            var id = "";
             var rooms = new Array();
+            var id;
+            var fullName;
+            var givenName;
+            var email;
 
             socket.on('connect', function(data) {
                 socket.emit('console', 'New user loaded rooms page.');
-            });
-
-            socket.on(id, function(data) {
-                refreshRooms(data);
             });
 
             socket.on('refreshRooms', function(data) {
@@ -64,7 +65,7 @@
                 for(i = 0; i < roomNames.length; i++) {
                     var newRoom = $(".room").eq(0).clone().show();
                     $(".roomsCon").append(newRoom);
-                    newRoom.children(".roomName").eq(0).attr("href", res[roomNames[i]]['link']);
+                    newRoom.children(".roomName").eq(0).attr("href", res[roomNames[i]]['link']+"&name="+fullName);
                     newRoom.children(".roomName").eq(0).text(res[roomNames[i]]['name']);
                 }
             }
@@ -85,7 +86,7 @@
                 socket.emit('createRoom', document.getElementById("roomNameField").value);
             }
 
-            function closeForm() {
+            function hideNewRoomForm() {
                 $("#newRoomFormCon").hide();
                 $("#newRoomBtn").show();
             }
@@ -104,9 +105,15 @@
                 id = googleUser.getAuthResponse().id_token;
                 console.log("ID Token: " + id);
 
+                fullName = profile.getName();
+                givenName = profile.givenName();
+                email = profile.getEmail();
+
                 $("#roomHeader").show();
                 $("#newRoomBtn").show();
                 $("#loadingRooms").show();
+                $("#emailHeader").show();
+                document.getElementById("emailHeader").innerHTML = "Signed in as " + email;
 
                 socket.emit('getRooms', id);
                 socket.on(id, function(data) {
