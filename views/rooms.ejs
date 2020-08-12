@@ -10,7 +10,8 @@
     <body>
         <h1>Welcome to TigerAmbush</h1>
         <div class="g-signin2" data-onsuccess="onSignIn" data-theme="dark"></div>
-        <h2 style="display: none;">Rooms</h2>
+        <br />
+        <h2 id="roomHeader" style="display: none;">Rooms</h2>
 
         <div class="roomsCon" >
             <div class="room" style="display: none;">
@@ -21,7 +22,7 @@
         </div>
         <p id="loadingRooms" style="display: none;">Loading rooms...</p>
         <button id="newRoomBtn" type="button" onclick="showNewRoomForm()" style="display: none;">New Room</button>
-        <div id="newRoomCon" style="display: none;">
+        <div id="newRoomFormCon" style="display: none;">
             <input id="roomNameField" placeholder="Room Name"/>
             <button type="button" onclick="createRoom()">Create Room</button>
             <button type="button" onclick="closeForm()">Close Form</button>
@@ -53,7 +54,7 @@
                     roomEntries.eq(i).remove();
                 }
 
-                $("#newRoomCon").hide();
+                $("#newRoomFormCon").hide();
                 $("#newRoomBtn").show();
                 $("#loadingRooms").hide();
                 document.getElementById("roomNameField").value = "";
@@ -69,7 +70,7 @@
             }
 
             function showNewRoomForm() {
-                $("#newRoomCon").show();
+                $("#newRoomFormCon").show();
                 $("#newRoomBtn").hide();
             }
 
@@ -85,7 +86,7 @@
             }
 
             function closeForm() {
-                $("#newRoomCon").hide();
+                $("#newRoomFormCon").hide();
                 $("#newRoomBtn").show();
             }
 
@@ -102,7 +103,15 @@
                 // The ID token you need to pass to your backend:
                 id = googleUser.getAuthResponse().id_token;
                 console.log("ID Token: " + id);
+
+                $("#roomHeader").show();
+                $("#newRoomBtn").show();
+                $("#loadingRooms").show();
+
                 socket.emit('getRooms', id);
+                socket.on(id, function(data) {
+                    refreshRooms(data);
+                });
             }
         </script>
     </body>
