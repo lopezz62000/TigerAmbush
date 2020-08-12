@@ -18,7 +18,7 @@
             var fullName = document.getElementById("fullName").innerHTML;
 
             socket.on('connect', function(data) {
-                socket.emit('join', {"message": "New user has entered the room.", "roomID": roomID});
+                socket.emit('join', {"message":  fullName + " has entered the room.", "roomID": roomID});
             });
 
             socket.on('disperse'+roomID, function(data) {
