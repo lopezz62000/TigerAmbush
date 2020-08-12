@@ -69,6 +69,12 @@
         <p id="loadingRooms" style="display: none;">Loading rooms...</p>
         <button id="joinRandomBtn" type="button" onclick="joinRandom()" style="display: none;">Join Random Room</button>
         <button id="newRoomBtn" type="button" onclick="showNewRoomForm()" style="display: none;">New Room</button>
+        <br />
+        <br />
+        <br />
+        <button id="signout" type="button" onclick="signOut()" style="display: none;">Sign Out</button>
+        <br />
+        <br />
         <div id="newRoomFormCon" style="display: none;">
             <input id="roomNameField" placeholder="Room Name"/>
             <input id="passwordField" placeholder="Password (optional)"/>
@@ -126,11 +132,20 @@
                 $("#emailHeader").show();
                 $("#searchbox").show();
                 $("#searchBtn").show();
+                $("#signout").show();
                 document.getElementById("emailHeader").innerHTML = "Signed in as " + email;
 
                 socket.emit('getRooms', id);
                 socket.on(id, function(data) {
                     refreshRooms(data);
+                });
+            }
+
+            function signOut() {
+                var auth2 = gapi.auth2.getAuthInstance();
+                auth2.signOut().then(function () {
+                console.log('User signed out.');
+                location.reload();
                 });
             }
 
