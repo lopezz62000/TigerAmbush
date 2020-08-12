@@ -27,6 +27,12 @@
         <button id="newRoomBtn" type="button" onclick="showNewRoomForm()" style="display: none;">New Room</button>
         <div id="newRoomFormCon" style="display: none;">
             <input id="roomNameField" placeholder="Room Name"/>
+            <input id="passwordField" placeholder="Password (optional)"/>
+            <br />
+            <textarea id="descriptionField" rows="4" cols="40" placeholder="Describe your rooms purpose, class, or activity..."></textarea>
+            <br />
+            <input type="checkbox" name="randomField">
+            <label for="randomField">Open random join?</label>
             <button type="button" onclick="createRoom()">Create Room</button>
             <button type="button" onclick="hideNewRoomForm()">Close Form</button>
         </div>
@@ -94,6 +100,7 @@
             }
 
             function onSignIn(googleUser) {
+                alert("Sign in");
                 // Useful data for your client-side scripts:
                 var profile = googleUser.getBasicProfile();
                 console.log("ID: " + profile.getId()); // Don't send this directly to your server!
