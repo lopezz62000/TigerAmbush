@@ -1,20 +1,26 @@
 <!DOCTYPE html>
 <html>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.0.4/socket.io.js"></script>
-    <script src="/socket.io/socket.io.js"></script>
+    <head>
+        <meta name="google-signin-scope" content="profile email">
+        <meta name="google-signin-client_id" content="758290075776-i5a0a6680n51lo76p8qfignd0s5148jd.apps.googleusercontent.com">
+        <script src="https://apis.google.com/js/platform.js" async defer></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.0.4/socket.io.js"></script>
+        <script src="/socket.io/socket.io.js"></script>
+    </head>
     <body>
         <h1>Welcome to TigerAmbush</h1>
-        <h2>Rooms</h2>
+        <div class="g-signin2" data-onsuccess="onSignIn" data-theme="dark"></div>
+        <h2 style="display: none;">Rooms</h2>
 
-        <div class="roomsCon">
+        <div class="roomsCon" >
             <div class="room" style="display: none;">
                 <a class="roomName" href="#">Room Name</a>
                 <br />
                 <br />
             </div>
         </div>
-        <p id="loadingRooms">Loading rooms...</p>
-        <button id="newRoomBtn" type="button" onclick="showNewRoomForm()">New Room</button>
+        <p id="loadingRooms" style="display: none;">Loading rooms...</p>
+        <button id="newRoomBtn" type="button" onclick="showNewRoomForm()" style="display: none;">New Room</button>
         <div id="newRoomCon" style="display: none;">
             <input id="roomNameField" placeholder="Room Name"/>
             <button type="button" onclick="createRoom()">Create Room</button>
@@ -24,10 +30,12 @@
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
         <script type="text/javascript">
             var socket = io.connect('https://tigerambush.herokuapp.com/');
-            var id = Math.floor(Math.random() * 9007199254740990);
+            //var id = Math.floor(Math.random() * 9007199254740990);
+            var id = "";
             var rooms = new Array();
+
             socket.on('connect', function(data) {
-                socket.emit('getRooms', id);
+                socket.emit('console', 'New user loaded rooms page.');
             });
 
             socket.on(id, function(data) {
@@ -79,6 +87,22 @@
             function closeForm() {
                 $("#newRoomCon").hide();
                 $("#newRoomBtn").show();
+            }
+
+            function onSignIn(googleUser) {
+                // Useful data for your client-side scripts:
+                var profile = googleUser.getBasicProfile();
+                console.log("ID: " + profile.getId()); // Don't send this directly to your server!
+                console.log('Full Name: ' + profile.getName());
+                console.log('Given Name: ' + profile.getGivenName());
+                console.log('Family Name: ' + profile.getFamilyName());
+                console.log("Image URL: " + profile.getImageUrl());
+                console.log("Email: " + profile.getEmail());
+
+                // The ID token you need to pass to your backend:
+                id = googleUser.getAuthResponse().id_token;
+                console.log("ID Token: " + id);
+                socket.emit('getRooms', id);
             }
         </script>
     </body>

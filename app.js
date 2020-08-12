@@ -84,4 +84,8 @@ io.on('connection', (socket) => {
             console.log("Error: " + err.message);
         });
     });
+
+    socket.on('console', (message) => {
+        console.log(message);
+    });
 });

@@ -14,12 +14,13 @@
         <script type="text/javascript">
             var socket = io.connect('https://tigerambush.herokuapp.com/');
             var roomID = document.getElementById("roomID").innerHTML;
+            
             socket.on('connect', function(data) {
                 socket.emit('join', {"message": "New user has entered the room.", "roomID": roomID});
             });
 
             socket.on('disperse'+roomID, function(data) {
-                var messages = document.getElementById("chatbox").value + "\n" + data;
+                var messages = document.getElementById("chatbox").value + data + "\n";
                 var chatbox = document.getElementById('chatbox'); 
                 chatbox.value = messages;
                 chatbox.scrollTop = chatbox.scrollHeight; 
