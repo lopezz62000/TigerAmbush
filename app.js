@@ -50,8 +50,6 @@ app.get('/chat', (req, res) => {
 });
 
 io.on('connection', (socket) => {
-    console.log('New user connected');
-
     socket.on('join', (data) => {
         /*
         if(rooms[data['roomID']]['count'] == 0 && rooms[data['roomID']]['interval'] != -1) {

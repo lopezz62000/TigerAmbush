@@ -86,8 +86,10 @@
             }
 
             function send() {
-                socket.emit('send', {"message": fullName + ": " + document.getElementById("messagebox").value, "roomID": roomID});
-                document.getElementById("messagebox").value = "";
+                if(document.getElementById("messagebox").value != "") {
+                    socket.emit('send', {"message": fullName + ": " + document.getElementById("messagebox").value, "roomID": roomID});
+                    document.getElementById("messagebox").value = "";
+                }
             }
 
             function validate() {
@@ -110,6 +112,14 @@
             window.addEventListener("beforeunload", function (e) {
                 if($("#chatbox").is(':visible')) {
                     socket.emit('leave', {'roomID':roomID, 'userID': userID});
+                }
+            });
+
+            $(window).keydown(function(e) {
+                switch (e.keyCode) {
+                    case 13:
+                        send();
+                        return;
                 }
             });
         </script>
