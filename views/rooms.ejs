@@ -54,15 +54,20 @@
         <h2 id="emailHeader" style="display: none;"></h2>
         <br />
         <h2 id="roomHeader" style="display: none;">Rooms</h2>
-
+        <input id="searchbox" placeholder="Looking for something?" style="display: none;"/>
+        <button id="searchBtn" type="button" onclick="search()" style="display: none;">Search</button>
+        <br />
+        <br />
         <div class="roomsCon" >
-            <div class="room" style="display: none;">
+            <div onmouseover="showDetails(this)" onmouseout="hideDetails(this)" class="room" style="display: none;">
                 <a class="roomName" href="#">Room Name</a>
-                <br />
-                <br />
+                <p class="roomDetails" style="display: none;"></p>
             </div>
         </div>
+        <br />
+        <br />
         <p id="loadingRooms" style="display: none;">Loading rooms...</p>
+        <button id="joinRandomBtn" type="button" onclick="joinRandom()" style="display: none;">Join Random Room</button>
         <button id="newRoomBtn" type="button" onclick="showNewRoomForm()" style="display: none;">New Room</button>
         <div id="newRoomFormCon" style="display: none;">
             <input id="roomNameField" placeholder="Room Name"/>
@@ -70,8 +75,8 @@
             <br />
             <textarea id="descriptionField" rows="4" cols="40" placeholder="Describe your rooms purpose, class, or activity..."></textarea>
             <br />
-            <input type="checkbox" name="randomField">
-            <label for="randomField">Open random join?</label>
+            <input type="checkbox" id="randomField" onclick="onCheck()">
+            <label>Open random join?</label>
             <button type="button" onclick="createRoom()">Create Room</button>
             <button type="button" onclick="hideNewRoomForm()">Close Form</button>
         </div>
@@ -82,7 +87,8 @@
             var socket = io.connect(appLink);
             //var id = Math.floor(Math.random() * 9007199254740990);
             var rooms;
-            var roomIDs = new Array();
+            var roomIDs;
+            var roomRandomLinks;
             var id;
             var fullName;
             var givenName;
@@ -118,6 +124,8 @@
                 $("#newRoomBtn").show();
                 $("#loadingRooms").show();
                 $("#emailHeader").show();
+                $("#searchbox").show();
+                $("#searchBtn").show();
                 document.getElementById("emailHeader").innerHTML = "Signed in as " + email;
 
                 socket.emit('getRooms', id);
@@ -147,17 +155,31 @@
 
                 $("#newRoomFormCon").hide();
                 $("#newRoomBtn").show();
+                $("#joinRandomBtn").show();
                 $("#loadingRooms").hide();
                 document.getElementById("roomNameField").value = "";
                 rooms = res;
+                roomRandomLinks = new Array();
                 roomIDs = Object.keys(res);
                 var i;
                 for(i = 0; i < roomIDs.length; i++) {
                     var newRoom = $(".room").eq(0).clone().show();
                     $(".roomsCon").append(newRoom);
-                    newRoom.children(".roomName").eq(0).attr("href", res[roomIDs[i]]['link']+"&fullName="+fullName);
-                    newRoom.children(".roomName").eq(0).text(res[roomIDs[i]]['name']);
+                    if(res[roomIDs[i]]['openRandomJoin']) {
+                        roomRandomLinks.push(res[roomIDs[i]]['link']+"&fullName="+fullName+"&userID="+id);
+                    }
+                    newRoom.children(".roomName").eq(0).attr("href", res[roomIDs[i]]['link']+"&fullName="+fullName+"&userID="+id);
+                    newRoom.children(".roomName").eq(0).text(res[roomIDs[i]]['roomName']);
+                    newRoom.children(".roomDetails").eq(0).text(res[roomIDs[i]]['description']);
                 }
+            }
+
+            function showDetails(container) {
+                $(container).children(".roomDetails").eq(0).show();
+            }
+
+            function hideDetails(container) {
+                $(container).children(".roomDetails").eq(0).hide();
             }
 
             function showNewRoomForm() {
@@ -168,6 +190,27 @@
             function hideNewRoomForm() {
                 $("#newRoomFormCon").hide();
                 $("#newRoomBtn").show();
+            }
+
+            function joinRandom() {
+                window.location.href = roomRandomLinks[Math.floor(Math.random() * roomRandomLinks.length)];
+            }
+
+            function onCheck() {
+                if($('#randomField').is(":checked")) {
+                    if(document.getElementById("passwordField").value != "") {
+                        alert("Cannot open room to random join when the room requires a password.");
+                        document.getElementById("randomField").checked = false;
+                    }
+                    else {
+                        document.getElementById("passwordField").readOnly = true;
+                        $("#passwordField").hide();
+                    }
+                }
+                else {
+                    document.getElementById("passwordField").readOnly = false;
+                    $("#passwordField").show();
+                }
             }
 
             function createRoom() {
@@ -187,9 +230,25 @@
                     alert("Description needs to be at least 20 characters.");
                     return;
                 }
+                var data = {
+                    'roomName': document.getElementById("roomNameField").value,
+                    'password': document.getElementById("passwordField").value,
+                    'description': $("#descriptionField").val(),
+                    'openRandomJoin': $('#randomField').is(":checked")
+                };
 
                 //Sending create room request
-                socket.emit('createRoom', document.getElementById("roomNameField").value);
+                socket.emit('createRoom', data);
+            }
+
+            function search() {
+                alert("Not implemented yet");
+                /*
+                socket.emit('search', {"criteria": document.getElementById("searchbox").value, "userID": id});
+                socket.on('search'+id, function(rooms) {
+                    refreshRooms(data);
+                });
+                */
             }
         </script>
     </body>

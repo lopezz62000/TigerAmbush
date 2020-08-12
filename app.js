@@ -4,10 +4,20 @@ var server = app.listen(process.env.PORT || 3000);
 var io = require('socket.io')(server);
 const url = require('url');
 const https = require('https');
+var natural = require('natural');
 
 var appLink = process.env.APPLINK || 'http://localhost:3000/';
 
-var rooms = {'HelloWorld':{'link':appLink+'chat?roomID=HelloWorld', 'name':'Default chat', 'count': 0, 'interval': -1}};
+var rooms = {'HelloWorld': {
+    'link':appLink+'chat?roomID=HelloWorld', 
+    'roomName':'Default Chat', 
+    'count': 0, 
+    'interval': -1,
+    'password': '',
+    'description': 'Chat will not be deleted when people leave.',
+    'openRandomJoin': true,
+    'participants': {}
+}};
 
 app.set('view engine', 'ejs');
 
@@ -20,10 +30,22 @@ app.get('/', (req, res) => {
 });
 
 app.get('/chat', (req, res) => {
+    var hasPassword = false;
+    var alive = false;
+    var roomName = "Closed Room"
+    if(url.parse(req.url,true).query['roomID'] in rooms) {
+        alive = true;
+        hasPassword = (rooms[url.parse(req.url,true).query['roomID']]['password'] != "");
+        roomName = rooms[url.parse(req.url,true).query['roomID']]['roomName']
+    }
     res.render('index', {
         "roomID": url.parse(req.url,true).query['roomID'],
+        "userID": url.parse(req.url,true).query['userID'],
         "fullName": url.parse(req.url,true).query['fullName'],
-        "appLink":appLink
+        "appLink":appLink,
+        "hasPassword": hasPassword,
+        "alive": alive,
+        "roomName": roomName
     });
 });
 
@@ -36,19 +58,37 @@ io.on('connection', (socket) => {
             clearInterval(rooms[roomID]['interval']);
         }*/
         rooms[data['roomID']]['count'] = rooms[data['roomID']]['count'] + 1;
-        io.sockets.emit('disperse'+data['roomID'], data['message']);
+        rooms[data['roomID']]['participants'][data['userID']] = data['fullName'];
+        io.sockets.emit('enter'+data['roomID'], rooms[data['roomID']]['participants']);
     });
 
-    socket.on('leave', (roomID) => {
-        rooms[roomID]['count'] = rooms[roomID]['count'] - 1;
-        if(rooms[roomID]['count'] == 0 && roomID != "HelloWorld") {
-            delete rooms[roomID];
-            /*
-            rooms[roomID]['interval'] = setInterval(function(){
+    socket.on('validate', (data) => {
+        if(rooms[data['roomID']]['password'] == Buffer.from(data['password']).toString('base64')) {
+            socket.emit('connect'+data['userID'],'success');
+        }
+        else {
+            socket.emit('connect'+data['userID'],'Wrong password.');
+        }
+    });
+
+    socket.on('leave', (data) => {
+        var roomID = data['roomID'];
+        var userID = data['userID'];
+        if(roomID in rooms) {
+            rooms[roomID]['count'] = rooms[roomID]['count'] - 1;
+            delete rooms[roomID]['participants'][userID];
+            io.sockets.emit('enter'+data['roomID'], rooms[data['roomID']]['participants']);
+            if(rooms[roomID]['count'] == 0 && roomID != "HelloWorld") {
                 delete rooms[roomID];
+                io.sockets.emit('destroy'+roomID, roomID);
                 io.sockets.emit('refreshRooms', rooms);
-                console.log("Removed room "+roomID);
-            },30000);*/
+                /*
+                rooms[roomID]['interval'] = setInterval(function(){
+                    delete rooms[roomID];
+                    io.sockets.emit('refreshRooms', rooms);
+                    console.log("Removed room "+roomID);
+                },30000);*/
+            }
         }
     });
 
@@ -60,10 +100,24 @@ io.on('connection', (socket) => {
         socket.emit(userId, rooms);
     });
 
-    socket.on('createRoom', (roomName) => {
-        var roomID = Buffer.from(roomName).toString('base64');
-        rooms[roomID]={'link':appLink+'chat?roomID='+roomID, 'name': roomName, 'count':0, 'interval': -1};
-        socket.emit('refreshRooms', rooms);
+    socket.on('createRoom', (data) => {
+        var roomID = Buffer.from(data['roomName']).toString('base64');
+        var password = "";
+        if(data['password'] != "") {
+            password = Buffer.from(data['password']).toString('base64');
+        }
+        rooms[roomID]={
+            'link':appLink+'chat?roomID='+roomID, 
+            'count': 0, 
+            'interval': -1,
+            'roomName': data['roomName'], 
+            'password': password,
+            'description': data['description'],
+            'openRandomJoin': data['openRandomJoin'],
+            'participants': {}
+        };
+        console.log(JSON.stringify(rooms));
+        io.sockets.emit('refreshRooms', rooms);
     });
 
     socket.on('console', (message) => {

@@ -3,40 +3,114 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.0.4/socket.io.js"></script>
     <script src="/socket.io/socket.io.js"></script>
     <body>
-        <h1>Welcome to TigerAmbush</h1>
+        <h1><%= roomName %></h1>
         <p id="roomID" style="display: none;"><%= roomID %></p>
+        <p id="userID" style="display: none;"><%= userID %></p>
         <p id="fullName" style="display: none;"><%= fullName %></p>
         <p id="appLink" style="display: none;"><%= appLink %></p>
+        <p id="hasPassword" style="display: none;"><%= hasPassword %></p>
+        <p id="alive" style="display: none;"><%= alive %></p>
+        <input type="password" id="passwordbox" placeholder="Enter room password"/>
+        <button id="validateBtn" type="button" onclick="validate()">Validate</button>
+        <p id="destroyed" style="display: none;">This room has been removed. Redirecting to rooms page in 5 seconds.</p>
         <textarea id="chatbox" rows="4" cols="50"></textarea>
         <br />
         <br />
         <input id="messagebox" placeholder="Type your message..."/>
-        <button type="button" onclick="send()">Send</button>
+        <button id="sendBtn" type="button" onclick="send()">Send</button>
+        <br />
+        <br />
+        <p id="participantsList"></p>
+        <button type="button" onclick="goback()">Go Back</button>
         <script type="text/javascript" src="http://code.jquery.com/jquery-latest.min.js"></script>
         <script type="text/javascript">
             var roomID = document.getElementById("roomID").innerHTML;
+            var userID = document.getElementById("userID").innerHTML;
             var fullName = document.getElementById("fullName").innerHTML;
             var appLink = document.getElementById("appLink").innerHTML;
+            var hasPassword = document.getElementById("hasPassword").innerHTML;
+            var alive = document.getElementById("alive").innerHTML;
             var socket = io.connect(appLink);
 
             socket.on('connect', function(data) {
-                socket.emit('join', {"message":  fullName + " has entered the room.", "roomID": roomID});
+                if(alive == "false") {
+                    onlyShowDestroyDialogue();
+                }
+                else if(hasPassword == "false") {
+                    join();
+                }
+                else {
+                    $("#chatbox").hide();
+                    $("#messagebox").hide();
+                    $("#sendBtn").hide();
+                }
             });
 
-            socket.on('disperse'+roomID, function(data) {
-                var messages = document.getElementById("chatbox").value + data + "\n";
-                var chatbox = document.getElementById('chatbox'); 
-                chatbox.value = messages;
-                chatbox.scrollTop = chatbox.scrollHeight; 
+            socket.on('destroy'+roomID, function(data) {
+                onlyShowDestroyDialogue();
             });
+
+            function onlyShowDestroyDialogue() {
+                $("#chatbox").hide();
+                $("#messagebox").hide();
+                $("#sendBtn").hide();
+                $("#passwordbox").hide();
+                $("#validateBtn").hide();
+                $("#participantsList").hide();
+                $("#destroyed").show();
+                setInterval(goback, 5000);
+            }
+
+            function join() {
+                $("#chatbox").show();
+                $("#messagebox").show();
+                $("#sendBtn").show();
+                $("#passwordbox").hide();
+                $("#validateBtn").hide();
+                socket.emit('join', {"fullName":  fullName, "roomID": roomID, 'userID': userID});
+                socket.on('disperse'+roomID, function(data) {
+                    var messages = document.getElementById("chatbox").value + data + "\n";
+                    var chatbox = document.getElementById('chatbox'); 
+                    chatbox.value = messages;
+                    chatbox.scrollTop = chatbox.scrollHeight; 
+                });
+                socket.on('enter'+roomID, function(data) {
+                    var userIDs = Object.keys(data);
+                    var userNames = "Active Users: <br />";
+                    var i;
+                    for(i = 0; i < userIDs.length; i++) {
+                        userNames = userNames + data[userIDs[i]] + "<br />"
+                    }
+                    document.getElementById("participantsList").innerHTML = userNames;
+                });
+            }
 
             function send() {
                 socket.emit('send', {"message": fullName + ": " + document.getElementById("messagebox").value, "roomID": roomID});
                 document.getElementById("messagebox").value = "";
             }
 
+            function validate() {
+                socket.emit('validate',{'roomID':roomID,'password':document.getElementById("passwordbox").value, 'userID':userID});
+                socket.on('connect'+userID, function(status) {
+                    if(status != 'success') {
+                        alert(status);
+                        document.getElementById("passwordbox").value = "";
+                    }
+                    else {
+                        join();
+                    }
+                });
+            }
+
+            function goback() {
+                window.location.href=appLink;
+            }
+
             window.addEventListener("beforeunload", function (e) {
-                socket.emit('leave', roomID);
+                if($("#chatbox").is(':visible')) {
+                    socket.emit('leave', {'roomID':roomID, 'userID': userID});
+                }
             });
         </script>
     </body>
