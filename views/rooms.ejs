@@ -9,6 +9,7 @@
     </head>
     <body>
         <h1>Welcome to TigerAmbush</h1>
+        <p id="appLink" style="display: none;"><%= appLink %></p>
         <div class="g-signin2" data-onsuccess="onSignIn" data-theme="dark"></div>
         <br />
         <h2 id="emailHeader" style="display: none;"></h2>
@@ -32,7 +33,8 @@
         <script type="text/javascript" src="http://code.jquery.com/jquery-latest.min.js"></script>
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
         <script type="text/javascript">
-            var socket = io.connect('https://tigerambush.herokuapp.com/');
+            var appLink = document.getElementById("appLink").innerHTML;
+            var socket = io.connect(appLink);
             //var id = Math.floor(Math.random() * 9007199254740990);
             var rooms = new Array();
             var id;

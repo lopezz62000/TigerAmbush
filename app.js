@@ -5,25 +5,26 @@ var io = require('socket.io')(server);
 const url = require('url');
 const https = require('https');
 
-var rooms = {'HelloWorld':{'link':'https://tigerambush.herokuapp.com/chat?roomID=HelloWorld', 'name':'Default chat', 'count': 0, 'interval': -1}};
+var appLink = process.env.APPLINK || 'http://localhost:3000/';
+
+var rooms = {'HelloWorld':{'link':appLink+'chat?roomID=HelloWorld', 'name':'Default chat', 'count': 0, 'interval': -1}};
 
 app.set('view engine', 'ejs');
 
 app.use(express.static('public'));
 
 app.get('/', (req, res) => {
-    res.render('rooms');
+    res.render('rooms', {
+        "appLink":appLink
+    });
 });
 
 app.get('/chat', (req, res) => {
     res.render('index', {
         "roomID": url.parse(req.url,true).query['roomID'],
-        "fullName": url.parse(req.url,true).query['fullName']
+        "fullName": url.parse(req.url,true).query['fullName'],
+        "appLink":appLink
     });
-});
-
-app.get('/login', (req, res) => {
-    res.render('login');
 });
 
 io.on('connection', (socket) => {
@@ -61,7 +62,7 @@ io.on('connection', (socket) => {
 
     socket.on('createRoom', (roomName) => {
         var roomID = Buffer.from(roomName).toString('base64');
-        rooms[roomID]={'link':'https://tigerambush.herokuapp.com/chat?roomID='+roomID, 'name': roomName, 'count':0, 'interval': -1};
+        rooms[roomID]={'link':appLink+'chat?roomID='+roomID, 'name': roomName, 'count':0, 'interval': -1};
         socket.emit('refreshRooms', rooms);
     });
 

@@ -6,6 +6,7 @@
         <h1>Welcome to TigerAmbush</h1>
         <p id="roomID" style="display: none;"><%= roomID %></p>
         <p id="fullName" style="display: none;"><%= fullName %></p>
+        <p id="appLink" style="display: none;"><%= appLink %></p>
         <textarea id="chatbox" rows="4" cols="50"></textarea>
         <br />
         <br />
@@ -13,9 +14,10 @@
         <button type="button" onclick="send()">Send</button>
         <script type="text/javascript" src="http://code.jquery.com/jquery-latest.min.js"></script>
         <script type="text/javascript">
-            var socket = io.connect('https://tigerambush.herokuapp.com/');
             var roomID = document.getElementById("roomID").innerHTML;
             var fullName = document.getElementById("fullName").innerHTML;
+            var appLink = document.getElementById("appLink").innerHTML;
+            var socket = io.connect(appLink);
 
             socket.on('connect', function(data) {
                 socket.emit('join', {"message":  fullName + " has entered the room.", "roomID": roomID});
