@@ -22,7 +22,7 @@
         <br />
         <p id="participantsList"></p>
         <button type="button" onclick="goback()">Go Back</button>
-        <script type="text/javascript" src="http://code.jquery.com/jquery-latest.min.js"></script>
+        <script type="text/javascript" src="https://code.jquery.com/jquery-latest.min.js"></script>
         <script type="text/javascript">
             var roomID = document.getElementById("roomID").innerHTML;
             var userID = document.getElementById("userID").innerHTML;
@@ -67,7 +67,7 @@
                 $("#sendBtn").show();
                 $("#passwordbox").hide();
                 $("#validateBtn").hide();
-                socket.emit('join', {"fullName":  fullName, "roomID": roomID, 'userID': userID});
+                socket.emit('join', {"fullName": fullName, "roomID": roomID, 'userID': userID});
                 socket.on('disperse'+roomID, function(data) {
                     var messages = document.getElementById("chatbox").value + data + "\n";
                     var chatbox = document.getElementById('chatbox'); 
