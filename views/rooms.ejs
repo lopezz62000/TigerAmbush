@@ -59,6 +59,7 @@
         <h2 id="roomHeader" style="display: none;">Rooms</h2>
         <input id="searchbox" placeholder="Looking for something?" style="display: none;"/>
         <button id="searchBtn" type="button" onclick="search()" style="display: none;">Search</button>
+        <button id="searchClearBtn" type="button" onclick="searchClear()" style="display: none;">Clear Search</button>
         <br />
         <br />
         <div class="roomsCon" >
@@ -70,6 +71,7 @@
         <br />
         <br />
         <p id="loadingRooms" style="display: none;">Loading rooms...</p>
+        <p id="noRooms" style="display: none;"> No rooms to show</p>
         <button id="joinRandomBtn" type="button" onclick="joinRandom()" style="display: none;">Join Random Room</button>
         <button id="newRoomBtn" type="button" onclick="showNewRoomForm()" style="display: none;">New Room</button>
         <br />
@@ -102,14 +104,23 @@
             var fullName;
             var givenName;
             var email;
+<<<<<<< HEAD
             var nickname;
+=======
+            var searchCriteria;
+>>>>>>> 274d3ee0f22d64d0df983de44d9f81b229715573
 
             socket.on('connect', function(data) {
                 socket.emit('console', 'New user loaded rooms page.');
             });
 
             socket.on('refreshRooms', function(data) {
-                refreshRooms(data);
+                if($("#searchClearBtn").is(':hidden')) {
+                    refreshRooms(data);
+                }
+                else {
+                    socket.emit('search', {"criteria": searchCriteria, "userID": id});
+                }
             });
 
             function onSignIn(googleUser) {
@@ -174,11 +185,8 @@
                     roomEntries.eq(i).remove();
                 }
 
-                $("#newRoomFormCon").hide();
-                $("#newRoomBtn").show();
                 $("#joinRandomBtn").show();
                 $("#loadingRooms").hide();
-                document.getElementById("roomNameField").value = "";
                 rooms = res;
                 roomRandomLinks = new Array();
                 roomIDs = Object.keys(res);
@@ -192,6 +200,12 @@
                     newRoom.children(".roomName").eq(0).attr("href", res[roomIDs[i]]['link']+"&fullName="+nickname+"&userID="+id);
                     newRoom.children(".roomName").eq(0).text(res[roomIDs[i]]['roomName']);
                     newRoom.children(".roomDetails").eq(0).text(res[roomIDs[i]]['description']);
+                }
+                if(roomIDs.length === 0) {
+                    $("#noRooms").show();
+                }
+                else {
+                    $("#noRooms").hide();
                 }
             }
 
@@ -262,18 +276,35 @@
                     'openRandomJoin': $('#randomField').is(":checked")
                 };
 
+                $("#newRoomFormCon").hide();
+                $("#newRoomBtn").show();
+                document.getElementById("roomNameField").value = "";
+                document.getElementById("passwordField").value = "";
+                $("#passwordField").show();
+                $("#descriptionField").val("");
+                $("#randomField").prop("checked", false);
                 //Sending create room request
                 socket.emit('createRoom', data);
             }
 
             function search() {
-                alert("Not implemented yet");
-                /*
-                socket.emit('search', {"criteria": document.getElementById("searchbox").value, "userID": id});
+                if(document.getElementById("searchbox").value == "") {
+                    alert("Tell us what you're looking for first!");
+                    return;
+                }
+                searchCriteria = document.getElementById("searchbox").value;
+                socket.emit('search', {"criteria": searchCriteria, "userID": id});
                 socket.on('search'+id, function(rooms) {
-                    refreshRooms(data);
+                    refreshRooms(rooms);
                 });
-                */
+                $('#searchClearBtn').show();
+                $("#loadingRooms").hide();
+            }
+
+            function searchClear() {
+                $('#searchClearBtn').hide(); 
+                document.getElementById("searchbox").value = "";
+                socket.emit('getRooms', id);  
             }
         </script>
     </body>

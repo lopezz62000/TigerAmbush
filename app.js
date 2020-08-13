@@ -19,6 +19,13 @@ var rooms = {'HelloWorld': {
     'participants': {}
 }};
 
+var TfIdf = natural.TfIdf;
+var tfidf = new TfIdf();
+var tfidfRooms = [];
+var tfidfIDs = ['HelloWorld'];
+tfidf.addDocument(JSON.stringify(rooms['HelloWorld']));
+tfidfRooms.push(JSON.stringify(rooms['HelloWorld']));
+
 app.set('view engine', 'ejs');
 
 app.use(express.static('public'));
@@ -78,6 +85,15 @@ io.on('connection', (socket) => {
             io.sockets.emit('enter'+data['roomID'], rooms[data['roomID']]['participants']);
             if(rooms[roomID]['count'] == 0 && roomID != "HelloWorld") {
                 delete rooms[roomID];
+
+                tfidf = new TfIdf();
+                tfidfIDs = Object.keys(rooms);
+                var i;
+                for(i = 0; i < tfidfIDs.length; i++) {
+                    tfidt.addDocument(JSON.stringify(rooms[tfidfIDs[i]]));
+                    tfidfRooms.push(JSON.stringify(rooms[tfidfIDs[i]]));
+                }
+
                 io.sockets.emit('destroy'+roomID, roomID);
                 io.sockets.emit('refreshRooms', rooms);
                 /*
@@ -114,8 +130,30 @@ io.on('connection', (socket) => {
             'openRandomJoin': data['openRandomJoin'],
             'participants': {}
         };
-        console.log(JSON.stringify(rooms));
+        tfidf.addDocument(JSON.stringify(rooms[roomID]));
+        tfidfRooms.push(JSON.stringify(rooms[roomID]));
+        tfidfIDs.push(roomID);
         io.sockets.emit('refreshRooms', rooms);
+    });
+
+    socket.on('search', (data) => {
+        var criteria = data['criteria'];
+        var userID = data['userID'];
+        var res = new Array();
+        tfidf.tfidfs(criteria, function(i, measure) {
+            if(measure != 0) {
+                res.push([tfidfRooms[i], tfidfIDs[i], measure]);
+            }
+        });
+        res.sort(function(a, b){  
+            return a[2] - b[2];
+        });
+        var resRooms = {}
+        var i;
+        for(i = 0; i < res.length; i++) {
+            resRooms[res[i][1]] = JSON.parse(res[i][0]);
+        }
+        socket.emit('search'+userID, resRooms);
     });
 
     socket.on('console', (message) => {
