@@ -186,10 +186,17 @@
                 for(i = 0; i < roomIDs.length; i++) {
                     var newRoom = $(".room").eq(0).clone().show();
                     $(".roomsCon").append(newRoom);
-                    if(res[roomIDs[i]]['openRandomJoin']) {
-                        roomRandomLinks.push(res[roomIDs[i]]['link']+"&fullName="+nickname+"&userID="+id);
+                    var name;
+                    if(nickname == undefined) {
+                        name = fullName;
                     }
-                    newRoom.children(".roomName").eq(0).attr("href", res[roomIDs[i]]['link']+"&fullName="+nickname+"&userID="+id);
+                    else {
+                        name = nickname;
+                    }
+                    if(res[roomIDs[i]]['openRandomJoin']) {
+                        roomRandomLinks.push(res[roomIDs[i]]['link']+"&fullName="+name+"&userID="+id);
+                    }
+                    newRoom.children(".roomName").eq(0).attr("href", res[roomIDs[i]]['link']+"&fullName="+name+"&userID="+id);
                     newRoom.children(".roomName").eq(0).text(res[roomIDs[i]]['roomName']);
                     newRoom.children(".roomDetails").eq(0).text(res[roomIDs[i]]['description']);
                 }
@@ -197,6 +204,7 @@
 
             function save() {
                 nickname = document.getElementById("nickname").value;
+                socket.emit('getRooms', id);
             }
 
             function showDetails(container) {
