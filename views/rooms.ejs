@@ -68,6 +68,7 @@
         <br />
         <br />
         <p id="loadingRooms" style="display: none;">Loading rooms...</p>
+        <p id="noRooms" style="display: none;"> No rooms to show</p>
         <button id="joinRandomBtn" type="button" onclick="joinRandom()" style="display: none;">Join Random Room</button>
         <button id="newRoomBtn" type="button" onclick="showNewRoomForm()" style="display: none;">New Room</button>
         <br />
@@ -191,6 +192,12 @@
                     newRoom.children(".roomName").eq(0).text(res[roomIDs[i]]['roomName']);
                     newRoom.children(".roomDetails").eq(0).text(res[roomIDs[i]]['description']);
                 }
+                if(roomIDs.length === 0) {
+                    $("#noRooms").show();
+                }
+                else {
+                    $("#noRooms").hide();
+                }
             }
 
             function showDetails(container) {
@@ -268,12 +275,17 @@
             }
 
             function search() {
+                if(document.getElementById("searchbox").value == "") {
+                    alert("Tell us what you're looking for first!");
+                    return;
+                }
                 searchCriteria = document.getElementById("searchbox").value;
                 socket.emit('search', {"criteria": searchCriteria, "userID": id});
                 socket.on('search'+id, function(rooms) {
                     refreshRooms(rooms);
                 });
                 $('#searchClearBtn').show();
+                $("#loadingRooms").hide();
             }
 
             function searchClear() {

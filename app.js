@@ -151,11 +151,9 @@ io.on('connection', (socket) => {
         var resRooms = {}
         var i;
         for(i = 0; i < res.length; i++) {
-            console.log(res[i][0]);
             resRooms[res[i][1]] = JSON.parse(res[i][0]);
         }
         socket.emit('search'+userID, resRooms);
-        console.log(JSON.stringify(resRooms));
     });
 
     socket.on('console', (message) => {
