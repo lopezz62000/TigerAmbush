@@ -49,6 +49,7 @@ app.get('/chat', (req, res) => {
         "roomID": url.parse(req.url,true).query['roomID'],
         "userID": url.parse(req.url,true).query['userID'],
         "fullName": url.parse(req.url,true).query['fullName'],
+        "email": url.parse(req.url,true).query['email'],
         "appLink":appLink,
         "hasPassword": hasPassword,
         "alive": alive,
@@ -63,7 +64,12 @@ io.on('connection', (socket) => {
             clearInterval(rooms[roomID]['interval']);
         }*/
         rooms[data['roomID']]['count'] = rooms[data['roomID']]['count'] + 1;
-        rooms[data['roomID']]['participants'][data['userID']] = data['fullName'];
+        rooms[data['roomID']]['participants'][data['userID']] = data['fullName'] + " (" + data['email'] + ")";
+        io.sockets.emit('enter'+data['roomID'], rooms[data['roomID']]['participants']);
+    });
+
+    socket.on('rename', (data) => {
+        rooms[data['roomID']]['participants'][data['userID']] = data['fullName'] + " (" + data['email'] + ")";
         io.sockets.emit('enter'+data['roomID'], rooms[data['roomID']]['participants']);
     });
 

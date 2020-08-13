@@ -34,7 +34,7 @@
         
         <hr class="style-four">
         
-        <div class="container">
+        <div id="welcomeCon" class="container">
             <div class="chat">
                 <img src="leftbubble.png" alt="left speech bubble" height="75px" width="250px">
                 <br>
@@ -42,19 +42,13 @@
                 <br>
                 <img src="leftbubble.png" alt="left speech bubble" height="75px" width="250px">
             </div>
-            <a href="google-signin-scope">
-                <button class="login btn btn-outline-dark" type="button">LOGIN</button>
-            </a>
+            <div id="gLogin" class="g-signin2 login" data-onsuccess="onSignIn" data-theme="dark"></div>
         </div>
 
         <!-- Login and Rooms -->
         <p id="appLink" style="display: none;"><%= appLink %></p>
-        <div class="g-signin2" data-onsuccess="onSignIn" data-theme="dark"></div>
         <br />
         <h2 id="emailHeader" style="display: none;"></h2>
-        <br />
-        <input id="nickname" placeholder="Enter Nickname" style="display: none;"/>
-        <button id="save" type="button" onclick="save()" style="display: none;">Save</button>
         <br />
         <h2 id="roomHeader" style="display: none;">Rooms</h2>
         <input id="searchbox" placeholder="Looking for something?" style="display: none;"/>
@@ -76,10 +70,6 @@
         <button id="newRoomBtn" type="button" onclick="showNewRoomForm()" style="display: none;">New Room</button>
         <br />
         <br />
-        <br />
-        <button id="signout" type="button" onclick="signOut()" style="display: none;">Sign Out</button>
-        <br />
-        <br />
         <div id="newRoomFormCon" style="display: none;">
             <input id="roomNameField" placeholder="Room Name"/>
             <input id="passwordField" placeholder="Password (optional)"/>
@@ -90,7 +80,11 @@
             <label>Open random join?</label>
             <button type="button" onclick="createRoom()">Create Room</button>
             <button type="button" onclick="hideNewRoomForm()">Close Form</button>
+            <br />
         </div>
+        <button id="signout" type="button" onclick="signOut()" style="display: none;">Sign Out</button>
+        <br />
+        <br />
         <script type="text/javascript" src="https://code.jquery.com/jquery-latest.min.js"></script>
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
         <script type="text/javascript">
@@ -139,7 +133,6 @@
                 email = profile.getEmail();
 
                 $("#nickname").show();
-                $("#save").show();
                 $("#roomHeader").show();
                 $("#newRoomBtn").show();
                 $("#loadingRooms").show();
@@ -147,6 +140,7 @@
                 $("#searchbox").show();
                 $("#searchBtn").show();
                 $("#signout").show();
+                $("#welcomeCon").hide();
                 document.getElementById("emailHeader").innerHTML = "Signed in as " + email;
 
                 socket.emit('getRooms', id);
@@ -199,9 +193,9 @@
                         name = nickname;
                     }
                     if(res[roomIDs[i]]['openRandomJoin']) {
-                        roomRandomLinks.push(res[roomIDs[i]]['link']+"&fullName="+name+"&userID="+id);
+                        roomRandomLinks.push(res[roomIDs[i]]['link']+"&fullName="+name+"&email="+email+"&userID="+id);
                     }
-                    newRoom.children(".roomName").eq(0).attr("href", res[roomIDs[i]]['link']+"&fullName="+name+"&userID="+id);
+                    newRoom.children(".roomName").eq(0).attr("href", res[roomIDs[i]]['link']+"&fullName="+name+"&email="+email+"&userID="+id);
                     newRoom.children(".roomName").eq(0).text(res[roomIDs[i]]['roomName']);
                     newRoom.children(".roomDetails").eq(0).text(res[roomIDs[i]]['description']);
                 }
@@ -211,11 +205,6 @@
                 else {
                     $("#noRooms").hide();
                 }
-            }
-
-            function save() {
-                nickname = document.getElementById("nickname").value;
-                socket.emit('getRooms', id);
             }
 
             function showDetails(container) {
@@ -229,6 +218,7 @@
             function showNewRoomForm() {
                 $("#newRoomFormCon").show();
                 $("#newRoomBtn").hide();
+                window.scrollTo(0, 500);
             }
 
             function hideNewRoomForm() {
