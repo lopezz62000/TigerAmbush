@@ -53,6 +53,9 @@
         <br />
         <h2 id="emailHeader" style="display: none;"></h2>
         <br />
+        <input id="nickname" placeholder="Enter Nickname" style="display: none;"/>
+        <button id="save" type="button" onclick="save()" style="display: none;">Save</button>
+        <br />
         <h2 id="roomHeader" style="display: none;">Rooms</h2>
         <input id="searchbox" placeholder="Looking for something?" style="display: none;"/>
         <button id="searchBtn" type="button" onclick="search()" style="display: none;">Search</button>
@@ -99,6 +102,7 @@
             var fullName;
             var givenName;
             var email;
+            var nickname;
 
             socket.on('connect', function(data) {
                 socket.emit('console', 'New user loaded rooms page.');
@@ -126,6 +130,8 @@
                 givenName = profile.getGivenName();
                 email = profile.getEmail();
 
+                $("#nickname").show();
+                $("#save").show();
                 $("#roomHeader").show();
                 $("#newRoomBtn").show();
                 $("#loadingRooms").show();
@@ -181,12 +187,16 @@
                     var newRoom = $(".room").eq(0).clone().show();
                     $(".roomsCon").append(newRoom);
                     if(res[roomIDs[i]]['openRandomJoin']) {
-                        roomRandomLinks.push(res[roomIDs[i]]['link']+"&fullName="+fullName+"&userID="+id);
+                        roomRandomLinks.push(res[roomIDs[i]]['link']+"&fullName="+nickname+"&userID="+id);
                     }
-                    newRoom.children(".roomName").eq(0).attr("href", res[roomIDs[i]]['link']+"&fullName="+fullName+"&userID="+id);
+                    newRoom.children(".roomName").eq(0).attr("href", res[roomIDs[i]]['link']+"&fullName="+nickname+"&userID="+id);
                     newRoom.children(".roomName").eq(0).text(res[roomIDs[i]]['roomName']);
                     newRoom.children(".roomDetails").eq(0).text(res[roomIDs[i]]['description']);
                 }
+            }
+
+            function save() {
+                nickname = document.getElementById("nickname").value;
             }
 
             function showDetails(container) {

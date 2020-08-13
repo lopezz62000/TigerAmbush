@@ -1,0 +1,145 @@
+body {
+	font-family: 'Montserrat', sans-serif !important;
+}
+
+.header {
+	/* background-image: url(tiger_background.png); */
+	background-image: linear-gradient(to right, rgb(128, 128, 115), rgb(221, 117, 38));
+	opacity: 90%;
+	background-size: cover;
+	background-repeat: no-repeat;
+	margin: 0 !important;
+	padding-bottom: 10px;
+}
+
+.header h1 {
+	margin-top: 20px;
+	font-size: 75px;
+	color: rgb(235, 235, 235);
+	text-shadow: 5px 5px 7px rgb(65, 65, 65);
+	/* text-align: center; */
+}
+
+.header img {
+	margin-top: 20px;
+}
+
+.subheading {
+	font-size: 20px;
+	color: rgb(131, 129, 129);
+	letter-spacing: 2px;
+	/* text-align: center; */
+}
+
+.subheading,
+.header {
+	text-align: center;
+	margin-top: 20px;
+	margin-left: 20px;
+	margin-right: 20px;
+}
+
+#emailHeader {
+	text-align: right;
+	display: inline;
+}
+
+.line-heading {
+	display: inline;
+}
+
+hr.style-four {
+	height: 12px;
+	border: 0;
+	box-shadow: inset 0 12px 12px -12px rgba(0, 0, 0, 0.5);
+}
+
+.chat {
+	margin-top: 60px;
+}
+
+.chat img:nth-of-type(1) {
+	margin-left: 25%;
+}
+
+.chat img:nth-of-type(2) {
+	margin-left: 50%;
+}
+
+.chat img:nth-of-type(3) {
+	margin-left: 25%;
+}
+
+.menu-buttons button {
+	background-color: black;
+	color: white;
+	border-radius: 30px;
+	height: 50px !important;
+	width: 200px !important;
+	margin: 20px !important;
+}
+
+.login {
+	margin-left: 40%;
+	margin-top: 40px;
+	width: 200px;
+	height: 50px;
+}
+
+/* on menu page */
+.menu-buttons button {
+	width: 500px;
+	height: 100px;
+	margin: 25px 0px;
+	margin-left: 32%;
+	margin-top: 5%;
+}
+
+/* .save {
+	margin-left: 47%;
+	margin-top: 10%;
+} */
+.profile,
+.header {
+	text-align: center;
+	margin-top: 4%;
+}
+
+.labels {
+	text-align: center !important;
+	margin-top: 3%;
+	font-size: 25px;
+}
+
+.create {
+	text-align: center !important;
+}
+
+/* active_rooms page */
+.navbar li {
+	list-style-type: none;
+	text-transform: uppercase;
+	font-weight: 400;
+	font-size: 25px;
+	color: rgb(48, 48, 48);
+	margin-right: 62%;
+}
+
+.menu-buttons a {
+	text-align: center;
+}
+
+.room-cont {
+	margin-top: 150px;
+}
+
+.rooms {
+	margin-bottom: 50px;
+}
+
+.figure {
+	width: 360px;
+	height: 290px;
+	border-radius: 40%;
+	overflow: hidden;
+}
