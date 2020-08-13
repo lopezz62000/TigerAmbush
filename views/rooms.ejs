@@ -35,14 +35,14 @@
         <hr class="style-four">
         
         <div class="container">
-            <div class="chat" id="chatpics">
+            <div class="chat" id="chatpics">              
                 <img src="leftbubble.png" alt="left speech bubble" height="75px" width="250px">
                 <br>
                 <img src="rightbubble.png" alt="right speech bubble" height="75px" width="250px">
                 <br>
                 <img src="leftbubble.png" alt="left speech bubble" height="75px" width="250px">
+                <div id="gsignin" class="g-signin2 login" data-onsuccess="onSignIn" data-theme="dark"></div>
             </div>
-            <div id="gsignin" class="g-signin2 login" data-onsuccess="onSignIn" data-theme="dark"></div>
         </div>
 
         <!-- Login and Rooms -->
@@ -50,9 +50,36 @@
         <br />
         <h2 id="emailHeader" style="display: none;"></h2>
         <br />
-        <h2 id="roomHeader" style="display: none;">Rooms</h2>
-        <input id="searchbox" placeholder="Looking for something?" style="display: none;"/>
-        <button id="searchBtn" type="button" onclick="search()" style="display: none;">Search</button>
+        <div class="header2">
+            <h2 id="roomHeader" style="display: none;">Rooms</h2>
+        </div>
+        <div class="header3 d-sm-flex justify-content-around">
+            <input id="searchbox" placeholder="ENTER ..." style="display: none;"/>
+            <button id="searchBtn" type="button" onclick="search()" style="display: none;">Search</button>
+            <button id="joinRandomBtn" type="button" onclick="joinRandom()" style="display: none;">Join Random</button>
+            <button id="newRoomBtn" type="button" onclick="showNewRoomForm()" style="display: none;">New Room</button>
+            <button id="signout" type="button" onclick="signOut()" style="display: none;"><span>Sign Out</span></button>
+            <br />
+        </div>
+        <div id="newRoomFormCon" style="display: none;">
+            <div class="header4 justify-content-around">
+                <br />
+                <input id="roomNameField" placeholder="Room Name"/>
+                <input id="passwordField" placeholder="Password (optional)"/>
+            </div>
+            <div class="header5 justify-content-around">
+                <br />
+                <textarea id="descriptionField" rows="4" cols="40" placeholder="Describe your rooms purpose, class, or activity..."></textarea>
+                <br />
+                <br />
+                <br />
+                <input id ="openrandom" type="checkbox" id="randomField" onclick="onCheck()">
+                <label>Open Random Joining</label>
+                <button id="buttonCreate" type="button" onclick="createRoom()">Create Room</button>
+                <button id="buttonCreate" type="button" onclick="hideNewRoomForm()">Close Form</button>
+                <br />
+            </div>
+        </div>
         <br />
         <br />
         <div class="roomsCon" >
@@ -64,23 +91,6 @@
         <br />
         <br />
         <p id="loadingRooms" style="display: none;">Loading rooms...</p>
-        <button id="joinRandomBtn" type="button" onclick="joinRandom()" style="display: none;">Join Random Room</button>
-        <button id="newRoomBtn" type="button" onclick="showNewRoomForm()" style="display: none;">New Room</button>
-        <br />
-        <br />
-        <div id="newRoomFormCon" style="display: none;">
-            <input id="roomNameField" placeholder="Room Name"/>
-            <input id="passwordField" placeholder="Password (optional)"/>
-            <br />
-            <textarea id="descriptionField" rows="4" cols="40" placeholder="Describe your rooms purpose, class, or activity..."></textarea>
-            <br />
-            <input type="checkbox" id="randomField" onclick="onCheck()">
-            <label>Open random join?</label>
-            <button type="button" onclick="createRoom()">Create Room</button>
-            <button type="button" onclick="hideNewRoomForm()">Close Form</button>
-            <br />
-        </div>
-        <button id="signout" type="button" onclick="signOut()" style="display: none;">Sign Out</button>
         <br />
         <br />
         <script type="text/javascript" src="https://code.jquery.com/jquery-latest.min.js"></script>
