@@ -56,6 +56,7 @@
         <h2 id="roomHeader" style="display: none;">Rooms</h2>
         <input id="searchbox" placeholder="Looking for something?" style="display: none;"/>
         <button id="searchBtn" type="button" onclick="search()" style="display: none;">Search</button>
+        <button id="searchClearBtn" type="button" onclick="searchClear()" style="display: none;">Clear Search</button>
         <br />
         <br />
         <div class="roomsCon" >
@@ -99,13 +100,19 @@
             var fullName;
             var givenName;
             var email;
+            var searchCriteria;
 
             socket.on('connect', function(data) {
                 socket.emit('console', 'New user loaded rooms page.');
             });
 
             socket.on('refreshRooms', function(data) {
-                refreshRooms(data);
+                if($("#searchClearBtn").is(':hidden')) {
+                    refreshRooms(data);
+                }
+                else {
+                    socket.emit('search', {"criteria": searchCriteria, "userID": id});
+                }
             });
 
             function onSignIn(googleUser) {
@@ -257,13 +264,17 @@
             }
 
             function search() {
-                alert("Not implemented yet");
-                /*
-                socket.emit('search', {"criteria": document.getElementById("searchbox").value, "userID": id});
+                searchCriteria = document.getElementById("searchbox").value;
+                socket.emit('search', {"criteria": searchCriteria, "userID": id});
                 socket.on('search'+id, function(rooms) {
                     refreshRooms(data);
                 });
-                */
+                $('#searchClearBtn').show();
+            }
+
+            function searchClear() {
+                $('#searchClearBtn').hide(); 
+                socket.emit('getRooms', id);  
             }
         </script>
     </body>
