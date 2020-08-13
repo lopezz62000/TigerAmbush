@@ -90,7 +90,7 @@ io.on('connection', (socket) => {
                 tfidfIDs = Object.keys(rooms);
                 var i;
                 for(i = 0; i < tfidfIDs.length; i++) {
-                    tfidt.addDocument(JSON.stringify(rooms[tfidfIDs[i]]));
+                    tfidf.addDocument(JSON.stringify(rooms[tfidfIDs[i]]));
                     tfidfRooms.push(JSON.stringify(rooms[tfidfIDs[i]]));
                 }
 
