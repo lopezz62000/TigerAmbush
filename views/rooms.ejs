@@ -35,7 +35,7 @@
         <hr class="style-four">
         
         <div class="container">
-            <div class="chat">
+            <div class="chat" id="chatpics">
                 <img src="leftbubble.png" alt="left speech bubble" height="75px" width="250px">
                 <br>
                 <img src="rightbubble.png" alt="right speech bubble" height="75px" width="250px">
@@ -49,7 +49,7 @@
 
         <!-- Login and Rooms -->
         <p id="appLink" style="display: none;"><%= appLink %></p>
-        <div class="g-signin2" data-onsuccess="onSignIn" data-theme="dark"></div>
+        <div class="g-signin2" id="gsignin" data-onsuccess="onSignIn" data-theme="dark"></div>
         <br />
         <h2 id="emailHeader" style="display: none;"></h2>
         <br />
@@ -129,7 +129,9 @@
                 fullName = profile.getName();
                 givenName = profile.getGivenName();
                 email = profile.getEmail();
-
+                
+                document.getElementById("chatpics").style.display = "none";
+                document.getElementById("gsignin").style.display = "none";
                 $("#nickname").show();
                 $("#save").show();
                 $("#roomHeader").show();
