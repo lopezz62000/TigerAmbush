@@ -34,15 +34,15 @@
         
         <hr class="style-four">
         
-        <div id="welcomeCon" class="container">
-            <div class="chat">
+        <div class="container">
+            <div class="chat" id="chatpics">
                 <img src="leftbubble.png" alt="left speech bubble" height="75px" width="250px">
                 <br>
                 <img src="rightbubble.png" alt="right speech bubble" height="75px" width="250px">
                 <br>
                 <img src="leftbubble.png" alt="left speech bubble" height="75px" width="250px">
             </div>
-            <div id="gLogin" class="g-signin2 login" data-onsuccess="onSignIn" data-theme="dark"></div>
+            <div id="gsignin" class="g-signin2 login" data-onsuccess="onSignIn" data-theme="dark"></div>
         </div>
 
         <!-- Login and Rooms -->
@@ -53,7 +53,6 @@
         <h2 id="roomHeader" style="display: none;">Rooms</h2>
         <input id="searchbox" placeholder="Looking for something?" style="display: none;"/>
         <button id="searchBtn" type="button" onclick="search()" style="display: none;">Search</button>
-        <button id="searchClearBtn" type="button" onclick="searchClear()" style="display: none;">Clear Search</button>
         <br />
         <br />
         <div class="roomsCon" >
@@ -65,7 +64,6 @@
         <br />
         <br />
         <p id="loadingRooms" style="display: none;">Loading rooms...</p>
-        <p id="noRooms" style="display: none;"> No rooms to show</p>
         <button id="joinRandomBtn" type="button" onclick="joinRandom()" style="display: none;">Join Random Room</button>
         <button id="newRoomBtn" type="button" onclick="showNewRoomForm()" style="display: none;">New Room</button>
         <br />
@@ -99,19 +97,13 @@
             var givenName;
             var email;
             var nickname;
-            var searchCriteria;
 
             socket.on('connect', function(data) {
                 socket.emit('console', 'New user loaded rooms page.');
             });
 
             socket.on('refreshRooms', function(data) {
-                if($("#searchClearBtn").is(':hidden')) {
-                    refreshRooms(data);
-                }
-                else {
-                    socket.emit('search', {"criteria": searchCriteria, "userID": id});
-                }
+                refreshRooms(data);
             });
 
             function onSignIn(googleUser) {
@@ -131,7 +123,9 @@
                 fullName = profile.getName();
                 givenName = profile.getGivenName();
                 email = profile.getEmail();
-
+                
+                document.getElementById("chatpics").style.display = "none";
+                document.getElementById("gsignin").style.display = "none";
                 $("#nickname").show();
                 $("#roomHeader").show();
                 $("#newRoomBtn").show();
@@ -140,7 +134,6 @@
                 $("#searchbox").show();
                 $("#searchBtn").show();
                 $("#signout").show();
-                $("#welcomeCon").hide();
                 document.getElementById("emailHeader").innerHTML = "Signed in as " + email;
 
                 socket.emit('getRooms', id);
@@ -176,8 +169,11 @@
                     roomEntries.eq(i).remove();
                 }
 
+                $("#newRoomFormCon").hide();
+                $("#newRoomBtn").show();
                 $("#joinRandomBtn").show();
                 $("#loadingRooms").hide();
+                document.getElementById("roomNameField").value = "";
                 rooms = res;
                 roomRandomLinks = new Array();
                 roomIDs = Object.keys(res);
@@ -198,12 +194,6 @@
                     newRoom.children(".roomName").eq(0).attr("href", res[roomIDs[i]]['link']+"&fullName="+name+"&email="+email+"&userID="+id);
                     newRoom.children(".roomName").eq(0).text(res[roomIDs[i]]['roomName']);
                     newRoom.children(".roomDetails").eq(0).text(res[roomIDs[i]]['description']);
-                }
-                if(roomIDs.length === 0) {
-                    $("#noRooms").show();
-                }
-                else {
-                    $("#noRooms").hide();
                 }
             }
 
@@ -271,35 +261,18 @@
                     'openRandomJoin': $('#randomField').is(":checked")
                 };
 
-                $("#newRoomFormCon").hide();
-                $("#newRoomBtn").show();
-                document.getElementById("roomNameField").value = "";
-                document.getElementById("passwordField").value = "";
-                $("#passwordField").show();
-                $("#descriptionField").val("");
-                $("#randomField").prop("checked", false);
                 //Sending create room request
                 socket.emit('createRoom', data);
             }
 
             function search() {
-                if(document.getElementById("searchbox").value == "") {
-                    alert("Tell us what you're looking for first!");
-                    return;
-                }
-                searchCriteria = document.getElementById("searchbox").value;
-                socket.emit('search', {"criteria": searchCriteria, "userID": id});
+                alert("Not implemented yet");
+                /*
+                socket.emit('search', {"criteria": document.getElementById("searchbox").value, "userID": id});
                 socket.on('search'+id, function(rooms) {
-                    refreshRooms(rooms);
+                    refreshRooms(data);
                 });
-                $('#searchClearBtn').show();
-                $("#loadingRooms").hide();
-            }
-
-            function searchClear() {
-                $('#searchClearBtn').hide(); 
-                document.getElementById("searchbox").value = "";
-                socket.emit('getRooms', id);  
+                */
             }
         </script>
     </body>
