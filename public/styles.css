@@ -225,7 +225,8 @@ hr.style-four {
 	border-radius: 4px;
 	border: 1px solid #221d23;
 	height: 330px;
-	width: 600px;
+	width: 50%;
+	min-width: 600px;
 	-webkit-transition: 200ms linear 0s;  
     -moz-transition: 200ms linear 0s;  
     -o-transition: 200ms linear 0s;  
@@ -236,8 +237,6 @@ hr.style-four {
 }
 
 #chatbox:focus, #chatbox:hover {
-	height: 330px;
-	width: 600px;
 	outline: none;
     border: 1px solid #e7dc9e;
     box-shadow: 0px 0px 8px #e7dc9e;
@@ -281,6 +280,16 @@ hr.style-four {
 	padding-left: 6px;
 }
 
+.buttonClass {
+	background-color: #e86726;
+	border: none;
+	border-radius: 4px;
+	color: #ffffff;
+	min-width: 150px;
+	width: 12.5%;
+	height: 50px;
+}
+
 #searchbox{
 	margin-left: 10%;
 	border-radius: 4px;
@@ -288,8 +297,7 @@ hr.style-four {
 }
 
 #searchBtn,
-#clearSearchBtn,
-.buttonClass {
+#clearSearchBtn {
 	background-color: #e86726;
 	border: none;
 	border-radius: 4px;
@@ -376,8 +384,9 @@ hr.style-four {
 
 hr.chat-hr {
 	border: 2px solid #221d23;
-	width: 608px;
-  }
+	min-width: 608px;
+	width: 50%;
+}
 
 .typing {
 	position: relative;
