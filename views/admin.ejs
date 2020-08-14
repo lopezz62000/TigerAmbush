@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.0.4/socket.io.js"></script>
+    <script src="/socket.io/socket.io.js"></script>
+    <meta name="google-signin-scope" content="profile email">
+    <meta name="google-signin-client_id" content="758290075776-i5a0a6680n51lo76p8qfignd0s5148jd.apps.googleusercontent.com">
+    <script src="https://apis.google.com/js/platform.js" async defer></script>
+    <body>
+        <h1>Admin</h1>
+        <p id="rooms" style="display: none;"><%= rooms %></p>
+        <p id="appLink" style="display: none;"><%= appLink %></p>
+        <p id="announcement"><%= announcement %></p>
+        <div id="gLogin" class="g-signin2" data-onsuccess="onSignIn" data-theme="dark"></div>
+        <p id="invalid" style="display: none;">Invalid URL. Please rejoin room from rooms page. Redirecting in 5 seconds.</p>
+        <div id="onLoginCon" style="display: none;">
+            <input id="messagebox" placeholder="Type your message..."/>
+            <button id="sendBtn" type="button" onclick="send()">Send</button>
+            <br />
+            <br />
+            <button type="button" onclick="goback()">Go Back</button>
+        </div>
+        <script type="text/javascript" src="https://code.jquery.com/jquery-latest.min.js"></script>
+        <script type="text/javascript">
+            var rooms = document.getElementById("rooms").innerHTML;
+            var appLink = document.getElementById("appLink").innerHTML;
+            var socket = io.connect(appLink);
+
+            if(document.getElementById("announcement").innerHTML == "") {
+                $("#announcement").hide();
+            }
+
+            function onlyShowDestroyDialogue() {
+                $("#messagebox").hide();
+                $("#sendBtn").hide();
+                $("#passwordbox").hide();
+                $("#validateBtn").hide();
+                $("#participantsList").hide();
+                setInterval(goback, 5000);
+            }
+
+            socket.on('connect', function(data) {
+                var res = JSON.parse(rooms);
+                var roomIDs = Object.keys(res);
+                var i;
+                for(i = 0; i < roomIDs.length; i++) {
+                    res[roomIDs[i]]['participants'] = new Object();
+                }
+                document.getElementById("rooms").innerHTML = JSON.stringify(res);
+            });
+
+            socket.on('announcement', function(newAnnouncement) {
+                if(newAnnouncement == "") {
+                    $("#announcement").hide();
+                }
+                else {
+                    $("#announcement").show();
+                }
+                document.getElementById("announcement").innerHTML = newAnnouncement;
+            });
+
+            function send() {
+                if(document.getElementById("messagebox").value != "") {
+                    socket.emit('announce', "Admin Announcement: " + document.getElementById("messagebox").value);
+                    document.getElementById("messagebox").value = "";
+                }
+                else {
+                    socket.emit('announce', "");
+                }
+            }
+
+            function goback() {
+                window.location.href=appLink;
+            }
+
+            function onSignIn(googleUser) {
+                // Useful data for your client-side scripts:
+                var profile = googleUser.getBasicProfile();
+                email = profile.getEmail();
+                $("#gLogin").hide();
+                socket.emit('adminlogin', email);
+                socket.on('adminlogin'+email, function(status) {
+                    if(status != 'success') {
+                        onlyShowDestroyDialogue();
+                        $("#invalid").show();
+                    }
+                    else {
+                        $("#onLoginCon").show();
+                        $("#rooms").show();
+                    }
+                });
+            }
+
+            $(window).keydown(function(e) {
+                switch (e.keyCode) {
+                    case 13:
+                        send();
+                        return;
+                }
+            });
+        </script>
+    </body>
+</html>

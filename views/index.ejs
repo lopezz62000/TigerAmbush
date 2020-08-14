@@ -14,6 +14,7 @@
         <p id="appLink" style="display: none;"><%= appLink %></p>
         <p id="hasPassword" style="display: none;"><%= hasPassword %></p>
         <p id="alive" style="display: none;"><%= alive %></p>
+        <p id="announcement"><%= announcement %></p>
         <div id="gLogin" class="g-signin2" data-onsuccess="onSignIn" data-theme="dark"></div>
         <p id="invalid" style="display: none;">Invalid URL. Please rejoin room from rooms page. Redirecting in 5 seconds.</p>
         <div id="onLoginCon" style="display: none;">
@@ -47,6 +48,10 @@
             var alive = document.getElementById("alive").innerHTML;
             var socket = io.connect(appLink);
 
+            if(document.getElementById("announcement").innerHTML == "") {
+                $("#announcement").hide();
+            }
+
             socket.on('connect', function(data) {
                 if(alive == "false") {
                     onlyShowDestroyDialogue();
@@ -64,6 +69,16 @@
 
             socket.on('destroy'+roomID, function(data) {
                 onlyShowDestroyDialogue();
+            });
+
+            socket.on('announcement', function(newAnnouncement) {
+                if(newAnnouncement == "") {
+                    $("#announcement").hide();
+                }
+                else {
+                    $("#announcement").show();
+                }
+                document.getElementById("announcement").innerHTML = newAnnouncement;
             });
 
             function onlyShowDestroyDialogue() {

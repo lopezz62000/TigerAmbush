@@ -19,6 +19,9 @@ var rooms = {'HelloWorld': {
     'participants': {}
 }};
 
+var adminEmails = ['zlopez@princeton.edu', 'byw2@princeton.edu', 'singl@princeton.edu'];
+var announcement = "";
+
 var TfIdf = natural.TfIdf;
 var tfidf = new TfIdf();
 var tfidfRooms = [];
@@ -53,7 +56,16 @@ app.get('/chat', (req, res) => {
         "appLink":appLink,
         "hasPassword": hasPassword,
         "alive": alive,
-        "roomName": roomName
+        "roomName": roomName,
+        "announcement": announcement
+    });
+});
+
+app.get('/admin', (req, res) => {
+    res.render('admin', {
+        'rooms': JSON.stringify(rooms), 
+        "appLink":appLink, 
+        "announcement": announcement
     });
 });
 
@@ -160,6 +172,20 @@ io.on('connection', (socket) => {
             resRooms[res[i][1]] = JSON.parse(res[i][0]);
         }
         socket.emit('search'+userID, resRooms);
+    });
+
+    socket.on('adminlogin', (email) => {
+        if(adminEmails.indexOf(email) != -1) {
+            socket.emit('adminlogin'+email,'success');
+        }
+        else {
+            socket.emit('adminlogin'+email,'invalid');
+        }
+    });
+
+    socket.on('announce', (newAnnouncement) => {
+        announcement = newAnnouncement;
+        io.sockets.emit('announcement', newAnnouncement);
     });
 
     socket.on('console', (message) => {
