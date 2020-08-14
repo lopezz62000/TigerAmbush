@@ -71,10 +71,6 @@ app.get('/admin', (req, res) => {
 
 io.on('connection', (socket) => {
     socket.on('join', (data) => {
-        /*
-        if(rooms[data['roomID']]['count'] == 0 && rooms[data['roomID']]['interval'] != -1) {
-            clearInterval(rooms[roomID]['interval']);
-        }*/
         rooms[data['roomID']]['count'] = rooms[data['roomID']]['count'] + 1;
         rooms[data['roomID']]['participants'][data['userID']] = data['fullName'] + " (" + data['email'] + ")";
         io.sockets.emit('disperse'+data['roomID'], rooms[data['roomID']]['participants'][data['userID']] + " has joined the chat.");
@@ -119,14 +115,8 @@ io.on('connection', (socket) => {
                 }
 
                 io.sockets.emit('destroy'+roomID, roomID);
-                io.sockets.emit('refreshRooms', rooms);
-                /*
-                rooms[roomID]['interval'] = setInterval(function(){
-                    delete rooms[roomID];
-                    io.sockets.emit('refreshRooms', rooms);
-                    console.log("Removed room "+roomID);
-                },30000);*/
             }
+            io.sockets.emit('refreshRooms', rooms);
         }
     });
 

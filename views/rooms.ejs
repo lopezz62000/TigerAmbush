@@ -31,9 +31,9 @@
             <h3 class="subheading typing"></h3>
         </div>
         
-        <hr class="style-four">
+        <hr class="style-four" id="style-four">
         
-        <div class="container">
+        <div class="container" id="welcomeCon">
             <div class="chat" id="chatpics">              
                 <img src="leftbubble.png" alt="left speech bubble" height="75px" width="250px">
                 <br>
@@ -46,24 +46,36 @@
 
         <!-- Login and Rooms -->
         <p id="appLink" style="display: none;"><%= appLink %></p>
-        <br />
-        <h2 id="emailHeader" style="display: none;"></h2>
+        <!-- <br />
         <br />
         <br />
         <div id="roomHead" style="display: none;">
             <div class ="header2"> 
                 <br />
-                <h2 id="roomHeader" style="display: none;">Available Rooms</h2>
+                
             </div>
-        </div>
+        </div> -->
         <div id="topMenuBar" style="display: none;">
             <div class="header3 justify-content-around">
-                <input id="searchbox" placeholder="ENTER ..." style="display: none;"/>
-                <button id="searchBtn" type="button" onclick="search()" style="display: none;">Search</button>
-                <button id="clearSearchBtn" type="button" onclick="clearSearch()" style="display: none;">Clear</button>
-                <button id="joinRandomBtn" type="button" onclick="joinRandom()" style="display: none;">Join Random</button>
-                <button id="newRoomBtn" type="button" onclick="showNewRoomForm()" style="display: none;">New Room</button>
-                <button id="signout" type="button" onclick="signOut()" style="display: none;"><span>Sign Out</span></button>
+                <br />
+                <table width="100%">
+                    <tr>
+                        <td><h3 id="roomHeader" style="display: none;">Available Rooms</h3></td>
+                        <td style="text-align: right; padding-right:50px;"> <h3 id="emailHeader" style="display: none;"></h3></td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <input id="searchbox" placeholder="Search rooms..." style="display: none;"/>
+                            <button id="searchBtn" type="button" onclick="search()" style="display: none;">Search</button>
+                            <button id="clearSearchBtn" type="button" onclick="clearSearch()" style="display: none;">Clear</button>
+                        </td>
+                        <td style="text-align: right; padding-right:50px;">
+                            <button id="joinRandomBtn" type="button" onclick="joinRandom()" style="display: none;">Join Random</button>
+                            <button id="newRoomBtn" type="button" onclick="showNewRoomForm()" style="display: none;">New Room</button>
+                            <button id="signout" type="button" onclick="signOut()" style="display: none;"><span>Sign Out</span></button>
+                        </td>
+                    </tr>
+                </table>
                 <br />
             </div>
         </div>
@@ -89,12 +101,13 @@
         <div id="chatHeader" style="display: none;">
             <div class="chatRoomHeader justify-content-around">
                 <br />
+                <p id="loadingRooms" style="display: none;">Loading rooms...</p>
+                <p id="noRooms" style="display: none;">No rooms to show...</p>
                 <div class="roomsCon">
                     <div onmouseover="showDetails(this)" onmouseout="hideDetails(this)" class="room" style="display: none;">
                         <img src="logo.png" alt="logo" height="100px" width="100px">
                         <a class="roomName" style="font-size: 50px; margin-left: 1em; color: rgb(235, 235, 235); text-shadow: 5px 5px 7px rgb(65, 65, 65);"  href="#">Room Name</a>
-                        <div class="numUsersTitle" style="font-size: 20px;">Number of Active Users: </div>
-                        <div class="nUsers" style="font-size: 20px;">Users</div>
+                        <div class="numUsers" style="font-size: 20px; display: none;">Number of Active Users: </div>
                         <p class="roomDetails" style="display: none;"><p>
                         <br />
                         <br />
@@ -102,10 +115,6 @@
                 </div>
             </div>
         </div>
-        <br />
-        <br />
-        <p id="loadingRooms" style="display: none;">Loading rooms...</p>
-        <!-- <p id="noRooms" style="display: none;">No rooms to show...</p> -->
         <br />
         <br />
         <script type="text/javascript" src="https://code.jquery.com/jquery-latest.min.js"></script>
@@ -175,6 +184,8 @@
                 $("#searchbox").show();
                 $("#searchBtn").show();
                 $("#signout").show();
+                $("#welcomeCon").hide();
+                $("#style-four").hide();
 
                 document.getElementById("emailHeader").innerHTML = "Signed in as " + email;
 
@@ -236,7 +247,7 @@
                     newRoom.children(".roomName").eq(0).attr("href", res[roomIDs[i]]['link']+"&fullName="+name+"&email="+email+"&userID="+id);
                     newRoom.children(".roomName").eq(0).text(res[roomIDs[i]]['roomName']);
                     newRoom.children(".roomDetails").eq(0).text(res[roomIDs[i]]['description']);
-                    newRoom.children(".nUsers").eq(0).text(res[roomIDs[i]]['count']);
+                    newRoom.children(".numUsers").eq(0).text("Number of Active Users: "+res[roomIDs[i]]['count']);
                 }
                 if(roomIDs.length == 0) {
                     $("#noRooms").show();
@@ -247,10 +258,12 @@
             }
 
             function showDetails(container) {
+                $(container).children(".numUsers").eq(0).show();
                 $(container).children(".roomDetails").eq(0).show();
             }
 
             function hideDetails(container) {
+                $(container).children(".numUsers").eq(0).hide();
                 $(container).children(".roomDetails").eq(0).hide();
             }
 
