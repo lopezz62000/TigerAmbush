@@ -179,6 +179,12 @@
             }
 
             function typing() {
+                const chatbox = document.getElementById('chatbox');
+                chatbox.scrollIntoView({
+                    behavior: "smooth",
+                    block: "start",
+                    inline: "center"
+                });
                 socket.emit('rename', {"fullName": fullName + " is typing...", "roomID": roomID, 'userID': userID, 'email': email});
             }
 
