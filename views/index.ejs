@@ -89,6 +89,12 @@
                     var chatbox = document.getElementById('chatbox'); 
                     chatbox.value = messages;
                     chatbox.scrollTop = chatbox.scrollHeight; 
+                    /* Audio link for notification */ 
+                    if (document.hidden) {
+                        var audio = new Audio("notif.mp3"); 
+                        audio.volume = 0.5;
+                        audio.play();
+                    }
                 });
                 socket.on('enter'+roomID, function(data) {
                     var userIDs = Object.keys(data);
