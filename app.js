@@ -10,11 +10,11 @@ var appLink = process.env.APPLINK || 'http://localhost:3000/';
 
 var rooms = {'HelloWorld': {
     'link':appLink+'chat?roomID=HelloWorld', 
-    'roomName':'Default Chat', 
+    'roomName':'Open Chat!', 
     'count': 0, 
     'interval': -1,
     'password': '',
-    'description': 'Chat will not be deleted when people leave.',
+    'description': 'This is the default chat. Anyone can come join! Unlike other chats, this room will stay open even if there is no one in it.',
     'openRandomJoin': true,
     'participants': {}
 }};
@@ -99,6 +99,7 @@ io.on('connection', (socket) => {
         var userID = data['userID'];
         if(roomID in rooms) {
             rooms[roomID]['count'] = rooms[roomID]['count'] - 1;
+            io.sockets.emit('disperse'+data['roomID'], rooms[roomID]['participants'][userID] + " has left the chat.");
             delete rooms[roomID]['participants'][userID];
             io.sockets.emit('enter'+data['roomID'], rooms[data['roomID']]['participants']);
             if(rooms[roomID]['count'] == 0 && roomID != "HelloWorld") {

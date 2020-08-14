@@ -173,7 +173,7 @@
                 // Useful data for your client-side scripts:
                 var profile = googleUser.getBasicProfile();
                 $("#gLogin").hide();
-                if(profile.getEmail() != email) {
+                if(profile.getEmail() != email || email == undefined || email == 'undefined') {
                     socket.emit('leave', {'roomID':roomID, 'userID': userID});
                     onlyShowDestroyDialogue();
                     $("#invalid").show();
