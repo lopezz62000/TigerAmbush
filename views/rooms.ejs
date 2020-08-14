@@ -49,8 +49,10 @@
         <br />
         <h2 id="emailHeader" style="display: none;"></h2>
         <br />
+        <br />
         <div id="roomHead" style="display: none;">
             <div class ="header2"> 
+                <br />
                 <h2 id="roomHeader" style="display: none;">Available Rooms</h2>
             </div>
         </div>
@@ -84,17 +86,19 @@
                 <br />
             </div>
         </div>
-        <div class="chatRoomHeader justify-content-around">
-            <br />
-            <div class="roomsCon" >
-                <div onmouseover="showDetails(this)" onmouseout="hideDetails(this)" class="room" style="display: none;">
-                    <img src="logo.png" alt="logo" height="100px" width="100px">
-                    <a class="roomName" href="#">Room Name</a>
-                    <p class="roomDetails" style="display: none;"></p>
-                    <br />
-                    <br />
+        <div id="chatHeader" style="display: none;">
+            <div class="chatRoomHeader justify-content-around">
+                <br />
+                <div class="roomsCon">
+                    <div onmouseover="showDetails(this)" onmouseout="hideDetails(this)" class="room" style="display: none;">
+                        <img src="logo.png" alt="logo" height="100px" width="100px">
+                        <a class="roomName" href="#">Room Name</a>
+                        <p class="roomDetails" style="display: none;"></p>
+                        <br />
+                        <br />
                 </div>
             </div>
+        </div>
         </div>
         <br />
         <br />
@@ -160,6 +164,7 @@
                 document.getElementById("gsignin").style.display = "none";
                 $("#roomHead").show();
                 $("#topMenuBar").show();
+                $("#chatHeader").show();
                 $("#nickname").show();
                 $("#emailHeader").show();
                 $("#roomHeader").show();

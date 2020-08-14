@@ -374,7 +374,7 @@ hr.style-four {
 	margin: 0 auto;
 }
 
-hr {
+hr.chat-hr {
 	border: 2px solid #221d23;
 	width: 608px;
   }
