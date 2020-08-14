@@ -224,8 +224,8 @@ hr.style-four {
 #chatbox {
 	border-radius: 4px;
 	border: 1px solid #221d23;
-	height: 100px;
-	width: 446px;
+	height: 330px;
+	width: 600px;
 	-webkit-transition: 200ms linear 0s;  
     -moz-transition: 200ms linear 0s;  
     -o-transition: 200ms linear 0s;  
@@ -236,8 +236,8 @@ hr.style-four {
 }
 
 #chatbox:focus, #chatbox:hover {
-	height: 100px;
-	width: 446px;
+	height: 330px;
+	width: 600px;
 	outline: none;
     border: 1px solid #e7dc9e;
     box-shadow: 0px 0px 8px #e7dc9e;
@@ -256,7 +256,6 @@ hr.style-four {
 	border-radius: 4px;
 	border: 1px solid #221d23;
 	height: 46px;
-	width: 296px;
 	-webkit-transition: 200ms linear 0s;  
     -moz-transition: 200ms linear 0s;  
     -o-transition: 200ms linear 0s;  
@@ -268,7 +267,6 @@ hr.style-four {
 
 .inputClass:focus, .inputClass:hover  {
 	height: 46px;
-	width: 296px;
 	outline: none;
     border: 1px solid #e7dc9e;
     box-shadow: 0px 0px 8px #e7dc9e;
@@ -376,9 +374,9 @@ hr.style-four {
 	margin: 0 auto;
 }
 
-hr {
+hr.chat-hr {
 	border: 2px solid #221d23;
-	width: 457px;
+	width: 608px;
   }
 
 .typing {
