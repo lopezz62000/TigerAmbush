@@ -77,20 +77,25 @@ io.on('connection', (socket) => {
         }*/
         rooms[data['roomID']]['count'] = rooms[data['roomID']]['count'] + 1;
         rooms[data['roomID']]['participants'][data['userID']] = data['fullName'] + " (" + data['email'] + ")";
+        io.sockets.emit('disperse'+data['roomID'], rooms[data['roomID']]['participants'][data['userID']] + " has joined the chat.");
         io.sockets.emit('enter'+data['roomID'], rooms[data['roomID']]['participants']);
     });
 
     socket.on('rename', (data) => {
-        rooms[data['roomID']]['participants'][data['userID']] = data['fullName'] + " (" + data['email'] + ")";
-        io.sockets.emit('enter'+data['roomID'], rooms[data['roomID']]['participants']);
+        if(data['roomID'] in rooms && data['userID'] in rooms[data['roomID']]['participants']) {
+            rooms[data['roomID']]['participants'][data['userID']] = data['fullName'] + " (" + data['email'] + ")";
+            io.sockets.emit('enter'+data['roomID'], rooms[data['roomID']]['participants']);
+        }
     });
 
     socket.on('validate', (data) => {
         if(rooms[data['roomID']]['password'] == Buffer.from(data['password']).toString('base64')) {
             socket.emit('connect'+data['userID'],'success');
+            return;
         }
         else {
             socket.emit('connect'+data['userID'],'Wrong password.');
+            return;
         }
     });
 
