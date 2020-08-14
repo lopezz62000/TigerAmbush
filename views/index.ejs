@@ -92,7 +92,7 @@
                     /* Audio link for notification */ 
                     if (document.hidden) {
                         var audio = new Audio("notif.mp3"); 
-                        audio.volume = 0.5;
+                        audio.volume = 0.3;
                         audio.play();
                     }
                 });
@@ -172,6 +172,17 @@
                 if($("#chatbox").is(':visible')) {
                     socket.emit('leave', {'roomID':roomID, 'userID': userID});
                 }
+            });
+
+            document.addEventListener('visibilitychange', function() {
+                if(document.visibilityState == "visible") {
+                    document.getElementById("messagebox").blur();
+                    socket.emit('rename', {"fullName": fullName, "roomID": roomID, 'userID': userID, 'email': email});
+                }
+                else {
+                    socket.emit('rename', {"fullName": fullName + " is idle.", "roomID": roomID, 'userID': userID, 'email': email});
+                }
+                console.log(document.visibilityState);
             });
 
             $(window).keydown(function(e) {
