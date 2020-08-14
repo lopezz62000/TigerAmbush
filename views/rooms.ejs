@@ -85,12 +85,16 @@
                 <br />
             </div>
         </div>
-        <br />
-        <br />
-        <div class="roomsCon" >
-            <div onmouseover="showDetails(this)" onmouseout="hideDetails(this)" class="room" style="display: none;">
-                <a class="roomName" href="#">Room Name</a>
-                <p class="roomDetails" style="display: none;"></p>
+        <div class="chatRoomHeader justify-content-around">
+            <br />
+            <div class="roomsCon" >
+                <div onmouseover="showDetails(this)" onmouseout="hideDetails(this)" class="room" style="display: none;">
+                    <img src="logo.png" alt="logo" height="100px" width="100px">
+                    <a class="roomName" href="#">Room Name</a>
+                    <p class="roomDetails" style="display: none;"></p>
+                    <br />
+                    <br />
+                </div>
             </div>
         </div>
         <br />
@@ -164,6 +168,7 @@
                 $("#searchbox").show();
                 $("#searchBtn").show();
                 $("#signout").show();
+
                 document.getElementById("emailHeader").innerHTML = "Signed in as " + email;
 
                 socket.emit('getRooms', id);
