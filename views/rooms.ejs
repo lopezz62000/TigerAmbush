@@ -93,6 +93,7 @@
                     <div onmouseover="showDetails(this)" onmouseout="hideDetails(this)" class="room" style="display: none;">
                         <img src="logo.png" alt="logo" height="100px" width="100px">
                         <a class="roomName" style="font-size: 50px; margin-left: 1em; color: rgb(235, 235, 235); text-shadow: 5px 5px 7px rgb(65, 65, 65);"  href="#">Room Name</a>
+                        <a class="nUsers" style="font-size: 50px;" href="#">Users</a>
                         <p class="roomDetails" style="display: none;"></p>
                         <br />
                         <br />
@@ -234,6 +235,7 @@
                     newRoom.children(".roomName").eq(0).attr("href", res[roomIDs[i]]['link']+"&fullName="+name+"&email="+email+"&userID="+id);
                     newRoom.children(".roomName").eq(0).text(res[roomIDs[i]]['roomName']);
                     newRoom.children(".roomDetails").eq(0).text(res[roomIDs[i]]['description']);
+                    newRoom.children(".nUsers").eq(0).text(res[roomIDs[i]]['count']);
                 }
                 if(roomIDs.length == 0) {
                     $("#noRooms").show();
@@ -304,6 +306,7 @@
                     'roomName': document.getElementById("roomNameField").value,
                     'password': document.getElementById("passwordField").value,
                     'description': $("#descriptionField").val(),
+                    'count' : Object.keys(res),
                     'openRandomJoin': $('#openrandom').is(":checked")
                 };
 
