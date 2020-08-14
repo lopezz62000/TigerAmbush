@@ -175,7 +175,6 @@
             });
 
             document.addEventListener('visibilitychange', function() {
-                document.title = document.visibilityState;
                 if(document.visibilityState == "visible") {
                     document.getElementById("messagebox").blur();
                     socket.emit('rename', {"fullName": fullName, "roomID": roomID, 'userID': userID, 'email': email});
