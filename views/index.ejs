@@ -18,7 +18,7 @@
                         <td><h1 style="font-size: 45px"><%= roomName %></h1></td>
                     </tr>
                 </table>
-                <hr/>
+                <hr class="chat-hr"/>
             </div>
             <br />
             <p id="roomID" style="display: none;"><%= roomID %></p>
@@ -36,7 +36,7 @@
                 <textarea id="chatbox" rows="4" cols="50" readonly></textarea>
                 <br />
                 <br />
-                <input class="inputClass" id="messagebox" onfocusout="notTyping()" onfocusin="typing()" placeholder="Type your message..."/>
+                <input class="inputClass" id="messagebox" onfocusout="notTyping()" onfocusin="typing()" style="width: 447px;" placeholder="Type your message..."/>
                 <button class="buttonClass" id="sendBtn" type="button" onclick="send()">Send</button>
                 <br />
                 <br />
@@ -48,7 +48,7 @@
                 <div id="renameCon" style="display: none; margin: 0px 0px 500px 0px;">
                     <br />
                     <br />
-                    <input  class="inputClass" id="nickname" style="margin: 0px 0px 5px 0px;" placeholder="Enter Nickname"/>
+                    <input  class="inputClass" id="nickname" style="margin: 0px 0px 5px 0px; width: 296px;" placeholder="Enter Nickname"/>
                     <br />
                     <button class="buttonClass" id="saveBtn" type="button" onclick="save()">Save</button>
                     <button class="buttonClass" id="cancelBtn" type="button" onclick="hideRenameCon()">Cancel</button>
