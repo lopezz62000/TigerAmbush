@@ -50,17 +50,21 @@
         <br />
         <h2 id="emailHeader" style="display: none;"></h2>
         <br />
-        <div class="header2">
-            <h2 id="roomHeader" style="display: none;">Available Rooms</h2>
+        <div id="roomHead" style="display: none;">
+            <div class ="header2"> 
+                <h2 id="roomHeader" style="display: none;">Available Rooms</h2>
+            </div>
         </div>
-        <div class="header3 d-sm-flex justify-content-around">
-            <input id="searchbox" placeholder="ENTER ..." style="display: none;"/>
-            <button id="searchBtn" type="button" onclick="search()" style="display: none;">Search</button>
-            <button id="clearSearchBtn" type="button" onclick="clearSearch()" style="display: none;">Clear Search</button>
-            <button id="joinRandomBtn" type="button" onclick="joinRandom()" style="display: none;">Join Random</button>
-            <button id="newRoomBtn" type="button" onclick="showNewRoomForm()" style="display: none;">New Room</button>
-            <button id="signout" type="button" onclick="signOut()" style="display: none;"><span>Sign Out</span></button>
-            <br />
+        <div id="topMenuBar" style="display: none;">
+            <div class="header3 justify-content-around">
+                <input id="searchbox" placeholder="ENTER ..." style="display: none;"/>
+                <button id="searchBtn" type="button" onclick="search()" style="display: none;">Search</button>
+                <button id="clearSearchBtn" type="button" onclick="clearSearch()" style="display: none;">Clear Search</button>
+                <button id="joinRandomBtn" type="button" onclick="joinRandom()" style="display: none;">Join Random</button>
+                <button id="newRoomBtn" type="button" onclick="showNewRoomForm()" style="display: none;">New Room</button>
+                <button id="signout" type="button" onclick="signOut()" style="display: none;"><span>Sign Out</span></button>
+                <br />
+            </div>
         </div>
         <div id="newRoomFormCon" style="display: none;">
             <div class="header4 justify-content-around">
@@ -150,11 +154,13 @@
                 
                 document.getElementById("chatpics").style.display = "none";
                 document.getElementById("gsignin").style.display = "none";
+                $("#roomHead").show();
+                $("#topMenuBar").show();
                 $("#nickname").show();
+                $("#emailHeader").show();
                 $("#roomHeader").show();
                 $("#newRoomBtn").show();
                 $("#loadingRooms").show();
-                $("#emailHeader").show();
                 $("#searchbox").show();
                 $("#searchBtn").show();
                 $("#signout").show();
