@@ -56,6 +56,7 @@
         <div class="header3 d-sm-flex justify-content-around">
             <input id="searchbox" placeholder="ENTER ..." style="display: none;"/>
             <button id="searchBtn" type="button" onclick="search()" style="display: none;">Search</button>
+            <button id="clearSearchBtn" type="button" onclick="clearSearch()" style="display: none;">Clear Search</button>
             <button id="joinRandomBtn" type="button" onclick="joinRandom()" style="display: none;">Join Random</button>
             <button id="newRoomBtn" type="button" onclick="showNewRoomForm()" style="display: none;">New Room</button>
             <button id="signout" type="button" onclick="signOut()" style="display: none;"><span>Sign Out</span></button>
@@ -91,6 +92,7 @@
         <br />
         <br />
         <p id="loadingRooms" style="display: none;">Loading rooms...</p>
+        <p id="noRooms" style="display: none;">No rooms to show...</p>
         <br />
         <br />
         <script type="text/javascript" src="https://code.jquery.com/jquery-latest.min.js"></script>
@@ -107,13 +109,19 @@
             var givenName;
             var email;
             var nickname;
+            var criteria;
 
             socket.on('connect', function(data) {
                 socket.emit('console', 'New user loaded rooms page.');
             });
 
             socket.on('refreshRooms', function(data) {
-                refreshRooms(data);
+                if($("#clearSearchBtn").is(':hidden')) {
+                    refreshRooms(data);
+                }
+                else {
+                    socket.emit('search', {"criteria": document.getElementById("searchbox").value, "userID": id});
+                }
             });
 
             function onSignIn(googleUser) {
@@ -211,6 +219,12 @@
                     newRoom.children(".roomName").eq(0).text(res[roomIDs[i]]['roomName']);
                     newRoom.children(".roomDetails").eq(0).text(res[roomIDs[i]]['description']);
                 }
+                if(roomIDs.length == 0) {
+                    $("#noRooms").show();
+                }
+                else {
+                    $("#noRooms").hide();
+                }
             }
 
             function showDetails(container) {
@@ -282,13 +296,23 @@
             }
 
             function search() {
-                alert("Not implemented yet");
-                /*
+                criteria = document.getElementById("searchbox").value;
+                if(document.getElementById("searchbox").value == "") {
+                    alert("You didn't tell me what you're looking for.");
+                    return;
+                }
+                $("#clearSearchBtn").show();
                 socket.emit('search', {"criteria": document.getElementById("searchbox").value, "userID": id});
-                socket.on('search'+id, function(rooms) {
+                socket.on('search'+id, function(data) {
                     refreshRooms(data);
                 });
-                */
+            }
+
+            function clearSearch() {
+                $("#clearSearchBtn").hide();
+                criteria = "";
+                document.getElementById("searchbox").value = "";
+                socket.emit('getRooms', id);
             }
         </script>
     </body>

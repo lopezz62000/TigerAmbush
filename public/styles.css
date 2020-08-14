@@ -221,7 +221,7 @@ hr.style-four {
 	height: 50px;
 }
 
-#searchBtn {
+#searchBtn, #clearSearchBtn {
 	background-color: #E86726;
 	border: none;
 	border-radius: 4px;
