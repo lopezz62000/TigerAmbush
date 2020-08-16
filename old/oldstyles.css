@@ -1,5 +1,5 @@
 html {
-	background: url(Rectangle.png) no-repeat center center fixed; 
+	background: url(Rectangle.png) no-repeat center center fixed;
 	-webkit-background-size: cover;
 	-moz-background-size: cover;
 	-o-background-size: cover;
@@ -58,7 +58,8 @@ body {
 	padding-bottom: 10px;
 }
 
-#buttonCreate, #buttonCloseForm {
+#buttonCreate,
+#buttonCloseForm {
 	background-color: #562c2c;
 	border: none;
 	border-radius: 4px;
@@ -71,7 +72,7 @@ body {
 	margin-left: 20%;
 }
 
-.chatRoomHeader{
+.chatRoomHeader {
 	background-color: rgb(148, 191, 204);
 	opacity: 90%;
 	background-size: cover;
@@ -229,7 +230,7 @@ hr.style-four {
 	margin-left: 10%;
 }
 
-#searchbox{
+#searchbox {
 	margin-left: 10%;
 	border-radius: 4px;
 	height: 50px;
@@ -298,12 +299,12 @@ hr.style-four {
 	right: 0;
 }
 
-.signin2{
+.signin2 {
 	margin-top: 40px;
 	width: 100%;
 }
 
-.signin2 > div{
+.signin2 > div {
 	margin: 0 auto;
 }
 
@@ -317,31 +318,32 @@ hr.chat-hr {
 }
 
 #chatbox {
-	background-color : #ffffff44; 
+	background-color: #ffffff44;
 	border-radius: 4px;
 	border: none;
 	height: 330px;
 	width: 50%;
 	min-width: 600px;
-	-webkit-transition: 200ms linear 0s;  
-    -moz-transition: 200ms linear 0s;  
-    -o-transition: 200ms linear 0s;  
-	transition: 200ms linear 0s; 
+	-webkit-transition: 200ms linear 0s;
+	-moz-transition: 200ms linear 0s;
+	-o-transition: 200ms linear 0s;
+	transition: 200ms linear 0s;
 	font-family: 'Montserrat', sans-serif !important;
 	font-size: 16px;
 	padding: 6px;
 }
 
-#chatbox:focus, #chatbox:hover {
+#chatbox:focus,
+#chatbox:hover {
 	outline: none;
-    border: none;
-    box-shadow: 0px 0px 8px #ffffff44;
-    -moz-box-shadow: 0px 0px 8px #ffffff44;
+	border: none;
+	box-shadow: 0px 0px 8px #ffffff44;
+	-moz-box-shadow: 0px 0px 8px #ffffff44;
 	-webkit-box-shadow: 0px 0px 8px #ffffff44;
-	-webkit-transition: 200ms linear 0s;  
-    -moz-transition: 200ms linear 0s;  
-    -o-transition: 200ms linear 0s;  
-	transition: 200ms linear 0s; 
+	-webkit-transition: 200ms linear 0s;
+	-moz-transition: 200ms linear 0s;
+	-o-transition: 200ms linear 0s;
+	transition: 200ms linear 0s;
 	font-family: 'Montserrat', sans-serif !important;
 	font-size: 16px;
 	padding-left: 6px;
@@ -350,18 +352,18 @@ hr.chat-hr {
 .inputClass {
 	caret-color: white;
 	color: white;
-	background-color : transparent; 
+	background-color: transparent;
 	border: 0;
-    outline: 0;
-    border-bottom: 3px solid white;
+	outline: 0;
+	border-bottom: 3px solid white;
 	height: 46px;
-	-webkit-transition: 200ms linear 0s;  
-    -moz-transition: 200ms linear 0s;  
-    -o-transition: 200ms linear 0s;  
-	transition: 200ms linear 0s; 
+	-webkit-transition: 200ms linear 0s;
+	-moz-transition: 200ms linear 0s;
+	-o-transition: 200ms linear 0s;
+	transition: 200ms linear 0s;
 	font-family: 'Montserrat', sans-serif !important;
 	font-size: 16px;
-	font-weight:bold;
+	font-weight: bold;
 	padding-left: 6px;
 }
 
@@ -373,30 +375,29 @@ hr.chat-hr {
 	color: #fcd0a1;
 }
 
-
-.inputClass:focus, .inputClass:hover  {
+.inputClass:focus,
+.inputClass:hover {
 	height: 46px;
-	background-color : transparent; 
+	background-color: transparent;
 	border: 0;
-    outline: 0;
-    border-bottom: 3px solid white;
-    box-shadow: 0 4px 3px -3px #ffffff;
-    -moz-box-shadow: 0 4px 3px -3px #ffffff;
+	outline: 0;
+	border-bottom: 3px solid white;
+	box-shadow: 0 4px 3px -3px #ffffff;
+	-moz-box-shadow: 0 4px 3px -3px #ffffff;
 	-webkit-box-shadow: 0 4px 3px -3px #ffffff;
-	-webkit-transition: 200ms linear 0s;  
-    -moz-transition: 200ms linear 0s;  
-    -o-transition: 200ms linear 0s;  
-	transition: 200ms linear 0s; 
+	-webkit-transition: 200ms linear 0s;
+	-moz-transition: 200ms linear 0s;
+	-o-transition: 200ms linear 0s;
+	transition: 200ms linear 0s;
 	font-family: 'Montserrat', sans-serif !important;
 	font-size: 16px;
-	font-weight:bold;
+	font-weight: bold;
 	padding-left: 6px;
 }
 
 .inputClass:hover:after {
 	opacity: 1;
-  }
-
+}
 
 .buttonClass {
 	/* background-image: linear-gradient(to right, #df9d62 , #9e6839); */
@@ -409,15 +410,16 @@ hr.chat-hr {
 	height: 50px;
 }
 
-.buttonClass:hover, .buttonClass:focus {
+.buttonClass:hover,
+.buttonClass:focus {
 	--x: 100%;
-	-webkit-transition: 200ms linear 0s;  
-    -moz-transition: 200ms linear 0s;  
-    -o-transition: 200ms linear 0s;  
-    transition: 200ms linear 0s; 
+	-webkit-transition: 200ms linear 0s;
+	-moz-transition: 200ms linear 0s;
+	-o-transition: 200ms linear 0s;
+	transition: 200ms linear 0s;
 }
 
-.typing {
+/* .typing {
 	position: relative;
 	margin-top: 8px;
 }
@@ -436,41 +438,83 @@ hr.chat-hr {
 	100% {
 		opacity: 0;
 	}
-}
+} */
 
 /*** iPhone and iOS Form Input Zoom Fixes ***/
 /* Fix Input Zoom on devices older than iPhone 5: */
 @media screen and (device-aspect-ratio: 2/3) {
-    select, textarea, input[type="text"], input[type="password"],
-    input[type="datetime"], input[type="datetime-local"],
-    input[type="date"], input[type="month"], input[type="time"],
-    input[type="week"], input[type="number"], input[type="email"],
-    input[type="url"]{ font-size: 16px; }
+	select,
+	textarea,
+	input[type="text"],
+	input[type="password"],
+	input[type="datetime"],
+	input[type="datetime-local"],
+	input[type="date"],
+	input[type="month"],
+	input[type="time"],
+	input[type="week"],
+	input[type="number"],
+	input[type="email"],
+	input[type="url"] {
+		font-size: 16px;
+	}
 }
 
 /* Fix Input Zoom on iPhone 5, 5C, 5S, iPod Touch 5g */
 @media screen and (device-aspect-ratio: 40/71) {
-    select, textarea, input[type="text"], input[type="password"],
-    input[type="datetime"], input[type="datetime-local"],
-    input[type="date"], input[type="month"], input[type="time"],
-    input[type="week"], input[type="number"], input[type="email"],
-    input[type="url"]{ font-size: 16px; }
+	select,
+	textarea,
+	input[type="text"],
+	input[type="password"],
+	input[type="datetime"],
+	input[type="datetime-local"],
+	input[type="date"],
+	input[type="month"],
+	input[type="time"],
+	input[type="week"],
+	input[type="number"],
+	input[type="email"],
+	input[type="url"] {
+		font-size: 16px;
+	}
 }
 
 /* Fix Input Zoom on iPhone 6, iPhone 6s, iPhone 7  */
 @media screen and (device-aspect-ratio: 375/667) {
-    select, textarea, input[type="text"], input[type="password"],
-    input[type="datetime"], input[type="datetime-local"],
-    input[type="date"], input[type="month"], input[type="time"],
-    input[type="week"], input[type="number"], input[type="email"], 
-    input[type="tel"], input[type="url"]{ font-size: 16px; }
+	select,
+	textarea,
+	input[type="text"],
+	input[type="password"],
+	input[type="datetime"],
+	input[type="datetime-local"],
+	input[type="date"],
+	input[type="month"],
+	input[type="time"],
+	input[type="week"],
+	input[type="number"],
+	input[type="email"],
+	input[type="tel"],
+	input[type="url"] {
+		font-size: 16px;
+	}
 }
 
 /* Fix Input Zoom on iPhone 6 Plus, iPhone 6s Plus, iPhone 7 Plus, iPhone 8, iPhone X, XS, XS Max  */
 @media screen and (device-aspect-ratio: 9/16) {
-    select, textarea, input[type="text"], input[type="password"],
-    input[type="datetime"], input[type="datetime-local"],
-    input[type="date"], input[type="month"], input[type="time"],
-    input[type="week"], input[type="number"], input[type="email"],
-    input[type="tel"], input[type="url"]{ font-size: 16px; }
+	select,
+	textarea,
+	input[type="text"],
+	input[type="password"],
+	input[type="datetime"],
+	input[type="datetime-local"],
+	input[type="date"],
+	input[type="month"],
+	input[type="time"],
+	input[type="week"],
+	input[type="number"],
+	input[type="email"],
+	input[type="tel"],
+	input[type="url"] {
+		font-size: 16px;
+	}
 }
