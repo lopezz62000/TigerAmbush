@@ -22,5 +22,5 @@ let typing = document.querySelector('.typing');
 		index = 0;
 	}
 
-	setTimeout(type, 200);
+	setTimeout(type, 150);
 })();
