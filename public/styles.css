@@ -178,10 +178,10 @@ p.sub-text {
 	transition: 200ms linear 0s;
 }
 
-.typing {
+/* .typing {
 	position: relative;
 	margin-top: 8px;
-}
+} */
 /* .typing::after {
 	content: "";
 	width: 1px;
