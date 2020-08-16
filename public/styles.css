@@ -182,18 +182,6 @@ p.sub-text {
 	transition: 200ms linear 0s;
 }
 
-/* .typing {
-	position: relative;
-	margin-top: 8px;
-} */
-/* .typing::after {
-	content: "";
-	width: 1px;
-	height: 100%;
-	border-right: 2px solid black; 
-	animation: blink 1s infinite ease-in-out; 
-} */
-
 /**************************
 ROOMS.EJS STYLES ROOMS PAGE
 ***************************/
@@ -339,15 +327,6 @@ INDEX.EJS STYLES
 	color: white;
 	text-shadow: 0 4px 6px rgba(143, 142, 142, 0.8);
 }
-
-/* @keyframes blink {
-	0% {
-		opacity: 1;
-	}
-	100% {
-		opacity: 0;
-	}
-} */
 
 /*** iPhone and iOS Form Input Zoom Fixes ***/
 /* Fix Input Zoom on devices older than iPhone 5: */
