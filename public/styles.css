@@ -182,13 +182,13 @@ p.sub-text {
 	position: relative;
 	margin-top: 8px;
 }
-/*.typing::after {
+.typing::after {
 	content: "";
 	width: 1px;
 	height: 100%;
-	border-right: 2px solid black;
-	animation: blink 1s infinite ease-in-out;
-} */
+	/* border-right: 2px solid black; */
+	/* animation: blink 1s infinite ease-in-out; */
+}
 
 /**************************
 ROOMS.EJS STYLES ROOMS PAGE
