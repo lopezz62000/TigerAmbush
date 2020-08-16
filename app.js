@@ -73,8 +73,9 @@ io.on('connection', (socket) => {
     socket.on('join', (data) => {
         rooms[data['roomID']]['count'] = rooms[data['roomID']]['count'] + 1;
         rooms[data['roomID']]['participants'][data['userID']] = data['fullName'] + " (" + data['email'] + ")";
-        io.sockets.emit('disperse'+data['roomID'], rooms[data['roomID']]['participants'][data['userID']] + " has joined the chat.");
+        io.sockets.emit('disperse'+data['roomID'], {"message": rooms[data['roomID']]['participants'][data['userID']] + " has joined the chat.", "email":"room bot", "userID": "-1"});
         io.sockets.emit('enter'+data['roomID'], rooms[data['roomID']]['participants']);
+        io.sockets.emit('refreshRooms', rooms);
     });
 
     socket.on('rename', (data) => {
@@ -100,7 +101,7 @@ io.on('connection', (socket) => {
         var userID = data['userID'];
         if(roomID in rooms) {
             rooms[roomID]['count'] = rooms[roomID]['count'] - 1;
-            io.sockets.emit('disperse'+data['roomID'], rooms[roomID]['participants'][userID] + " has left the chat.");
+            io.sockets.emit('disperse'+data['roomID'], {"message":rooms[roomID]['participants'][userID] + " has left the chat.", "userID":"-1", "email":"room bot"});
             delete rooms[roomID]['participants'][userID];
             io.sockets.emit('enter'+data['roomID'], rooms[data['roomID']]['participants']);
             if(rooms[roomID]['count'] == 0 && roomID != "HelloWorld") {
@@ -113,15 +114,14 @@ io.on('connection', (socket) => {
                     tfidf.addDocument(JSON.stringify(rooms[tfidfIDs[i]]));
                     tfidfRooms.push(JSON.stringify(rooms[tfidfIDs[i]]));
                 }
-
                 io.sockets.emit('destroy'+roomID, roomID);
             }
-            io.sockets.emit('refreshRooms', rooms);
         }
+        io.sockets.emit('refreshRooms', rooms);
     });
 
     socket.on('send', (data) => {
-        io.sockets.emit('disperse'+data['roomID'], data['message']);
+        io.sockets.emit('disperse'+data['roomID'], {"message": data['message'], "email": data['email'], "userID": data["userID"]});
     });
 
     socket.on('getRooms', (userId) => {

@@ -3,23 +3,21 @@
     <header>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.0.4/socket.io.js"></script>
         <script src="/socket.io/socket.io.js"></script>
-
         <meta name="google-signin-scope" content="profile email">
         <meta name="google-signin-client_id" content="758290075776-i5a0a6680n51lo76p8qfignd0s5148jd.apps.googleusercontent.com">
         <meta name="viewport" content="initial-scale=0.45, maximum-scale=0.45, user-scalable=no"/>
         <script src="https://apis.google.com/js/platform.js" async defer></script>
-        
         <link rel="stylesheet" href="styles.css">
         <link rel="icon" type="image/png" href="logo.png" />
     </header>
-    <body style="text-align:center; ">
+    <body style="text-align:center;">
         <div style="margin:auto;">
             <div style="height: 140px;">
                 <table style="margin:auto;">
                     <tr>
                         <td><img src="logo.png" alt="logo" height="50px" width="50px"></td>
                         <td></td>
-                        <td><strong><h1 style="font-size: 45px; color: white; text-shadow: 0 4px 6px rgba(143, 142, 142, 0.8);"><%= roomName %></h1></strong></td>
+                        <td><h1 style="font-size: 45px;"><%= roomName %></h1></td>
                     </tr>
                 </table>
                 <hr class="chat-hr"/>
@@ -32,31 +30,19 @@
             <p id="appLink" style="display: none;"><%= appLink %></p>
             <p id="hasPassword" style="display: none;"><%= hasPassword %></p>
             <p id="alive" style="display: none;"><%= alive %></p>
-            <p class="pClass" id="announcement"><%= announcement %></p>
+            <p id="announcement"><%= announcement %></p>
             <div style="margin:auto;" id="gLogin" class="signin2 g-signin2" data-onsuccess="onSignIn" data-theme="light" data-width="250" data-height="50" data-longtitle="true"></div>
             <p id="invalid" style="display: none;">Invalid URL. Please rejoin room from rooms page. Redirecting in 5 seconds.</p>
-            <div class="pClass" id="onLoginCon" style="display: none;">
-                <p class="pClass" id="destroyed" style="display: none;">This room has been removed. Redirecting to rooms page in 5 seconds.</p>
-                <!--
+            <div id="onLoginCon" style="display: none;">
+                <p id="destroyed" style="display: none;">This room has been removed. Redirecting to rooms page in 5 seconds.</p>
                 <textarea id="chatbox" rows="4" cols="50" readonly></textarea>
                 <br />
-                <br />
-                -->
-                <div id="messageContainer" class="messageCon" style="overflow:scroll; height: 300px; width: 50%; min-width: 600px; margin: 0 auto;">
-                    <div class="message" style="display: none;" onclick="showDetails(this)">
-                        <!--<p class="messageText" style="height: 10px; color: white; font-size: 16px; font-weight:bold; text-align:left;"></p>-->
-                        <p class="messageText" style="height: 10px; color: white; font-size: 16px; font-weight:bold; text-align:left; text-shadow: 1px 2px 2px #8a719a;"></p>
-                        <p class="messageSender" style="height: 10px; display: none; color: white; font-size: 12px; text-align:left;"></p>
-                    </div>
-                </div>
-                <br />
-                <hr class="chat-hr"/>
                 <br />
                 <input class="inputClass" id="messagebox" onfocusout="notTyping()" onfocusin="typing()" style="width: 37.5%; min-width: 447px;" placeholder="Type your message..."/>
                 <button class="buttonClass" id="sendBtn" type="button" onclick="send()">Send</button>
                 <br />
                 <br />
-                <p id="participantsList" class="pClass"></p>
+                <p id="participantsList"></p>
                 <input class="inputClass" type="password" id="passwordbox" placeholder="Enter room password"/>
                 <button class="buttonClass" id="validateBtn" type="button" onclick="validate()">Validate</button>
                 <button class="buttonClass" type="button" onclick="goback()">Go Back</button>
@@ -96,8 +82,7 @@
                     document.getElementById("messagebox").focus();
                 }
                 else {
-                    //$("#chatbox").hide();
-                    $("#messageContainer").hide();
+                    $("#chatbox").hide();
                     $("#messagebox").hide();
                     $("#sendBtn").hide();
                     $("#renameBtn").hide();
@@ -120,8 +105,7 @@
             });
 
             function onlyShowDestroyDialogue() {
-                //$("#chatbox").hide();
-                $("#messageContainer").hide();
+                $("#chatbox").hide();
                 $("#messagebox").hide();
                 $("#sendBtn").hide();
                 $("#passwordbox").hide();
@@ -133,8 +117,7 @@
             }
 
             function join() {
-                //$("#chatbox").show();
-                $("#messageContainer").show();
+                $("#chatbox").show();
                 $("#messagebox").show();
                 $("#sendBtn").show();
                 $("#renameBtn").show();
@@ -142,12 +125,10 @@
                 $("#validateBtn").hide();
                 socket.emit('join', {"fullName": fullName, "roomID": roomID, 'userID': userID, 'email': email});
                 socket.on('disperse'+roomID, function(data) {
-                    /*
-                    var messages = document.getElementById("chatbox").value + data["message"] + "\n";
+                    var messages = document.getElementById("chatbox").value + data + "\n";
                     var chatbox = document.getElementById('chatbox'); 
                     chatbox.value = messages;
                     chatbox.scrollTop = chatbox.scrollHeight; 
-                    */
                     //document.getElementById('chatbox').blur();
                     /* Audio link for notification */ 
                     if (document.hidden) {
@@ -155,16 +136,6 @@
                         audio.volume = 0.3;
                         audio.play();
                     }
-                    var newMessage = $(".message").eq(0).clone().show();
-                    $(".messageCon").append(newMessage);
-                    newMessage.children(".messageText").eq(0).text(data["message"]);
-                    newMessage.children(".messageSender").eq(0).text("Sent by " + data["email"]);
-                    if(data["userID"] == userID) {
-                        //newMessage.children(".messageText").eq(0).css('background-image', 'linear-gradient(to right, #ac93b2, #fcd0a1)');
-                        newMessage.children(".messageText").eq(0).css('text-shadow','1px 2px 3px #925c29');
-                    }
-                    var messageContainer = document.getElementById("messageContainer");
-                    messageContainer.scrollTop = messageContainer.scrollHeight;
                 });
                 socket.on('enter'+roomID, function(data) {
                     var userIDs = Object.keys(data);
@@ -179,20 +150,11 @@
 
             function send() {
                 if(document.getElementById("messagebox").value != "") {
-                    socket.emit('send', {"message": fullName + ": " + document.getElementById("messagebox").value, "roomID": roomID, "email": email, "userID": userID});
+                    socket.emit('send', {"message": fullName + ": " + document.getElementById("messagebox").value, "roomID": roomID});
                     document.getElementById("messagebox").value = "";
                 }
                 document.getElementById("messagebox").focus();
                 document.getElementById("sendBtn").blur();
-            }
-
-            function showDetails(container) {
-                if($(container).children(".messageSender").eq(0).is(':hidden')) {
-                    $(container).children(".messageSender").eq(0).show();
-                }
-                else {
-                    $(container).children(".messageSender").eq(0).hide();
-                }
             }
 
             function validate() {
@@ -218,16 +180,8 @@
             }
 
             function typing() {
-                /*
                 const chatbox = document.getElementById('chatbox');
                 chatbox.scrollIntoView({
-                    behavior: "smooth",
-                    block: "start",
-                    inline: "center"
-                });
-                */
-                const messageContainer = document.getElementById('messageContainer');
-                messageContainer.scrollIntoView({
                     behavior: "smooth",
                     block: "start",
                     inline: "center"
@@ -284,7 +238,7 @@
             });
 
             window.addEventListener("beforeunload", function (e) {
-                if($("#messageContainer").is(':visible')) {
+                if($("#chatbox").is(':visible')) {
                     socket.emit('leave', {'roomID':roomID, 'userID': userID});
                 }
             });
@@ -292,17 +246,11 @@
             $(window).keydown(function(e) {
                 switch (e.keyCode) {
                     case 13:
-                        if($("#messageContainer").is(':hidden')) {
+                        if($("#chatbox").is(':hidden')) {
                             validate();
                         }
                         else {
-                            if($("#messagebox").is(':focus')) {
-                                send();
-                            }
-                            else {
-                                save();
-                            }
-                            
+                            send();
                         }
                         return;
                 }

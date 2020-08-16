@@ -1,9 +1,8 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
     <head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>Tiger Ambush</title>
+        <meta name="google-signin-scope" content="profile email">
+        <meta name="google-signin-client_id" content="758290075776-i5a0a6680n51lo76p8qfignd0s5148jd.apps.googleusercontent.com">
         <link rel="stylesheet"
         href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css"
         integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk"
@@ -15,121 +14,72 @@
         href="https://use.fontawesome.com/releases/v5.13.1/css/all.css"
         integrity="sha384-xxzQGERXS00kBmZW/6qxqJPyxW3UR0BPsL4c8ILaIWXva5kFi7TxkIIaMiKtqV1Q"
         crossorigin="anonymous">
-        <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
-        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
-        <link rel="icon" type="image/x-icon" href="logo.png" />
         <link rel="stylesheet" href="styles.css">
-
-        <!-- Including socket.io -->
+        <link rel="icon" type="image/png" href="logo.png" />
+        <script src="https://apis.google.com/js/platform.js" async defer></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.0.4/socket.io.js"></script>
         <script src="/socket.io/socket.io.js"></script>
-
-        <!-- Including Google OAught API -->
-        <script src="https://apis.google.com/js/api:client.js"></script>
-        <meta name="google-signin-scope" content="profile email">
-        <meta name="google-signin-client_id" content="758290075776-i5a0a6680n51lo76p8qfignd0s5148jd.apps.googleusercontent.com">
-        <script src="https://apis.google.com/js/platform.js" async defer></script>
-
-        <!-- Google OAught API Script-->
-        <script>
-            var googleUser = {};
-            var startApp = function() {
-                gapi.load('auth2', function(){
-                    // Retrieve the singleton for the GoogleAuth library and set up the client.
-                    auth2 = gapi.auth2.init({
-                    client_id: '758290075776-i5a0a6680n51lo76p8qfignd0s5148jd.apps.googleusercontent.com',
-                    cookiepolicy: 'single_host_origin',
-                    // Request scopes in addition to 'profile' and 'email'
-                    //scope: 'additional_scope'
-                    });
-                    if(auth2 == null) {
-                        alert("Not signed in");
-                    }
-                    attachSignin(document.getElementById('customBtn'));
-                    attachSignin(document.getElementById('sign-in'));
-                });
-            };
-        
-            function attachSignin(element) {
-                console.log(element.id);
-                auth2.attachClickHandler(element, {},
-                    function (googleUser) {
-                        onSignIn(googleUser);
-                        //TODO: ADD WHAT HAPPENS ON SIGNIN
-                    }, function(error) {
-                        alert("Please try again. The following error occured: " + JSON.stringify(error, undefined, 2));
-                });
-            }
-        </script>
     </head>
     <body>
-        <p id="appLink" style="display: none;"><%= appLink %></p>
-        <nav class="navbar navbar-expand-lg navbar-dark bg-transparent">
-            <!-- <div class="block"> -->
-            <a class="navbar-brand" href="mockup.html">
-                <img id="logo" src="logo.png" height="90px" width="90px" alt="logo">
-                <h1 class="header-shadow" id="brand-text">Tiger<span id="ambush">Ambush</span></h1>
-            </a>
-            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-            <div class="collapse navbar-collapse links" id="navbarSupportedContent">
-                <ul class="header-shadow navbar-nav mr-auto">
-                    <a href="#"><li class="nav-item">Terms of Use</li></a>
-                    <a href="#"><li class="nav-item">Our Team</li></a>
-                    <a href="#" style="display:none;" id="roomsRef"><li class="nav-item">Rooms</li></a>
-                    <a href="#" id="sign-inRef"><li class="nav-item" id="sign-in">Sign in</li></a>   
-                    <a href="#" style="display:none;" id="sign-out" onclick="signOut()"><li class="nav-item">Sign Out</li></a>
-                </ul>
-            </div>
-        </nav>
-        <!--------------------------- Landing page --------------------------->
-        <div id="landingCon" class="container-fluid">
-            <div class="headline header-shadow">
-                <h1 class="big-text typing"> 
-                    <div></div>
-                </h1>
+        <!-- header -->
+        <div class="header d-flex justify-content-around">
+            <img src="logo.png" alt="logo" height="150px" width="150px">
+            <h1 class="mt-5">TIGER AMBUSH</h1>
+            <img src="logo.png" alt="logo" height="150px" width="150px">
+        </div>
+        <div class="line-heading">
+            <h3 class="subheading typing"></h3>
+        </div>
+        
+        <hr class="style-four" id="style-four">
+        
+        <div class="container" id="welcomeCon">
+            <div class="chat" id="chatpics">              
+                <img src="leftbubble.png" alt="left speech bubble" height="75px" width="250px">
                 <br>
-                <p class="sub-text">Tiger Ambush is an app built to foster greater social 
-                    interaction among students of the Princeton body.
-                    <span> Join our virtual chat rooms: study groups,
-                    group bonding, watch parties and more.</span>
-                </p>
-                <div id="customBtn" class="customGPlusSignIn">
-                    <img src="google-icon.svg" height=20 style="position: absolute; top: 22%; left: 30%; transform: translate(-50%,-50%);"/>
-                    <span class="buttonText" style="position: absolute; top: 50%; left: 60%; transform: translate(-50%,-50%);">Sign In</span>
-                </div>
-            </div>
-            <div id="iphone" class="d-md-none d-lg-block">
-                <img src="iphone.png" alt="iPhone">
+                <img src="rightbubble.png" alt="right speech bubble" height="75px" width="250px">
+                <br>
+                <img src="leftbubble.png" alt="left speech bubble" height="75px" width="250px">
+                <div id="gsignin" class="g-signin2 signin2" data-onsuccess="onSignIn" data-theme="light" data-width="250" data-height="50" data-longtitle="true"></div>
             </div>
         </div>
-        <!--------------------------- Rooms page --------------------------->
-        <div class="roomsPageCon" id="topMenuBar" style="display: none;">
+
+        <!-- Login and Rooms -->
+        <p id="appLink" style="display: none;"><%= appLink %></p>
+        <!-- <br />
+        <br />
+        <br />
+        <div id="roomHead" style="display: none;">
+            <div class ="header2"> 
+                <br />
+                
+            </div>
+        </div> -->
+        <div id="topMenuBar" style="display: none;">
             <div class="header3 justify-content-around">
                 <br />
                 <table width="100%">
                     <tr>
-                        <td><h3 class="pClass" id="roomHeader" style="display: none;">Available Rooms</h3></td>
-                        <td style="text-align: right; padding-right:50px;"> <h3 class="pClass"  id="emailHeader" style="display: none;"></h3></td>
+                        <td><h3 id="roomHeader" style="display: none;">Available Rooms</h3></td>
+                        <td style="text-align: right; padding-right:50px;"> <h3 id="emailHeader" style="display: none;"></h3></td>
                     </tr>
                     <tr>
                         <td>
-                            <input id="searchbox" class="inputClass" placeholder="Search rooms..." style="display: none;"/>
-                            <button id="searchBtn" class="buttonClass" type="button" onclick="search()" style="display: none;">Search</button>
-                            <button id="clearSearchBtn" class="buttonClass" type="button" onclick="clearSearch()" style="display: none;">Clear</button>
+                            <input id="searchbox" placeholder="Search rooms..." style="display: none;"/>
+                            <button id="searchBtn" type="button" onclick="search()" style="display: none;">Search</button>
+                            <button id="clearSearchBtn" type="button" onclick="clearSearch()" style="display: none;">Clear</button>
                         </td>
                         <td style="text-align: right; padding-right:50px;">
-                            <button id="joinRandomBtn" class="buttonClass" type="button" onclick="joinRandom()" style="display: none;">Join Random</button>
-                            <button id="newRoomBtn" class="buttonClass" type="button" onclick="showNewRoomForm()" style="display: none;">New Room</button>
+                            <button id="joinRandomBtn" type="button" onclick="joinRandom()" style="display: none;">Join Random</button>
+                            <button id="newRoomBtn" type="button" onclick="showNewRoomForm()" style="display: none;">New Room</button>
+                            <button id="signout" type="button" onclick="signOut()" style="display: none;"><span>Sign Out</span></button>
                         </td>
                     </tr>
                 </table>
                 <br />
             </div>
         </div>
-        <div class="roomsPageCon" id="newRoomFormCon" style="display: none;">
+        <div id="newRoomFormCon" style="display: none;">
             <div class="header4 justify-content-around">
                 <br />
                 <input id="roomNameField" placeholder="Room Name"/>
@@ -137,43 +87,40 @@
             </div>
             <div class="header5 justify-content-around">
                 <br />
-                <textarea id="descriptionField" rows="4" cols="58" placeholder="Describe your rooms purpose, class, or activity..."></textarea>
+                <textarea id="descriptionField" rows="4" cols="40" placeholder="Describe your rooms purpose, class, or activity..."></textarea>
                 <br />
                 <br />
                 <br />
                 <input id ="openrandom" type="checkbox" onclick="onCheck()">
-                <label class="pClass">Open Random Joining</label>
-                <button id="buttonCreate" class="buttonClass" type="button" onclick="createRoom()">Create Room</button>
-                <button id="buttonCloseForm" class="buttonClass" type="button" onclick="hideNewRoomForm()">Close Form</button>
+                <label>Open Random Joining</label>
+                <button id="buttonCreate" type="button" onclick="createRoom()">Create Room</button>
+                <button id="buttonCloseForm" type="button" onclick="hideNewRoomForm()">Close Form</button>
                 <br />
             </div>
         </div>
-        <div class="roomsPageCon" id="chatHeader" style="display: none;">
+        <div id="chatHeader" style="display: none;">
             <div class="chatRoomHeader justify-content-around">
                 <br />
-                <p class="pClass" id="loadingRooms" style="display: none;">Loading rooms...</p>
-                <p class="pClass" id="noRooms" style="display: none;">No rooms to show...</p>
+                <p id="loadingRooms" style="display: none;">Loading rooms...</p>
+                <p id="noRooms" style="display: none;">No rooms to show...</p>
                 <div class="roomsCon">
                     <div onmouseover="showDetails(this)" onmouseout="hideDetails(this)" class="room" style="display: none;">
-                        <br />
                         <img src="logo.png" alt="logo" height="100px" width="100px">
                         <a class="roomName" style="font-size: 50px; margin-left: 1em; color: rgb(235, 235, 235); text-shadow: 5px 5px 7px rgb(65, 65, 65);"  href="#">Room Name</a>
+                        <div class="numUsers" style="font-size: 20px; display: none;">Number of Active Users: </div>
+                        <p class="roomDetails" style="display: none;"><p>
                         <br />
-                        <label class="numUsers pClass" style="font-size: 20px; display: none; padding-left: 150px;">Number of Active Users: </label>
-                        <br />
-                        <label class="roomDetails pClass" style="display: none; padding-left: 150px;"></label>
                         <br />
                     </div>
                 </div>
             </div>
-            <br />
-            <br />
         </div>
-        <!--------------------------- Scripts --------------------------->
+        <br />
+        <br />
+        <script type="text/javascript" src="https://code.jquery.com/jquery-latest.min.js"></script>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
         <script src="typing.js"></script>
-
-        <!-- initializing -->
-        <script>
+        <script type="text/javascript">
             var appLink = document.getElementById("appLink").innerHTML;
             var socket = io.connect(appLink);
             //var id = Math.floor(Math.random() * 9007199254740990);
@@ -187,10 +134,6 @@
             var nickname;
             var criteria;
 
-            startApp();
-        </script>
-        <!-- running socket.io js -->
-        <script>
             socket.on('connect', function(data) {
                 socket.emit('console', 'New user loaded rooms page.');
             });
@@ -203,13 +146,11 @@
                     socket.emit('search', {"criteria": document.getElementById("searchbox").value, "userID": id});
                 }
             });
-        </script>
 
-        <!-- running Google OAuth js -->
-        <script>
             function onSignIn(googleUser) {
                 // Useful data for your client-side scripts:
                 var profile = googleUser.getBasicProfile();
+                console.log("ID: " + profile.getId()); // Don't send this directly to your server!
                 console.log('Full Name: ' + profile.getName());
                 console.log('Given Name: ' + profile.getGivenName());
                 console.log('Family Name: ' + profile.getFamilyName());
@@ -224,43 +165,27 @@
 
                 // The ID token you need to pass to your backend:
                 id = googleUser.getAuthResponse().id_token;
+                console.log("ID Token: " + id);
+
                 fullName = profile.getName();
                 givenName = profile.getGivenName();
                 email = profile.getEmail();
-
-                localStorage.setItem("id", id);
-                localStorage.setItem("fullName", fullName);
-                localStorage.setItem("givenName", givenName);
-                localStorage.setItem("email", email);
-
-                afterSignIn();
-            }
-
-            function signOut() {
-                var auth2 = gapi.auth2.getAuthInstance();
-                auth2.signOut().then(function () {
-                    localStorage.removeItem("id");
-                    localStorage.removeItem("fullName");
-                    localStorage.removeItem("givenName");
-                    localStorage.removeItem("email");
-                    location.reload();
-                });
-            }
-
-            function afterSignIn() {
+                
+                document.getElementById("chatpics").style.display = "none";
+                document.getElementById("gsignin").style.display = "none";
                 $("#roomHead").show();
                 $("#topMenuBar").show();
                 $("#chatHeader").show();
+                $("#nickname").show();
                 $("#emailHeader").show();
                 $("#roomHeader").show();
                 $("#newRoomBtn").show();
                 $("#loadingRooms").show();
                 $("#searchbox").show();
                 $("#searchBtn").show();
-                $("#roomsRef").show();
-                $("#sign-out").show();
-                $("#sign-inRef").hide();
-                $("#landingCon").hide();
+                $("#signout").show();
+                $("#welcomeCon").hide();
+                $("#style-four").hide();
 
                 document.getElementById("emailHeader").innerHTML = "Signed in as " + email;
 
@@ -270,16 +195,26 @@
                 });
             }
 
-            if (localStorage.getItem("fullName") != null) {
-                id = localStorage.getItem("id");
-                fullName = localStorage.getItem("fullName");
-                givenName = localStorage.getItem("givenName");
-                email = localStorage.getItem("email");
-                afterSignIn();
+            function signOut() {
+                var auth2 = gapi.auth2.getAuthInstance();
+                auth2.signOut().then(function () {
+                    console.log('User signed out.');
+                    location.reload();
+                });
             }
-        </script>
-        <!-- general functions -->
-        <script>
+
+            function renderButton() {
+                gapi.signin2.render('my-signin2', {
+                'scope': 'profile email',
+                'width': 240,
+                'height': 50,
+                'longtitle': true,
+                'theme': 'dark',
+                'onsuccess': onSuccess,
+                'onfailure': onFailure
+                });
+            }
+
             function refreshRooms(res) {
                 var roomsCon = $(".roomsCon").eq(0);
                 var roomEntries = roomsCon.children();
@@ -334,6 +269,7 @@
 
             function showNewRoomForm() {
                 $("#newRoomFormCon").show();
+                $("#newRoomBtn").hide();
                 window.scrollTo(0, 500);
             }
 
