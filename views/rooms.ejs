@@ -347,11 +347,9 @@
                     roomEntries.eq(i).remove();
                 }
 
-                $("#newRoomFormCon").hide();
                 $("#newRoomBtn").show();
                 $("#joinRandomBtn").show();
                 $("#loadingRooms").hide();
-                document.getElementById("roomNameField").value = "";
                 rooms = res;
                 roomRandomLinks = new Array();
                 roomIDs = Object.keys(res);
@@ -432,7 +430,7 @@
                 }
                 var i;
                 for(i = 0; i < roomIDs.length; i++) {
-                    if(rooms[roomIDs[i]]['name'] == document.getElementById("roomNameField").value) {
+                    if(rooms[roomIDs[i]]['roomName'] == document.getElementById("roomNameField").value) {
                         alert("Room Name already taken.");
                         return;
                     }
@@ -448,6 +446,11 @@
                     'count' : 0,
                     'openRandomJoin': $('#openrandom').is(":checked")
                 };
+                $("#newRoomFormCon").hide();
+                document.getElementById("roomNameField").value = "";
+                document.getElementById("passwordField").value = "";
+                $("#descriptionField").val("");
+                document.getElementById("openrandom").checked = false;
                 //Sending create room request
                 socket.emit('createRoom', data);
             }
