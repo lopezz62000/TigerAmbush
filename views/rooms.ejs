@@ -129,15 +129,16 @@
                 <br />
             </div>
         </div>
-        <div class="roomsPageCon" id="newRoomFormCon" style="display: none;">
+        <div class="roomsPageCon newRoomsCon" id="newRoomFormCon" style="display: none;">
+            <br />
+            <br />
             <div class="header4 justify-content-around">
-                <br />
-                <input id="roomNameField" placeholder="Room Name"/>
-                <input id="passwordField" placeholder="Password (optional)"/>
+                <input id="roomNameField" class="roomEditableClass roomInputClass" placeholder="Room Name"/>
+                <input id="passwordField" class="roomEditableClass roomInputClass" placeholder="Password (optional)"/>
             </div>
             <div class="header5 justify-content-around">
                 <br />
-                <textarea id="descriptionField" rows="4" cols="58" placeholder="Describe your rooms purpose, class, or activity..."></textarea>
+                <textarea id="descriptionField" class="roomEditableClass textareaClass" rows="4" placeholder="Describe your rooms purpose, class, or activity..."></textarea>
                 <br />
                 <br />
                 <br />
@@ -145,6 +146,7 @@
                 <label class="pClass">Open Random Joining</label>
                 <button id="buttonCreate" class="buttonClass" type="button" onclick="createRoom()">Create Room</button>
                 <button id="buttonCloseForm" class="buttonClass" type="button" onclick="hideNewRoomForm()">Close Form</button>
+                <br />
                 <br />
             </div>
         </div>
@@ -161,7 +163,7 @@
                         <br />
                         <label class="numUsers pClass" style="font-size: 20px; display: none; padding-left: 150px;">Number of Active Users: </label>
                         <br />
-                        <label class="roomDetails pClass" style="display: none; padding-left: 150px;"></label>
+                        <p class="roomDetails pClass" style="display: none; padding-left: 150px;"></p>
                         <br />
                     </div>
                 </div>
@@ -311,7 +313,7 @@
                     }
                     newRoom.children(".roomName").eq(0).attr("href", res[roomIDs[i]]['link']+"&fullName="+name+"&email="+email+"&userID="+id);
                     newRoom.children(".roomName").eq(0).text(res[roomIDs[i]]['roomName']);
-                    newRoom.children(".roomDetails").eq(0).text(res[roomIDs[i]]['description']);
+                    document.getElementsByClassName("roomDetails")[i+1].insertAdjacentHTML('beforeend',res[roomIDs[i]]['description'].replace(/\n/g, "<br />"));
                     newRoom.children(".numUsers").eq(0).text("Number of Active Users: "+res[roomIDs[i]]['count']);
                 }
                 if(roomIDs.length == 0) {

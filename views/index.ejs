@@ -50,7 +50,7 @@
                     </div>
                 </div>
                 <br />
-                <hr class="chat-hr"/>
+                <hr class="chat-hr" id="lowerHr"/>
                 <br />
                 <input class="inputClass" id="messagebox" onfocusout="notTyping()" onfocusin="typing()" style="width: 37.5%; min-width: 447px;" placeholder="Type your message..."/>
                 <button class="buttonClass" id="sendBtn" type="button" onclick="send()">Send</button>
@@ -98,6 +98,7 @@
                 else {
                     //$("#chatbox").hide();
                     $("#messageContainer").hide();
+                    $("#lowerHr").hide();
                     $("#messagebox").hide();
                     $("#sendBtn").hide();
                     $("#renameBtn").hide();
@@ -283,7 +284,10 @@
                 console.log(document.visibilityState);
             });
 
-            window.addEventListener("beforeunload", function (e) {
+            var isOnIOS = navigator.userAgent.match(/iPad/i)|| navigator.userAgent.match(/iPhone/i);
+            var eventName = isOnIOS ? "pagehide" : "beforeunload";
+
+            window.addEventListener(eventName, function (e) {
                 if($("#messageContainer").is(':visible')) {
                     socket.emit('leave', {'roomID':roomID, 'userID': userID});
                 }
