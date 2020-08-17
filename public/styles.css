@@ -70,7 +70,7 @@ body {
 	vertical-align: middle !important; */
 	margin-top: 4.3rem;
 	/* float: right; */
-	margin-left: 20%;
+	margin-left: 25%;
 }
 
 .header-shadow a {
@@ -188,6 +188,7 @@ ROOMS.EJS STYLES ROOMS PAGE
 
 .roomsPageCon {
 	margin-left: 6%;
+	width: 90%;
 }
 
 .room {
@@ -261,6 +262,11 @@ ROOMS.EJS STYLES ROOMS PAGE
 	outline: 0;
 	width: 35.5%;
 	min-width: 510px;
+}
+
+.roomsButtonClass {
+	margin-top: 5px;
+	margin-right: 5px;
 }
 
 /***************
@@ -373,6 +379,7 @@ INDEX.EJS STYLES
 	min-width: 150px;
 	width: 12.5%;
 	height: 50px;
+	outline:0;
 }
 
 .buttonClass:hover,
@@ -382,6 +389,7 @@ INDEX.EJS STYLES
 	-moz-transition: 200ms linear 0s;
 	-o-transition: 200ms linear 0s;
 	transition: 200ms linear 0s;
+	outline:0;
 }
 
 .pClass {

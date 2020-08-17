@@ -18,7 +18,7 @@
         <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
         <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
-        <link rel="icon" type="image/x-icon" href="logo.png" />
+        <link rel="icon"/>
         <link rel="stylesheet" href="styles.css">
 
         <!-- Including socket.io -->
@@ -68,8 +68,8 @@
         <nav class="navbar navbar-expand-lg navbar-dark bg-transparent">
             <!-- <div class="block"> -->
             <a class="navbar-brand" href="mockup.html">
-                <img id="logo" src="logo.png" height="90px" width="90px" alt="logo">
-                <h1 class="header-shadow" id="brand-text">Tiger<span id="ambush">Ambush</span></h1>
+                <img id="logo" src="logo.png" height="80px" width="80px" alt="logo">
+                <h1 class="header-shadow" id="brand-text" style="font-size:calc(30px + 1.5vw);">Tiger<span id="ambush">Ambush</span></h1>
             </a>
             <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
@@ -107,25 +107,26 @@
         </div>
         <!--------------------------- Rooms page --------------------------->
         <div class="roomsPageCon" id="topMenuBar" style="display: none;">
-            <div class="header3 justify-content-around">
+            <br />
+            <div class="header3 justify-content-around" style="display: flex; flex-direction: row;">
                 <br />
-                <table width="100%">
-                    <tr>
-                        <td><h3 class="pClass" id="roomHeader" style="display: none;">Available Rooms</h3></td>
-                        <td style="text-align: right; padding-right:50px;"> <h3 class="pClass"  id="emailHeader" style="display: none;"></h3></td>
-                    </tr>
-                    <tr>
-                        <td>
-                            <input id="searchbox" class="inputClass" placeholder="Search rooms..." style="display: none;"/>
-                            <button id="searchBtn" class="buttonClass" type="button" onclick="search()" style="display: none;">Search</button>
-                            <button id="clearSearchBtn" class="buttonClass" type="button" onclick="clearSearch()" style="display: none;">Clear</button>
-                        </td>
-                        <td style="text-align: right; padding-right:50px;">
-                            <button id="joinRandomBtn" class="buttonClass" type="button" onclick="joinRandom()" style="display: none;">Join Random</button>
-                            <button id="newRoomBtn" class="buttonClass" type="button" onclick="showNewRoomForm()" style="display: none;">New Room</button>
-                        </td>
-                    </tr>
-                </table>
+                <div style="text-align: left; align-self: left; width: 50%">
+                    <label class="pClass" id="roomHeader" style="display: none; font-weight: bold;" onclick="clearSearch()">Showing all rooms</label><br />
+                </div>
+                <div style="text-align: right; align-self: right; width: 50%">
+                    <label class="pClass"  id="emailHeader" style="display: none; font-weight: bold;"></label>
+                </div>
+            </div>
+            <br />
+            <div class="header3 justify-content-around" style="display: flex; flex-direction: row;">
+                <br />
+                <div style="text-align: left; width: 50%;">
+                    <input id="searchbox" class="inputClass" placeholder="Search rooms..." style="display: none; width: 48%; min-width: 150px;"/>
+                    <button id="searchBtn" class="buttonClass roomsButtonClass" type="button" onclick="search()" style="display: none;">Search</button>                </div>
+                <div style="text-align: right; width: 50%;">
+                    <button id="joinRandomBtn" class="buttonClass roomsButtonClass" type="button" onclick="joinRandom()" style="display: none;">Join Random</button>
+                    <button id="newRoomBtn" class="buttonClass roomsButtonClass" type="button" onclick="showNewRoomForm()" style="display: none;">New Room</button>
+                </div>
                 <br />
             </div>
         </div>
@@ -151,20 +152,22 @@
             </div>
         </div>
         <div class="roomsPageCon" id="chatHeader" style="display: none;">
-            <div class="chatRoomHeader justify-content-around">
+            <div style="width: 105%;">
                 <br />
                 <p class="pClass" id="loadingRooms" style="display: none;">Loading rooms...</p>
                 <p class="pClass" id="noRooms" style="display: none;">No rooms to show...</p>
                 <div class="roomsCon">
                     <div onmouseover="showDetails(this)" onmouseout="hideDetails(this)" class="room" style="display: none;">
                         <br />
-                        <img src="logo.png" alt="logo" height="100px" width="100px">
-                        <a class="roomName" style="font-size: 50px; margin-left: 1em; color: rgb(235, 235, 235); text-shadow: 5px 5px 7px rgb(65, 65, 65);"  href="#">Room Name</a>
-                        <br />
-                        <label class="numUsers pClass" style="font-size: 20px; display: none; padding-left: 150px;">Number of Active Users: </label>
-                        <br />
-                        <p class="roomDetails pClass" style="display: none; padding-left: 150px;"></p>
-                        <br />
+                        <img src="logo.png" alt="logo" height="80px" width="80px" style="float: left;">
+                        <div class="dataCon">
+                            <a class="roomName" style="font-size:calc(30px + 1.5vw); margin-left: 1em; color: rgb(235, 235, 235); text-shadow: 5px 5px 7px rgb(65, 65, 65);"  href="#">Room Name</a>
+                            <br />
+                            <label class="numUsers pClass" style="font-size: 20px; display: none; padding-left: 50px;">Number of Active Users: </label>
+                            <br />
+                            <p class="roomDetails pClass" style="display: none; padding-left: 130px;"></p>
+                            <br />
+                        </div>
                     </div>
                 </div>
             </div>
@@ -187,7 +190,7 @@
             var givenName;
             var email;
             var nickname;
-            var criteria;
+            var criteria = "";
 
             startApp();
         </script>
@@ -198,7 +201,7 @@
             });
 
             socket.on('refreshRooms', function(data) {
-                if($("#clearSearchBtn").is(':hidden')) {
+                if(criteria == "") {
                     refreshRooms(data);
                 }
                 else {
@@ -311,10 +314,11 @@
                     if(res[roomIDs[i]]['openRandomJoin']) {
                         roomRandomLinks.push(res[roomIDs[i]]['link']+"&fullName="+name+"&email="+email+"&userID="+id);
                     }
-                    newRoom.children(".roomName").eq(0).attr("href", res[roomIDs[i]]['link']+"&fullName="+name+"&email="+email+"&userID="+id);
-                    newRoom.children(".roomName").eq(0).text(res[roomIDs[i]]['roomName']);
+                    dataCon = newRoom.children(".dataCon").eq(0);
+                    dataCon.children(".roomName").eq(0).attr("href", res[roomIDs[i]]['link']+"&fullName="+name+"&email="+email+"&userID="+id);
+                    dataCon.children(".roomName").eq(0).text(res[roomIDs[i]]['roomName']);
+                    dataCon.children(".numUsers").eq(0).text("Number of Active Users: "+res[roomIDs[i]]['count']);
                     document.getElementsByClassName("roomDetails")[i+1].insertAdjacentHTML('beforeend',res[roomIDs[i]]['description'].replace(/\n/g, "<br />"));
-                    newRoom.children(".numUsers").eq(0).text("Number of Active Users: "+res[roomIDs[i]]['count']);
                 }
                 if(roomIDs.length == 0) {
                     $("#noRooms").show();
@@ -325,13 +329,13 @@
             }
 
             function showDetails(container) {
-                $(container).children(".numUsers").eq(0).show();
-                $(container).children(".roomDetails").eq(0).show();
+                $(container).children(".dataCon").eq(0).children(".numUsers").eq(0).show();
+                $(container).children(".dataCon").eq(0).children(".roomDetails").eq(0).show();
             }
 
             function hideDetails(container) {
-                $(container).children(".numUsers").eq(0).hide();
-                $(container).children(".roomDetails").eq(0).hide();
+                $(container).children(".dataCon").eq(0).children(".numUsers").eq(0).hide();
+                $(container).children(".dataCon").eq(0).children(".roomDetails").eq(0).hide();
             }
 
             function showNewRoomForm() {
@@ -396,10 +400,10 @@
             function search() {
                 criteria = document.getElementById("searchbox").value;
                 if(document.getElementById("searchbox").value == "") {
-                    alert("You didn't tell me what you're looking for.");
+                    clearSearch();
                     return;
                 }
-                $("#clearSearchBtn").show();
+                $("#roomHeader").text('x Showing "' + criteria + '" in rooms"');
                 socket.emit('search', {"criteria": document.getElementById("searchbox").value, "userID": id});
                 socket.on('search'+id, function(data) {
                     refreshRooms(data);
@@ -407,7 +411,7 @@
             }
 
             function clearSearch() {
-                $("#clearSearchBtn").hide();
+                $("#roomHeader").text('Showing all rooms');
                 criteria = "";
                 document.getElementById("searchbox").value = "";
                 socket.emit('getRooms', id);
