@@ -43,9 +43,6 @@
                     // Request scopes in addition to 'profile' and 'email'
                     //scope: 'additional_scope'
                     });
-                    if(auth2 == null) {
-                        alert("Not signed in");
-                    }
                     attachSignin(document.getElementById('customBtn'));
                     attachSignin(document.getElementById('sign-in'));
                 });
@@ -76,9 +73,9 @@
             </button>
             <div class="collapse navbar-collapse links" id="navbarSupportedContent">
                 <ul class="header-shadow navbar-nav mr-auto">
-                    <a href="#"><li class="nav-item">Terms of Use</li></a>
-                    <a href="#"><li class="nav-item">Our Team</li></a>
-                    <a href="#" style="display:none;" id="roomsRef"><li class="nav-item">Rooms</li></a>
+                    <a href="#" onclick="showTerms()"><li class="nav-item">Terms of Use</li></a>
+                    <a href="#" onclick="showTeam()"><li class="nav-item">Our Team</li></a>
+                    <a href="#" style="display:none;" id="roomsRef" onclick="showRooms()"><li class="nav-item">Rooms</li></a>
                     <a href="#" id="sign-inRef"><li class="nav-item" id="sign-in">Sign in</li></a>   
                     <a href="#" style="display:none;" id="sign-out" onclick="signOut()"><li class="nav-item">Sign Out</li></a>
                 </ul>
@@ -174,6 +171,40 @@
             <br />
             <br />
         </div>
+        <!--------------------------- Terms of Use page --------------------------->
+        <div id="termsCon" class="container-fluid roomsPageCon" style="display: none;">
+            <br />
+            <h1 class="big-text infoClass"> 
+                Development Team
+            </h1>
+            <br>
+            <p class="sub-text infoClass">
+                Brendan Wang '23 (byw2@princeton.edu) <br />
+                Phoebe Lin '23 (pslin@princeton.edu) <br />
+                Zachary Lopez '23 (zlopez@princeton.ed) <br />
+            </p>
+        </div>
+        <!--------------------------- Our Team page --------------------------->
+        <div id="teamCon" class="container-fluid roomsPageCon" style="display: none;">
+            <br />
+            <h1 class="big-text infoClass"> 
+                Terms of Use
+            </h1>
+            <br>
+            <p class="sub-text infoClass">
+                By using TigerAmbush, you hereby accept the conditions detailed on this page.
+                <br /><br />
+                Any information sent through the site is considered public information. 
+                The development team is not responsible for any information that is revealed in the app.
+                Although the server does not currently save information once the rooms is destroyed, 
+                the app does not have the ability to prevent users from taking screenshots or copying text.
+                <br /><br />
+                Any behavior that does not align with Princeton's code of conduct is not accepted in the app.
+                For now, it can be brought to the attention of faculty via screenshots though a report button 
+                will soon be made available in every room.
+            </p>
+        </div>
+
         <!--------------------------- Scripts --------------------------->
         <script src="typing.js"></script>
 
@@ -209,7 +240,34 @@
                 }
             });
         </script>
+        <!-- navbar/tab switch functions -->
+        <script>
+            function showTerms() {
+                $("#newRoomFormCon").hide();
+                $("#topMenuBar").hide();
+                $("#chatHeader").hide();
+                $("#landingCon").hide();
+                $("#termsCon").show();
+                $("#teamCon").hide();
+            }
 
+            function showTeam() {
+                $("#newRoomFormCon").hide();
+                $("#topMenuBar").hide();
+                $("#chatHeader").hide();
+                $("#landingCon").hide();
+                $("#termsCon").hide();
+                $("#teamCon").show();
+            }
+
+            function showRooms() {
+                $("#topMenuBar").show();
+                $("#chatHeader").show();
+                $("#landingCon").hide();
+                $("#termsCon").hide();
+                $("#teamCon").hide();
+            }
+        </script>
         <!-- running Google OAuth js -->
         <script>
             function onSignIn(googleUser) {
@@ -253,9 +311,7 @@
             }
 
             function afterSignIn() {
-                $("#roomHead").show();
-                $("#topMenuBar").show();
-                $("#chatHeader").show();
+                showRooms();
                 $("#emailHeader").show();
                 $("#roomHeader").show();
                 $("#newRoomBtn").show();
@@ -265,7 +321,6 @@
                 $("#roomsRef").show();
                 $("#sign-out").show();
                 $("#sign-inRef").hide();
-                $("#landingCon").hide();
 
                 document.getElementById("emailHeader").innerHTML = "Signed in as " + email;
 
@@ -283,7 +338,7 @@
                 afterSignIn();
             }
         </script>
-        <!-- general functions -->
+        <!-- rooms general functions -->
         <script>
             function refreshRooms(res) {
                 var roomsCon = $(".roomsCon").eq(0);
