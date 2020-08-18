@@ -375,6 +375,29 @@ INDEX.EJS STYLES
 	opacity: 1;
 }
 
+.wideButtonClass {
+	/* background-image: linear-gradient(to right, #df9d62 , #9e6839); */
+	background: linear-gradient(90deg, var(--c1, #df9d62), var(--c2, #9e6839) 51%, var(--c1, #df9d62)) var(--x, 0)/ 200%;
+	border: none;
+	border-radius: 4px;
+	color: #ffffff;
+	min-width: 305px;
+	width: 25.3%;
+	height: 50px;
+	outline:0;
+	margin-top: 4px;
+}
+
+.wideButtonClass:hover,
+.wideButtonClass:focus {
+	--x: 100%;
+	-webkit-transition: 200ms linear 0s;
+	-moz-transition: 200ms linear 0s;
+	-o-transition: 200ms linear 0s;
+	transition: 200ms linear 0s;
+	outline:0;
+}
+
 .buttonClass {
 	/* background-image: linear-gradient(to right, #df9d62 , #9e6839); */
 	background: linear-gradient(90deg, var(--c1, #df9d62), var(--c2, #9e6839) 51%, var(--c1, #df9d62)) var(--x, 0)/ 200%;

@@ -16,7 +16,8 @@ var rooms = {'HelloWorld': {
     'password': '',
     'description': 'This is the default chat. Anyone can come join! Unlike other chats, this room will stay open even if there is no one in it.',
     'openRandomJoin': true,
-    'participants': {}
+    'participants': {},
+    'messages': new Array()
 }};
 
 var adminEmails = ['zlopez@princeton.edu', 'byw2@princeton.edu', 'singl@princeton.edu'];
@@ -121,7 +122,14 @@ io.on('connection', (socket) => {
     });
 
     socket.on('send', (data) => {
+        rooms[data['roomID']]['messages'].push({"message": data['message'], "email": data['email']});
         io.sockets.emit('disperse'+data['roomID'], {"message": data['message'], "email": data['email'], "userID": data["userID"]});
+    });
+
+    socket.on('report', (data) => {
+        console.log(data['email']+"reported the following chat: ");
+        console.log(rooms[data['roomID']]['messages']);
+        io.sockets.emit('disperse'+data['roomID'], {"message": "All chat history has been reported.", "email":"room bot", "userID": "-1"});
     });
 
     socket.on('getRooms', (userId) => {
@@ -142,7 +150,8 @@ io.on('connection', (socket) => {
             'password': password,
             'description': data['description'],
             'openRandomJoin': data['openRandomJoin'],
-            'participants': {}
+            'participants': {},
+            'messages': new Array()
         };
         tfidf.addDocument(JSON.stringify(rooms[roomID]));
         tfidfRooms.push(JSON.stringify(rooms[roomID]));
@@ -182,9 +191,5 @@ io.on('connection', (socket) => {
     socket.on('announce', (newAnnouncement) => {
         announcement = newAnnouncement;
         io.sockets.emit('announcement', newAnnouncement);
-    });
-
-    socket.on('console', (message) => {
-        console.log(message);
     });
 });
