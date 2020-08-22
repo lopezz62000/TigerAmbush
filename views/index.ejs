@@ -60,7 +60,7 @@
                 <input class="inputClass" type="password" id="passwordbox" placeholder="Enter room password"/>
                 <button class="buttonClass" id="validateBtn" type="button" onclick="validate()">Validate</button>
                 <button class="buttonClass" id="renameBtn" type="button" onclick="showRenameCon()">Edit Username</button>
-                <button class="buttonClass" type="button" onclick="report()">Report</button>
+                <button class="buttonClass" id="reportBtn" type="button" onclick="report()">Report</button>
                 <br /><button class="wideButtonClass" type="button" onclick="goback()">Go Back</button>
                 <div id="renameCon" style="display: none; margin: 0px 0px 500px 0px;">
                     <br />
@@ -103,6 +103,7 @@
                     $("#messagebox").hide();
                     $("#sendBtn").hide();
                     $("#renameBtn").hide();
+                    $("#reportBtn").hide();
                     document.getElementById("passwordbox").focus();
                 }
             });
@@ -129,6 +130,7 @@
                 $("#passwordbox").hide();
                 $("#validateBtn").hide();
                 $("#renameBtn").hide();
+                $("#reportBtn").hide();
                 $("#participantsList").hide();
                 $("#destroyed").show();
                 setInterval(goback, 5000);
@@ -140,6 +142,7 @@
                 $("#messagebox").show();
                 $("#sendBtn").show();
                 $("#renameBtn").show();
+                $("#reportBtn").show();
                 $("#passwordbox").hide();
                 $("#validateBtn").hide();
                 socket.emit('join', {"fullName": fullName, "roomID": roomID, 'userID': userID, 'email': email});
