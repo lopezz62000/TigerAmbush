@@ -3,7 +3,7 @@
     <head>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=0.52, maximum-scale=0.52, user-scalable=no">
-        <title>Tiger Ambush</title>
+        <title>TigerAmbush</title>
         <link rel="stylesheet"
         href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css"
         integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk"
@@ -97,9 +97,9 @@
                     <img src="google-icon.svg" height=20 style="position: absolute; top: 22%; left: 30%; transform: translate(-50%,-50%);"/>
                     <span class="buttonText" style="position: absolute; top: 50%; left: 60%; transform: translate(-50%,-50%);">Sign In</span>
                 </div>
-            </div>
-            <div id="iphone" class="d-md-none d-lg-block">
-                <img src="iphone.png" alt="iPhone">
+                <div id="iphone" class="d-none d-md-block">
+                    <img src="iphone.png" alt="iPhone">
+                </div>
             </div>
         </div>
         <!--------------------------- Rooms page --------------------------->
@@ -174,35 +174,51 @@
         <!--------------------------- Terms of Use page --------------------------->
         <div id="termsCon" class="container-fluid roomsPageCon" style="display: none;">
             <br />
-            <h1 class="big-text infoClass"> 
+            <h1 class="big-text teaminfoClass my-4" style="font-size: 3rem;"> 
                 Terms of Use
             </h1>
             <br>
-            <p class="sub-text infoClass">
+            <p class="sub-text terminfoClass">
                 By using TigerAmbush, you hereby accept the conditions detailed on this page.
                 <br /><br />
                 Any information sent through the site is considered public information. 
                 The development team is not responsible for any information that is revealed in the app.
-                Although the server does not save information once the rooms is destroyed, 
+                Although the server does not save information once the rooms are destroyed, 
                 the app does not have the ability to prevent users from taking screenshots or copying text.
                 <br /><br />
                 Any behavior that does not align with Princeton's code of conduct is not accepted in the app.
-                A report button will alert the development team of your chat and will be in contact with you and faculty as soon as possible.
+                A report button will alert the development team of your chat and they will contact with you and faculty as soon as possible.
                 We are currently implementing a way to send chat history directly to users.
             </p>
         </div>
         <!--------------------------- Our Team page --------------------------->
         <div id="teamCon" class="container-fluid roomsPageCon" style="display: none;">
             <br />
-            <h1 class="big-text infoClass"> 
+            <h1 class="header-shadow big-text teaminfoClass my-4" style="font-size: 3rem;"> 
                 Development Team
             </h1>
             <br>
-            <p class="sub-text infoClass">
-                Brendan Wang '23 (byw2@princeton.edu) <br />
-                Phoebe Lin '23 (pslin@princeton.edu) <br />
-                Zachary Lopez '23 (zlopez@princeton.ed) <br />
-            </p>
+            <div class="container">
+                <div class="row">
+                    <div class="col-12 col-lg-4" style="text-align: center;">
+                        <img src="brendan.png" alt="Brendan" height="250px" width="250px" class="img-fluid">
+                        <p class="sub-text teaminfoClass">
+                            Brendan Wang '23 (byw2@princeton.edu)
+                        </p>
+                    </div>
+                    <div class="col-12 col-lg-4" style="text-align: center;">
+                        <p class="sub-text teaminfoClass">
+                            Phoebe Lin '23 (pslin@princeton.edu)
+                        </p>
+                    </p>
+                    </div>
+                    <div class="col-12 col-lg-4" style="text-align: center;">
+                        <p class="sub-text teaminfoClass">
+                            Zachary Lopez '23 (zlopez@princeton.edu)
+                        </p>
+                    </div>
+                </div>
+            </div>
         </div>
 
         <!--------------------------- Scripts --------------------------->

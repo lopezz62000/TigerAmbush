@@ -31,6 +31,10 @@ body {
 	margin-left: 5%;
 }
 
+.nav-item {
+	white-space: nowrap;
+}
+
 #logo,
 #brand-text {
 	display: inline-block;
@@ -78,6 +82,8 @@ body {
 }
 
 .header-shadow li:hover {
+	transition: all .3s ease;
+	-webkit-transition: all .3s ease;
 	color: black;
 	text-shadow: 0 2px 3px rgba(143, 142, 142, 0.4);
 }
@@ -105,6 +111,8 @@ body {
 }
 
 #sign-in:hover {
+	transition: all .3s ease;
+	-webkit-transition: all .3s ease;
 	background-color: white;
 	color: black;
 	text-shadow: none;
@@ -227,7 +235,7 @@ ROOMS.EJS STYLES ROOMS PAGE
 	font-family: 'Montserrat', sans-serif !important;
 	font-size: 16px;
 	font-weight: bold;
-	padding-left: 6px;	
+	padding-left: 6px;
 }
 
 .roomEditableClass::placeholder {
@@ -269,9 +277,18 @@ ROOMS.EJS STYLES ROOMS PAGE
 	margin-right: 5px;
 }
 
-.infoClass {
+.teaminfoClass {
+	text-align: center;
 	color: white;
-	text-shadow: 0 2px 3px rgba(143, 142, 142, 0.4);
+	text-shadow: 0px 1px 2px rgba(0, 0, 0, 0.4), 0px 2px 6px rgba(0, 0, 0, 0.1), 0px 4px 10px rgba(0, 0, 0, 0.1);
+	/* text-shadow: 2px 2px 3px rgba(143, 142, 142, 0.4); */
+}
+
+.terminfoClass {
+	text-align: justify;
+	color: white;
+	text-shadow: 0px 1px 2px rgba(0, 0, 0, 0.4), 0px 2px 6px rgba(0, 0, 0, 0.1), 0px 4px 10px rgba(0, 0, 0, 0.1);
+	/* text-shadow: 2px 2px 3px rgba(143, 142, 142, 0.4); */
 }
 
 /***************
@@ -384,7 +401,7 @@ INDEX.EJS STYLES
 	min-width: 305px;
 	width: 25.3%;
 	height: 50px;
-	outline:0;
+	outline: 0;
 	margin-top: 4px;
 }
 
@@ -395,7 +412,7 @@ INDEX.EJS STYLES
 	-moz-transition: 200ms linear 0s;
 	-o-transition: 200ms linear 0s;
 	transition: 200ms linear 0s;
-	outline:0;
+	outline: 0;
 }
 
 .buttonClass {
@@ -407,7 +424,7 @@ INDEX.EJS STYLES
 	min-width: 150px;
 	width: 12.5%;
 	height: 50px;
-	outline:0;
+	outline: 0;
 }
 
 .buttonClass:hover,
@@ -417,7 +434,7 @@ INDEX.EJS STYLES
 	-moz-transition: 200ms linear 0s;
 	-o-transition: 200ms linear 0s;
 	transition: 200ms linear 0s;
-	outline:0;
+	outline: 0;
 }
 
 .pClass {
