@@ -25,10 +25,6 @@
                 <hr class="chat-hr"/>
             </div>
             <br />
-            <p id="roomID" style="display: none;"><%= roomID %></p>
-            <p id="appLink" style="display: none;"><%= appLink %></p>
-            <p id="hasPassword" style="display: none;"><%= hasPassword %></p>
-            <p id="alive" style="display: none;"><%= alive %></p>
             <p class="pClass" id="announcement"><%= announcement %></p>
             <div style="margin:auto;" id="gLogin" class="signin2 g-signin2" data-onsuccess="onSignIn" data-theme="light" data-width="250" data-height="50" data-longtitle="true"></div>
             <p id="invalid" style="display: none;">Invalid URL. Please rejoin room from rooms page. Redirecting in 5 seconds.</p>
@@ -71,13 +67,13 @@
         </div>
         <script type="text/javascript" src="https://code.jquery.com/jquery-latest.min.js"></script>
         <script type="text/javascript">
-            const roomID = document.getElementById("roomID").innerHTML;
+            const roomID = <%- JSON.stringify(roomID) %>;
             var fullName;
             var user;
             var profile;
-            const appLink = document.getElementById("appLink").innerHTML;
-            const hasPassword = document.getElementById("hasPassword").innerHTML;
-            const alive = document.getElementById("alive").innerHTML;
+            const appLink = <%- JSON.stringify(appLink) %>;
+            const hasPassword = <%- JSON.stringify(hasPassword) %>;
+            const alive = <%- JSON.stringify(alive) %>;
             const socket = io.connect(appLink);
             var validateListenerExists = false;
 
@@ -255,10 +251,10 @@
                 $("#onLoginCon").show();
                 fullName = profile.getName();
 
-                if(alive == "false") {
+                if(!alive) {
                     onlyShowDestroyDialogue();
                 }
-                else if(hasPassword == "false") {
+                else if(!hasPassword) {
                     join();
                     document.getElementById("messagebox").focus();
                 }
