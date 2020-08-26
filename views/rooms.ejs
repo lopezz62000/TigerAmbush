@@ -289,11 +289,6 @@
             function onSignIn(googleUser) {
                 // Useful data for your client-side scripts:
                 var profile = googleUser.getBasicProfile();
-                console.log('Full Name: ' + profile.getName());
-                console.log('Given Name: ' + profile.getGivenName());
-                console.log('Family Name: ' + profile.getFamilyName());
-                console.log("Image URL: " + profile.getImageUrl());
-                console.log("Email: " + profile.getEmail());
 
                 if(!profile.getEmail().includes("@princeton.edu")) {
                     alert("TigerAmbush is only available to the Princeton emails.");
@@ -381,10 +376,10 @@
                         name = nickname;
                     }
                     if(res[roomIDs[i]]['openRandomJoin']) {
-                        roomRandomLinks.push(res[roomIDs[i]]['link']+"&fullName="+name+"&email="+email+"&userID="+id);
+                        roomRandomLinks.push(res[roomIDs[i]]['link']);
                     }
                     dataCon = newRoom.children(".dataCon").eq(0);
-                    dataCon.children(".roomName").eq(0).attr("href", res[roomIDs[i]]['link']+"&fullName="+name+"&email="+email+"&userID="+id);
+                    dataCon.children(".roomName").eq(0).attr("href", res[roomIDs[i]]['link']);
                     dataCon.children(".roomName").eq(0).text(res[roomIDs[i]]['roomName']);
                     dataCon.children(".numUsers").eq(0).text("Number of Active Users: "+res[roomIDs[i]]['count']);
                     document.getElementsByClassName("roomDetails")[i+1].insertAdjacentHTML('beforeend',res[roomIDs[i]]['description'].replace(/\n/g, "<br />"));

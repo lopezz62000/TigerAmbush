@@ -51,9 +51,6 @@ app.get('/chat', (req, res) => {
     }
     res.render('index', {
         "roomID": url.parse(req.url,true).query['roomID'],
-        "userID": url.parse(req.url,true).query['userID'],
-        "fullName": url.parse(req.url,true).query['fullName'],
-        "email": url.parse(req.url,true).query['email'],
         "appLink":appLink,
         "hasPassword": hasPassword,
         "alive": alive,
@@ -72,11 +69,13 @@ app.get('/admin', (req, res) => {
 
 io.on('connection', (socket) => {
     socket.on('join', (data) => {
-        rooms[data['roomID']]['count'] = rooms[data['roomID']]['count'] + 1;
-        rooms[data['roomID']]['participants'][data['userID']] = data['fullName'] + " (" + data['email'] + ")";
-        io.sockets.emit('disperse'+data['roomID'], {"message": rooms[data['roomID']]['participants'][data['userID']] + " has joined the chat.", "email":"room bot", "userID": "-1"});
-        io.sockets.emit('enter'+data['roomID'], rooms[data['roomID']]['participants']);
-        io.sockets.emit('refreshRooms', rooms);
+        if(data['roomID'] in rooms) {
+            rooms[data['roomID']]['count'] = rooms[data['roomID']]['count'] + 1;
+            rooms[data['roomID']]['participants'][data['userID']] = data['fullName'] + " (" + data['email'] + ")";
+            io.sockets.emit('disperse'+data['roomID'], {"message": rooms[data['roomID']]['participants'][data['userID']] + " has joined the chat.", "email":"room bot", "userID": "-1"});
+            io.sockets.emit('enter'+data['roomID'], rooms[data['roomID']]['participants']);
+            io.sockets.emit('refreshRooms', rooms);
+        }
     });
 
     socket.on('rename', (data) => {
@@ -87,13 +86,15 @@ io.on('connection', (socket) => {
     });
 
     socket.on('validate', (data) => {
-        if(rooms[data['roomID']]['password'] == Buffer.from(data['password']).toString('base64')) {
-            socket.emit('connect'+data['userID'],'success');
-            return;
-        }
-        else {
-            socket.emit('connect'+data['userID'],'Wrong password.');
-            return;
+        if(data['roomID'] in rooms) {
+            if(rooms[data['roomID']]['password'] == Buffer.from(data['password']).toString('base64')) {
+                socket.emit('connect'+data['userID'],'success');
+                return;
+            }
+            else {
+                socket.emit('connect'+data['userID'],'Wrong password.');
+                return;
+            }
         }
     });
 
@@ -122,14 +123,18 @@ io.on('connection', (socket) => {
     });
 
     socket.on('send', (data) => {
-        rooms[data['roomID']]['messages'].push({"message": data['message'], "email": data['email']});
-        io.sockets.emit('disperse'+data['roomID'], {"message": data['message'], "email": data['email'], "userID": data["userID"]});
+        if(data['roomID'] in rooms) {
+            rooms[data['roomID']]['messages'].push({"message": data['message'], "email": data['email']});
+            io.sockets.emit('disperse'+data['roomID'], {"message": data['message'], "email": data['email'], "userID": data["userID"]});
+        }
     });
 
     socket.on('report', (data) => {
-        console.log(data['email']+"reported the following chat: ");
-        console.log(rooms[data['roomID']]['messages']);
-        io.sockets.emit('disperse'+data['roomID'], {"message": "All chat history has been reported.", "email":"room bot", "userID": "-1"});
+        if(data['roomID'] in rooms) {
+            console.log(data['email']+"reported the following chat: ");
+            console.log(rooms[data['roomID']]['messages']);
+            io.sockets.emit('disperse'+data['roomID'], {"message": "All chat history has been reported.", "email":"room bot", "userID": "-1"});
+        }
     });
 
     socket.on('getRooms', (userId) => {

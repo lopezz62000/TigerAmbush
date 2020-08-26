@@ -26,9 +26,6 @@
             </div>
             <br />
             <p id="roomID" style="display: none;"><%= roomID %></p>
-            <p id="userID" style="display: none;"><%= userID %></p>
-            <p id="fullName" style="display: none;"><%= fullName %></p>
-            <p id="email" style="display: none;"><%= email %></p>
             <p id="appLink" style="display: none;"><%= appLink %></p>
             <p id="hasPassword" style="display: none;"><%= hasPassword %></p>
             <p id="alive" style="display: none;"><%= alive %></p>
@@ -75,9 +72,9 @@
         <script type="text/javascript" src="https://code.jquery.com/jquery-latest.min.js"></script>
         <script type="text/javascript">
             var roomID = document.getElementById("roomID").innerHTML;
-            var userID = document.getElementById("userID").innerHTML;
-            var fullName = document.getElementById("fullName").innerHTML;
-            var email = document.getElementById("email").innerHTML;
+            var fullName;
+            var user;
+            var profile;
             var appLink = document.getElementById("appLink").innerHTML;
             var hasPassword = document.getElementById("hasPassword").innerHTML;
             var alive = document.getElementById("alive").innerHTML;
@@ -89,23 +86,7 @@
             }
 
             socket.on('connect', function(data) {
-                if(alive == "false") {
-                    onlyShowDestroyDialogue();
-                }
-                else if(hasPassword == "false") {
-                    join();
-                    document.getElementById("messagebox").focus();
-                }
-                else {
-                    //$("#chatbox").hide();
-                    $("#messageContainer").hide();
-                    $("#lowerHr").hide();
-                    $("#messagebox").hide();
-                    $("#sendBtn").hide();
-                    $("#renameBtn").hide();
-                    $("#reportBtn").hide();
-                    document.getElementById("passwordbox").focus();
-                }
+                
             });
 
             socket.on('destroy'+roomID, function(data) {
@@ -145,7 +126,7 @@
                 $("#reportBtn").show();
                 $("#passwordbox").hide();
                 $("#validateBtn").hide();
-                socket.emit('join', {"fullName": fullName, "roomID": roomID, 'userID': userID, 'email': email});
+                socket.emit('join', {"fullName": fullName, "roomID": roomID, 'userID': user.getAuthResponse().id_token, 'email': profile.getEmail()});
                 socket.on('disperse'+roomID, function(data) {
                     /*
                     var messages = document.getElementById("chatbox").value + data["message"] + "\n";
@@ -164,8 +145,7 @@
                     $(".messageCon").append(newMessage);
                     newMessage.children(".messageText").eq(0).text(data["message"]);
                     newMessage.children(".messageSender").eq(0).text("Sent by " + data["email"]);
-                    if(data["userID"] == userID) {
-                        //newMessage.children(".messageText").eq(0).css('background-image', 'linear-gradient(to right, #ac93b2, #fcd0a1)');
+                    if(data["userID"] == user.getAuthResponse().id_token) {
                         newMessage.children(".messageText").eq(0).css('text-shadow','1px 2px 3px #925c29');
                     }
                     var messageContainer = document.getElementById("messageContainer");
@@ -184,7 +164,7 @@
 
             function send() {
                 if(document.getElementById("messagebox").value != "") {
-                    socket.emit('send', {"message": fullName + ": " + document.getElementById("messagebox").value, "roomID": roomID, "email": email, "userID": userID});
+                    socket.emit('send', {"message": fullName + ": " + document.getElementById("messagebox").value, "roomID": roomID, "email": profile.getEmail(), "userID": user.getAuthResponse().id_token});
                     document.getElementById("messagebox").value = "";
                 }
                 document.getElementById("messagebox").focus();
@@ -201,9 +181,9 @@
             }
 
             function validate() {
-                socket.emit('validate',{'roomID':roomID,'password':document.getElementById("passwordbox").value, 'userID':userID});
+                socket.emit('validate',{'roomID':roomID,'password':document.getElementById("passwordbox").value, 'userID':user.getAuthResponse().id_token});
                 if(!validateListenerExists) {
-                    socket.on('connect'+userID, function(status) {
+                    socket.on('connect'+user.getAuthResponse().id_token, function(status) {
                         if(status != 'success') {
                             alert(status);
                             document.getElementById("passwordbox").value = "";
@@ -218,7 +198,7 @@
 
             function save() {
                 fullName = document.getElementById("nickname").value;
-                socket.emit('rename', {"fullName": fullName, "roomID": roomID, 'userID': userID, 'email': email});
+                socket.emit('rename', {"fullName": fullName, "roomID": roomID, 'userID': user.getAuthResponse().id_token, 'email': profile.getEmail()});
                 $("#renameCon").hide();
             }
 
@@ -240,11 +220,11 @@
                 window.scrollBy(0, -400); // Scroll 100px to the right
                 const messagebox = document.getElementById('messagebox');
                 messagebox.scrollIntoView(false);
-                socket.emit('rename', {"fullName": fullName + " is typing...", "roomID": roomID, 'userID': userID, 'email': email});
+                socket.emit('rename', {"fullName": fullName + " is typing...", "roomID": roomID, 'userID': user.getAuthResponse().id_token, 'email': profile.getEmail()});
             }
 
             function notTyping() {
-                socket.emit('rename', {"fullName": fullName, "roomID": roomID, 'userID': userID, 'email': email});
+                socket.emit('rename', {"fullName": fullName, "roomID": roomID, 'userID': user.getAuthResponse().id_token, 'email': profile.getEmail()});
             }
 
             function showRenameCon() {
@@ -264,30 +244,43 @@
             }
 
             function report() {
-                socket.emit('report',{'roomID':roomID,'email':email});
+                socket.emit('report',{'roomID':roomID,'email':profile.getEmail()});
             }
 
             function onSignIn(googleUser) {
                 // Useful data for your client-side scripts:
-                var profile = googleUser.getBasicProfile();
+                user = googleUser;
+                profile = googleUser.getBasicProfile();
                 $("#gLogin").hide();
-                if(profile.getEmail() != email || email == undefined || email == 'undefined') {
-                    socket.emit('leave', {'roomID':roomID, 'userID': userID});
+                $("#onLoginCon").show();
+                fullName = profile.getName();
+
+                if(alive == "false") {
                     onlyShowDestroyDialogue();
-                    $("#invalid").show();
+                }
+                else if(hasPassword == "false") {
+                    join();
+                    document.getElementById("messagebox").focus();
                 }
                 else {
-                    $("#onLoginCon").show();
+                    //$("#chatbox").hide();
+                    $("#messageContainer").hide();
+                    $("#lowerHr").hide();
+                    $("#messagebox").hide();
+                    $("#sendBtn").hide();
+                    $("#renameBtn").hide();
+                    $("#reportBtn").hide();
+                    document.getElementById("passwordbox").focus();
                 }
             }
 
             document.addEventListener('visibilitychange', function() {
                 if(document.visibilityState == "visible") {
                     document.getElementById("messagebox").blur();
-                    socket.emit('rename', {"fullName": fullName, "roomID": roomID, 'userID': userID, 'email': email});
+                    socket.emit('rename', {"fullName": fullName, "roomID": roomID, 'userID': user.getAuthResponse().id_token, 'email': profile.getEmail()});
                 }
                 else {
-                    socket.emit('rename', {"fullName": fullName + " is idle.", "roomID": roomID, 'userID': userID, 'email': email});
+                    socket.emit('rename', {"fullName": fullName + " is idle.", "roomID": roomID, 'userID': user.getAuthResponse().id_token, 'email': profile.getEmail()});
                 }
                 console.log(document.visibilityState);
             });
@@ -297,7 +290,7 @@
 
             window.addEventListener(eventName, function (e) {
                 if($("#messageContainer").is(':visible')) {
-                    socket.emit('leave', {'roomID':roomID, 'userID': userID});
+                    socket.emit('leave', {'roomID':roomID, 'userID': user.getAuthResponse().id_token});
                 }
             });
 
