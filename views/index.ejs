@@ -71,14 +71,14 @@
         </div>
         <script type="text/javascript" src="https://code.jquery.com/jquery-latest.min.js"></script>
         <script type="text/javascript">
-            var roomID = document.getElementById("roomID").innerHTML;
+            const roomID = document.getElementById("roomID").innerHTML;
             var fullName;
             var user;
             var profile;
-            var appLink = document.getElementById("appLink").innerHTML;
-            var hasPassword = document.getElementById("hasPassword").innerHTML;
-            var alive = document.getElementById("alive").innerHTML;
-            var socket = io.connect(appLink);
+            const appLink = document.getElementById("appLink").innerHTML;
+            const hasPassword = document.getElementById("hasPassword").innerHTML;
+            const alive = document.getElementById("alive").innerHTML;
+            const socket = io.connect(appLink);
             var validateListenerExists = false;
 
             if(document.getElementById("announcement").innerHTML == "") {
