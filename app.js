@@ -11,8 +11,12 @@ var appLink = process.env.APPLINK || 'http://localhost:3000/';
 var rooms = {
     'HelloWorld': {
     'link':appLink+'chat?roomID=HelloWorld', 
+<<<<<<< HEAD
     'roomName':'Princeton Tigers', 
     'count': 0, 
+=======
+    'roomName':'Open Chat!',
+>>>>>>> 312f2c70ef4d76e91997a8d2065f31c69542130d
     'interval': -1,
     'password': '',
     'description': 'This is the default chat. Anyone can come join! Unlike other chats, this room will stay open even if there is no one in it.',
@@ -137,7 +141,6 @@ app.get('/admin', (req, res) => {
 io.on('connection', (socket) => {
     socket.on('join', (data) => {
         if(data['roomID'] in rooms) {
-            rooms[data['roomID']]['count'] = rooms[data['roomID']]['count'] + 1;
             rooms[data['roomID']]['participants'][data['userID']] = data['fullName'] + " (" + data['email'] + ")";
             io.sockets.emit('disperse'+data['roomID'], {"message": rooms[data['roomID']]['participants'][data['userID']] + " has joined the chat.", "email":"room bot", "userID": "-1"});
             io.sockets.emit('enter'+data['roomID'], rooms[data['roomID']]['participants']);
@@ -169,11 +172,16 @@ io.on('connection', (socket) => {
         var roomID = data['roomID'];
         var userID = data['userID'];
         if(roomID in rooms) {
-            rooms[roomID]['count'] = rooms[roomID]['count'] - 1;
             io.sockets.emit('disperse'+data['roomID'], {"message":rooms[roomID]['participants'][userID] + " has left the chat.", "userID":"-1", "email":"room bot"});
-            delete rooms[roomID]['participants'][userID];
+            if(userID in rooms[roomID]['participants']) {
+                delete rooms[roomID]['participants'][userID];
+            }
             io.sockets.emit('enter'+data['roomID'], rooms[data['roomID']]['participants']);
+<<<<<<< HEAD
             if(rooms[roomID]['count'] == 0 && roomID != "HelloWorld" && roomID != "2023" && roomID != "2024"&& roomID != "2021" && roomID != "2022" && roomID != "Gap Year") {
+=======
+            if(Object.keys(rooms[roomID]['participants']).length == 0 && roomID != "HelloWorld") {
+>>>>>>> 312f2c70ef4d76e91997a8d2065f31c69542130d
                 delete rooms[roomID];
 
                 tfidf = new TfIdf();
@@ -215,8 +223,7 @@ io.on('connection', (socket) => {
             password = Buffer.from(data['password']).toString('base64');
         }
         rooms[roomID]={
-            'link':appLink+'chat?roomID='+roomID, 
-            'count': 0, 
+            'link':appLink+'chat?roomID='+roomID,
             'interval': -1,
             'roomName': data['roomName'], 
             'password': password,
@@ -246,7 +253,7 @@ io.on('connection', (socket) => {
         var resRooms = {}
         var i;
         for(i = 0; i < res.length; i++) {
-            resRooms[res[i][1]] = JSON.parse(res[i][0]);
+            resRooms[res[i][1]] = rooms[res[i][1]];
         }
         socket.emit('search'+userID, resRooms);
     });
