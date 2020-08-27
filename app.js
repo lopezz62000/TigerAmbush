@@ -8,9 +8,10 @@ var natural = require('natural');
 
 var appLink = process.env.APPLINK || 'http://localhost:3000/';
 
-var rooms = {'HelloWorld': {
+var rooms = {
+    'HelloWorld': {
     'link':appLink+'chat?roomID=HelloWorld', 
-    'roomName':'Open Chat!', 
+    'roomName':'Princeton Tigers', 
     'count': 0, 
     'interval': -1,
     'password': '',
@@ -18,7 +19,63 @@ var rooms = {'HelloWorld': {
     'openRandomJoin': true,
     'participants': {},
     'messages': new Array()
-}};
+    }, 
+    '2021': {
+        'link':appLink+'chat?roomID=2021', 
+        'roomName':'Class of 2021', 
+        'count': 0, 
+        'interval': -1,
+        'password': '',
+        'description': 'This is for the Class of 2021.',
+        'openRandomJoin': true,
+        'participants': {},
+        'messages': new Array()
+    },
+    '2022': {
+        'link':appLink+'chat?roomID=2022', 
+        'roomName':'Class of 2022', 
+        'count': 0, 
+        'interval': -1,
+        'password': '',
+        'description': 'This is for the Class of 2022.',
+        'openRandomJoin': true,
+        'participants': {},
+        'messages': new Array()
+    },
+    '2023': {
+        'link':appLink+'chat?roomID=2023', 
+        'roomName':'Class of 2023', 
+        'count': 0, 
+        'interval': -1,
+        'password': '',
+        'description': 'This is for the Class of 2023.',
+        'openRandomJoin': true,
+        'participants': {},
+        'messages': new Array()
+    },
+    '2024': {
+    'link':appLink+'chat?roomID=2024', 
+    'roomName':'Class of 2024', 
+    'count': 0, 
+    'interval': -1,
+    'password': '',
+    'description': 'This is for the Class of 2024.',
+    'openRandomJoin': true,
+    'participants': {},
+    'messages': new Array()
+}, 'Gap Year': {
+    'link':appLink+'chat?roomID=Gap_Year', 
+    'roomName':'Gap Years', 
+    'count': 0, 
+    'interval': -1,
+    'password': '',
+    'description': 'This is for people in a Gap Year.',
+    'openRandomJoin': true,
+    'participants': {},
+    'messages': new Array()
+}
+};
+
 
 var adminEmails = ['zlopez@princeton.edu', 'byw2@princeton.edu', 'singl@princeton.edu'];
 var announcement = "";
@@ -26,9 +83,19 @@ var announcement = "";
 var TfIdf = natural.TfIdf;
 var tfidf = new TfIdf();
 var tfidfRooms = [];
-var tfidfIDs = ['HelloWorld'];
+var tfidfIDs = ['HelloWorld', '2021', '2022', '2023', '2024', 'Gap Year'];
 tfidf.addDocument(JSON.stringify(rooms['HelloWorld']));
 tfidfRooms.push(JSON.stringify(rooms['HelloWorld']));
+tfidf.addDocument(JSON.stringify(rooms['2021']));
+tfidfRooms.push(JSON.stringify(rooms['2021']));
+tfidf.addDocument(JSON.stringify(rooms['2022']));
+tfidfRooms.push(JSON.stringify(rooms['2022']));
+tfidf.addDocument(JSON.stringify(rooms['2023']));
+tfidfRooms.push(JSON.stringify(rooms['2023']));
+tfidf.addDocument(JSON.stringify(rooms['2024']));
+tfidfRooms.push(JSON.stringify(rooms['2024']));
+tfidf.addDocument(JSON.stringify(rooms['Gap Year']));
+tfidfRooms.push(JSON.stringify(rooms['Gap Year']));
 
 app.set('view engine', 'ejs');
 
@@ -106,7 +173,7 @@ io.on('connection', (socket) => {
             io.sockets.emit('disperse'+data['roomID'], {"message":rooms[roomID]['participants'][userID] + " has left the chat.", "userID":"-1", "email":"room bot"});
             delete rooms[roomID]['participants'][userID];
             io.sockets.emit('enter'+data['roomID'], rooms[data['roomID']]['participants']);
-            if(rooms[roomID]['count'] == 0 && roomID != "HelloWorld") {
+            if(rooms[roomID]['count'] == 0 && roomID != "HelloWorld" && roomID != "2023" && roomID != "2024"&& roomID != "2021" && roomID != "2022" && roomID != "Gap Year") {
                 delete rooms[roomID];
 
                 tfidf = new TfIdf();
