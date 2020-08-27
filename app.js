@@ -16,8 +16,9 @@ var rooms = {'HelloWorld': {
     'description': 'This is the default chat. Anyone can come join! Unlike other chats, this room will stay open even if there is no one in it.',
     'openRandomJoin': true,
     'participants': {},
-    'messages': new Array()
-}};
+    'messages': new Array()},
+    'serverStatus': 'alive'
+};
 
 var adminEmails = ['zlopez@princeton.edu', 'byw2@princeton.edu', 'singl@princeton.edu'];
 var announcement = "";
@@ -179,6 +180,7 @@ io.on('connection', (socket) => {
         for(i = 0; i < res.length; i++) {
             resRooms[res[i][1]] = rooms[res[i][1]];
         }
+        resRooms['serverStatus'] = rooms['serverStatus'];
         socket.emit('search'+userID, resRooms);
     });
 
@@ -194,5 +196,17 @@ io.on('connection', (socket) => {
     socket.on('announce', (newAnnouncement) => {
         announcement = newAnnouncement;
         io.sockets.emit('announcement', newAnnouncement);
+    });
+
+    socket.on('kill', (data) => {
+        tfidf = new TfIdf();
+        tfidfIDs = new Array();
+        var tmpRoomsIDs = Object.keys(rooms);
+        var i;
+        for(i = 0; i < tmpRoomsIDs.length; i++) {
+            io.sockets.emit('destroy'+tmpRoomsIDs[i], tmpRoomsIDs[i]);
+        }
+        rooms = {'serverStatus': 'dead'};
+        io.sockets.emit('refreshRooms', rooms);
     });
 });

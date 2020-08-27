@@ -153,6 +153,7 @@
                 <br />
                 <p class="pClass" id="loadingRooms" style="display: none;">Loading rooms...</p>
                 <p class="pClass" id="noRooms" style="display: none;">No rooms to show...</p>
+                <p class="pClass" id="deadServer" style="display: none;">Server maintenance ongoing. Please try again in 5 minutes.</p>
                 <div class="roomsCon">
                     <div onmouseover="showDetails(this)" onmouseout="hideDetails(this)" class="room" style="display: none;">
                         <br />
@@ -283,6 +284,7 @@
                 $("#landingCon").hide();
                 $("#termsCon").hide();
                 $("#teamCon").hide();
+                socket.emit('getRooms', id);
             }
         </script>
         <!-- running Google OAuth js -->
@@ -358,7 +360,18 @@
                 for(i = 1; i < roomEntries.length; i++) {
                     roomEntries.eq(i).remove();
                 }
-
+                if(res['serverStatus'] != 'alive') {
+                    $("#deadServer").show();
+                    $("#emailHeader").hide();
+                    $("#roomHeader").hide();
+                    $("#newRoomBtn").hide();
+                    $("#loadingRooms").hide();
+                    $("#searchbox").hide();
+                    $("#searchBtn").hide();
+                    $("#newRoomBtn").hide();
+                    $("#joinRandomBtn").hide();
+                    return;
+                }
                 $("#newRoomBtn").show();
                 $("#joinRandomBtn").show();
                 $("#loadingRooms").hide();
@@ -366,7 +379,7 @@
                 roomRandomLinks = new Array();
                 roomIDs = Object.keys(res);
                 var i;
-                for(i = 0; i < roomIDs.length; i++) {
+                for(i = 0; i < roomIDs.length-1; i++) {
                     var newRoom = $(".room").eq(0).clone().show();
                     $(".roomsCon").append(newRoom);
                     var name;
