@@ -142,8 +142,8 @@
                 <br />
                 <input id ="openrandom" type="checkbox" onclick="onCheck()">
                 <label class="pClass">Open Random Joining</label>
-                <button id="buttonCreate" class="buttonClass" type="button" onclick="createRoom()">Create Room</button>
-                <button id="buttonCloseForm" class="buttonClass" type="button" onclick="hideNewRoomForm()">Close Form</button>
+                <button id="buttonCreate" class="buttonClass roomsButtonClass" type="button" onclick="createRoom()">Create Room</button>
+                <button id="buttonCloseForm" class="buttonClass roomsButtonClass" type="button" onclick="hideNewRoomForm()">Close Form</button>
                 <br />
                 <br />
             </div>
@@ -419,7 +419,13 @@
 
             function showNewRoomForm() {
                 $("#newRoomFormCon").show();
-                window.scrollTo(0, 500);
+                const newRoomForm = document.getElementById('newRoomFormCon');
+                newRoomForm.scrollIntoView({
+                    behavior: "smooth",
+                    block: "start",
+                    inline: "center"
+                });
+                document.getElementById('roomNameField').focus();
             }
 
             function hideNewRoomForm() {

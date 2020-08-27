@@ -268,8 +268,8 @@ ROOMS.EJS STYLES ROOMS PAGE
 .newRoomsCon {
 	border: 0;
 	outline: 0;
-	width: 50%;
-	min-width: 510px;
+	width: 55%;
+	min-width: 520px;
 }
 
 .roomsButtonClass {
