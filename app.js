@@ -233,6 +233,7 @@ io.on('connection', (socket) => {
         tfidfRooms.push(JSON.stringify(rooms[roomID]));
         tfidfIDs.push(roomID);
         io.sockets.emit('refreshRooms', {'rooms': rooms, 'serverStatus': serverStatus});
+        timeoutObjs[roomID] = setTimeout(deleteRoom, 150000, roomID);
     });
 
     socket.on('search', (data) => {
