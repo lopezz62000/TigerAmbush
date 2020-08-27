@@ -467,6 +467,10 @@
                         return;
                     }
                 }
+                if($("#roomNameField").val().length > 25) {
+                    alert("Room name is too long. Maximum length is 25 characters.");
+                    return;
+                }
                 if($("#descriptionField").val().length < 20) {
                     alert("Description needs to be at least 20 characters.");
                     return;

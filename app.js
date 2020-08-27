@@ -8,11 +8,11 @@ var natural = require('natural');
 
 var appLink = process.env.APPLINK || 'http://localhost:3000/';
 var serverStatus = 'alive';
+var timeoutObjs = {};
 var rooms = {
     'UHJpbmNldG9uIFRpZ2Vycw==': {
         'link':appLink+'chat?roomID=UHJpbmNldG9uIFRpZ2Vycw==', 
         'roomName':'Princeton Tigers',
-        'interval': -1,
         'password': '',
         'description': 'This is the default chat. Anyone can come join! Unlike other chats, this room will stay open even if there is no one in it.',
         'openRandomJoin': true,
@@ -23,7 +23,6 @@ var rooms = {
     'Q2xhc3Mgb2YgMjAyMQ==': {
         'link':appLink+'chat?roomID=Q2xhc3Mgb2YgMjAyMQ==', 
         'roomName':'Class of 2021',
-        'interval': -1,
         'password': '',
         'description': 'This is for the Class of 2021.',
         'openRandomJoin': true,
@@ -34,7 +33,6 @@ var rooms = {
     'Q2xhc3Mgb2YgMjAyMg==': {
         'link':appLink+'chat?roomID=Q2xhc3Mgb2YgMjAyMg==', 
         'roomName':'Class of 2022',
-        'interval': -1,
         'password': '',
         'description': 'This is for the Class of 2022.',
         'openRandomJoin': true,
@@ -45,7 +43,6 @@ var rooms = {
     'Q2xhc3Mgb2YgMjAyMw==': {
         'link':appLink+'chat?roomID=Q2xhc3Mgb2YgMjAyMw==', 
         'roomName':'Class of 2023',
-        'interval': -1,
         'password': '',
         'description': 'This is for the Class of 2023.',
         'openRandomJoin': true,
@@ -56,7 +53,6 @@ var rooms = {
     'Q2xhc3Mgb2YgMjAyNA==': {
         'link':appLink+'chat?roomID=Q2xhc3Mgb2YgMjAyNA==', 
         'roomName':'Class of 2024',
-        'interval': -1,
         'password': '',
         'description': 'This is for the Class of 2024.',
         'openRandomJoin': true,
@@ -67,7 +63,6 @@ var rooms = {
     'R2FwIFllYXI=': {
         'link':appLink+'chat?roomID=R2FwIFllYXI=', 
         'roomName':'Gap Years',
-        'interval': -1,
         'password': '',
         'description': 'This is for people in a Gap Year.',
         'openRandomJoin': true,
@@ -76,7 +71,6 @@ var rooms = {
         'canDelete': false
     },
 };
-
 
 var adminEmails = ['zlopez@princeton.edu', 'byw2@princeton.edu', 'singl@princeton.edu'];
 var announcement = "";
@@ -138,6 +132,10 @@ app.get('/admin', (req, res) => {
 io.on('connection', (socket) => {
     socket.on('join', (data) => {
         if(data['roomID'] in rooms) {
+            if(data['roomID'] in timeoutObjs) {
+                clearTimeout(timeoutObjs[data['roomID']]);
+                delete timeoutObjs[data['roomID']];
+            }
             rooms[data['roomID']]['participants'][data['userID']] = data['fullName'] + " (" + data['email'] + ")";
             io.sockets.emit('disperse'+data['roomID'], {"message": rooms[data['roomID']]['participants'][data['userID']] + " has joined the chat.", "email":"room bot", "userID": "-1"});
             io.sockets.emit('enter'+data['roomID'], rooms[data['roomID']]['participants']);
@@ -165,6 +163,20 @@ io.on('connection', (socket) => {
         }
     });
 
+    function deleteRoom(roomID) {
+        delete rooms[roomID];
+
+        tfidf = new TfIdf();
+        tfidfIDs = Object.keys(rooms);
+        var i;
+        for(i = 0; i < tfidfIDs.length; i++) {
+            tfidf.addDocument(JSON.stringify(rooms[tfidfIDs[i]]));
+            tfidfRooms.push(JSON.stringify(rooms[tfidfIDs[i]]));
+        }
+        io.sockets.emit('destroy'+roomID, roomID);
+        io.sockets.emit('refreshRooms', {'rooms': rooms, 'serverStatus': serverStatus});
+    }
+
     socket.on('leave', (data) => {
         var roomID = data['roomID'];
         var userID = data['userID'];
@@ -175,16 +187,7 @@ io.on('connection', (socket) => {
             }
             io.sockets.emit('enter'+data['roomID'], rooms[data['roomID']]['participants']);
             if(Object.keys(rooms[roomID]['participants']).length == 0 && rooms[roomID]['canDelete']) {
-                delete rooms[roomID];
-
-                tfidf = new TfIdf();
-                tfidfIDs = Object.keys(rooms);
-                var i;
-                for(i = 0; i < tfidfIDs.length; i++) {
-                    tfidf.addDocument(JSON.stringify(rooms[tfidfIDs[i]]));
-                    tfidfRooms.push(JSON.stringify(rooms[tfidfIDs[i]]));
-                }
-                io.sockets.emit('destroy'+roomID, roomID);
+                timeoutObjs[roomID] = setTimeout(deleteRoom, 150000, roomID);
             }
         }
         io.sockets.emit('refreshRooms', {'rooms': rooms, 'serverStatus': serverStatus});
@@ -217,7 +220,7 @@ io.on('connection', (socket) => {
         }
         rooms[roomID]={
             'link':appLink+'chat?roomID='+roomID,
-            'interval': -1,
+            'interval': null,
             'roomName': data['roomName'], 
             'password': password,
             'description': data['description'],
