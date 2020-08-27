@@ -11,12 +11,8 @@ var appLink = process.env.APPLINK || 'http://localhost:3000/';
 var rooms = {
     'HelloWorld': {
     'link':appLink+'chat?roomID=HelloWorld', 
-<<<<<<< HEAD
     'roomName':'Princeton Tigers', 
     'count': 0, 
-=======
-    'roomName':'Open Chat!',
->>>>>>> 312f2c70ef4d76e91997a8d2065f31c69542130d
     'interval': -1,
     'password': '',
     'description': 'This is the default chat. Anyone can come join! Unlike other chats, this room will stay open even if there is no one in it.',
@@ -177,11 +173,7 @@ io.on('connection', (socket) => {
                 delete rooms[roomID]['participants'][userID];
             }
             io.sockets.emit('enter'+data['roomID'], rooms[data['roomID']]['participants']);
-<<<<<<< HEAD
             if(rooms[roomID]['count'] == 0 && roomID != "HelloWorld" && roomID != "2023" && roomID != "2024"&& roomID != "2021" && roomID != "2022" && roomID != "Gap Year") {
-=======
-            if(Object.keys(rooms[roomID]['participants']).length == 0 && roomID != "HelloWorld") {
->>>>>>> 312f2c70ef4d76e91997a8d2065f31c69542130d
                 delete rooms[roomID];
 
                 tfidf = new TfIdf();
