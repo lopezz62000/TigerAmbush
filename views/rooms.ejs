@@ -369,17 +369,18 @@
                     $("#searchbox").hide();
                     $("#searchBtn").hide();
                     $("#newRoomBtn").hide();
+                    $("#newRoomFormCon").hide();
                     $("#joinRandomBtn").hide();
                     return;
                 }
                 $("#newRoomBtn").show();
                 $("#joinRandomBtn").show();
                 $("#loadingRooms").hide();
-                rooms = res;
+                rooms = res['rooms'];
                 roomRandomLinks = new Array();
-                roomIDs = Object.keys(res);
+                roomIDs = Object.keys(rooms);
                 var i;
-                for(i = 0; i < roomIDs.length-1; i++) {
+                for(i = 0; i < roomIDs.length; i++) {
                     var newRoom = $(".room").eq(0).clone().show();
                     $(".roomsCon").append(newRoom);
                     var name;
@@ -389,14 +390,14 @@
                     else {
                         name = nickname;
                     }
-                    if(res[roomIDs[i]]['openRandomJoin']) {
-                        roomRandomLinks.push(res[roomIDs[i]]['link']);
+                    if(rooms[roomIDs[i]]['openRandomJoin']) {
+                        roomRandomLinks.push(rooms[roomIDs[i]]['link']);
                     }
                     dataCon = newRoom.children(".dataCon").eq(0);
-                    dataCon.children(".roomName").eq(0).attr("href", res[roomIDs[i]]['link']);
-                    dataCon.children(".roomName").eq(0).text(res[roomIDs[i]]['roomName']);
-                    dataCon.children(".numUsers").eq(0).text("Number of Active Users: "+Object.keys(res[roomIDs[i]]['participants']).length);
-                    document.getElementsByClassName("roomDetails")[i+1].insertAdjacentHTML('beforeend',res[roomIDs[i]]['description'].replace(/\n/g, "<br />"));
+                    dataCon.children(".roomName").eq(0).attr("href", rooms[roomIDs[i]]['link']);
+                    dataCon.children(".roomName").eq(0).text(rooms[roomIDs[i]]['roomName']);
+                    dataCon.children(".numUsers").eq(0).text("Number of Active Users: "+Object.keys(rooms[roomIDs[i]]['participants']).length);
+                    document.getElementsByClassName("roomDetails")[i+1].insertAdjacentHTML('beforeend',rooms[roomIDs[i]]['description'].replace(/\n/g, "<br />"));
                 }
                 if(roomIDs.length == 0) {
                     $("#noRooms").show();

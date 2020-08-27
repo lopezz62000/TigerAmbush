@@ -56,7 +56,7 @@
             });
 
             socket.on('refreshRooms', function(data) {
-                rooms = JSON.stringify(data);
+                rooms = JSON.stringify(data['rooms']);
                 refreshRooms();
             });
 
