@@ -230,7 +230,6 @@
         <script>
             var appLink = document.getElementById("appLink").innerHTML;
             var socket = io.connect(appLink);
-            //var id = Math.floor(Math.random() * 9007199254740990);
             var rooms;
             var roomIDs;
             var roomRandomLinks;
@@ -383,7 +382,7 @@
                     dataCon = newRoom.children(".dataCon").eq(0);
                     dataCon.children(".roomName").eq(0).attr("href", res[roomIDs[i]]['link']);
                     dataCon.children(".roomName").eq(0).text(res[roomIDs[i]]['roomName']);
-                    dataCon.children(".numUsers").eq(0).text("Number of Active Users: "+res[roomIDs[i]]['count']);
+                    dataCon.children(".numUsers").eq(0).text("Number of Active Users: "+Object.keys(res[roomIDs[i]]['participants']).length);
                     document.getElementsByClassName("roomDetails")[i+1].insertAdjacentHTML('beforeend',res[roomIDs[i]]['description'].replace(/\n/g, "<br />"));
                 }
                 if(roomIDs.length == 0) {
