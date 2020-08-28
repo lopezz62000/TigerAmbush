@@ -172,6 +172,10 @@
             <br />
             <br />
         </div>
+        <button id="next" class="buttonClass roomsButtonClass" type="button" onclick="previousPage()">Previous Page</button>
+        <button id="next" class="buttonClass roomsButtonClass" type="button" onclick="nextPage()">Next Page</button>
+        <br />
+        <br />
         <!--------------------------- Terms of Use page --------------------------->
         <div id="termsCon" class="container-fluid roomsPageCon" style="display: none;">
             <br />
@@ -239,6 +243,7 @@
             var givenName;
             var email;
             var nickname;
+            var pageNum = 0;
             var criteria = "";
 
             startApp();
@@ -354,12 +359,22 @@
         </script>
         <!-- rooms general functions -->
         <script>
+            function nextPage() {
+                pageNum++;
+                socket.emit('getRooms', id);
+            }
+            function previousPage() {
+                if (pageNum != 0) {
+                    pageNum--;
+                    socket.emit('getRooms', id);
+                }
+            }
             function refreshRooms(res) {
                 var roomsCon = $(".roomsCon").eq(0);
                 var roomEntries = roomsCon.children();
                 for(i = 1; i < roomEntries.length; i++) {
                     roomEntries.eq(i).remove();
-                }
+                } 
                 if(res['serverStatus'] != 'alive') {
                     $("#deadServer").show();
                     $("#emailHeader").hide();
@@ -379,8 +394,9 @@
                 rooms = res['rooms'];
                 roomRandomLinks = new Array();
                 roomIDs = Object.keys(rooms);
-                var i;
-                for(i = 0; i < roomIDs.length; i++) {
+                // var i;
+                for(i = (pageNum*4); i < ((pageNum*4) + 4); i++) {
+                // for(i = 0; i < roomIDs.length; i++) {
                     var newRoom = $(".room").eq(0).clone().show();
                     $(".roomsCon").append(newRoom);
                     var name;
