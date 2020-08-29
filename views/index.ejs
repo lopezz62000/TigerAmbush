@@ -4,10 +4,6 @@
         <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.0.4/socket.io.js"></script>
         <script src="/socket.io/socket.io.js"></script>
         <title><%= roomName %></title>
-        <meta name="google-signin-scope" content="profile email">
-        <meta name="google-signin-client_id" content="758290075776-i5a0a6680n51lo76p8qfignd0s5148jd.apps.googleusercontent.com">
-        <meta name="viewport" content="initial-scale=0.52, maximum-scale=0.52, user-scalable=no"/>
-        <script src="https://apis.google.com/js/platform.js" async defer></script>
         
         <link rel="stylesheet" href="styles.css">
         <link rel="icon" type="image/png" href="pawlogo.png" />
@@ -26,7 +22,6 @@
             </div>
             <br />
             <p class="pClass" id="announcement"><%= announcement %></p>
-            <div style="margin:auto;" id="gLogin" class="signin2 g-signin2" data-onsuccess="onSignIn" data-theme="light" data-width="250" data-height="50" data-longtitle="true"></div>
             <p id="invalid" style="display: none;">Invalid URL. Please rejoin room from rooms page. Redirecting in 5 seconds.</p>
             <div class="pClass" id="onLoginCon" style="display: none;">
                 <p class="pClass" id="destroyed" style="display: none;">This room has been removed. Redirecting to rooms page in 5 seconds.</p>
@@ -62,9 +57,10 @@
         <script type="text/javascript" src="https://code.jquery.com/jquery-latest.min.js"></script>
         <script type="text/javascript">
             const roomID = <%- JSON.stringify(roomID) %>;
-            var fullName;
-            var user;
-            var profile;
+            const auth0User = <%- JSON.stringify(userData) %>;
+            const userID = auth0User['id'];
+            const fullName = auth0User['displayName'];
+            const email = auth0User['emails'][0]['value'];
             const appLink = <%- JSON.stringify(appLink) %>;
             const hasPassword = <%- JSON.stringify(hasPassword) %>;
             const alive = <%- JSON.stringify(alive) %>;
@@ -76,7 +72,9 @@
             }
 
             socket.on('connect', function(data) {
-                
+                if(auth0User) {
+                    onSignIn();
+                }
             });
 
             socket.on('destroy'+roomID, function(data) {
@@ -116,15 +114,8 @@
                 $("#reportBtn").show();
                 $("#passwordbox").hide();
                 $("#validateBtn").hide();
-                socket.emit('join', {"fullName": fullName, "roomID": roomID, 'userID': user.getAuthResponse().id_token, 'email': profile.getEmail()});
+                socket.emit('join', {"fullName": fullName, "roomID": roomID, 'userID': userID, 'email': email});
                 socket.on('disperse'+roomID, function(data) {
-                    /*
-                    var messages = document.getElementById("chatbox").value + data["message"] + "\n";
-                    var chatbox = document.getElementById('chatbox'); 
-                    chatbox.value = messages;
-                    chatbox.scrollTop = chatbox.scrollHeight; 
-                    */
-                    //document.getElementById('chatbox').blur();
                     /* Audio link for notification */ 
                     if (document.hidden) {
                         var audio = new Audio("notif.mp3"); 
@@ -135,7 +126,7 @@
                     $(".messageCon").append(newMessage);
                     newMessage.children(".messageText").eq(0).text(data["message"]);
                     newMessage.children(".messageSender").eq(0).text("Sent by " + data["email"]);
-                    if(data["userID"] == user.getAuthResponse().id_token) {
+                    if(data["userID"] == userID) {
                         newMessage.children(".messageText").eq(0).css('text-shadow','1px 2px 3px #925c29');
                     }
                     var messageContainer = document.getElementById("messageContainer");
@@ -154,7 +145,7 @@
 
             function send() {
                 if(document.getElementById("messagebox").value != "") {
-                    socket.emit('send', {"message": fullName + ": " + document.getElementById("messagebox").value, "roomID": roomID, "email": profile.getEmail(), "userID": user.getAuthResponse().id_token});
+                    socket.emit('send', {"message": fullName + ": " + document.getElementById("messagebox").value, "roomID": roomID, "email": email, "userID": userID});
                     document.getElementById("messagebox").value = "";
                 }
                 document.getElementById("messagebox").focus();
@@ -171,9 +162,9 @@
             }
 
             function validate() {
-                socket.emit('validate',{'roomID':roomID,'password':document.getElementById("passwordbox").value, 'userID':user.getAuthResponse().id_token});
+                socket.emit('validate',{'roomID':roomID,'password':document.getElementById("passwordbox").value, 'userID':userID});
                 if(!validateListenerExists) {
-                    socket.on('connect'+user.getAuthResponse().id_token, function(status) {
+                    socket.on('connect'+userID, function(status) {
                         if(status != 'success') {
                             alert(status);
                             document.getElementById("passwordbox").value = "";
@@ -188,7 +179,7 @@
 
             function save() {
                 fullName = document.getElementById("nickname").value;
-                socket.emit('rename', {"fullName": fullName, "roomID": roomID, 'userID': user.getAuthResponse().id_token, 'email': profile.getEmail()});
+                socket.emit('rename', {"fullName": fullName, "roomID": roomID, 'userID': userID, 'email': email});
                 $("#renameCon").hide();
             }
 
@@ -202,11 +193,11 @@
                 window.scrollBy(0, -400); // Scroll 100px to the right
                 const messagebox = document.getElementById('messagebox');
                 messagebox.scrollIntoView(false);
-                socket.emit('rename', {"fullName": fullName + " is typing...", "roomID": roomID, 'userID': user.getAuthResponse().id_token, 'email': profile.getEmail()});
+                socket.emit('rename', {"fullName": fullName + " is typing...", "roomID": roomID, 'userID': userID, 'email': email});
             }
 
             function notTyping() {
-                socket.emit('rename', {"fullName": fullName, "roomID": roomID, 'userID': user.getAuthResponse().id_token, 'email': profile.getEmail()});
+                socket.emit('rename', {"fullName": fullName, "roomID": roomID, 'userID': userID, 'email': email});
             }
 
             function showRenameCon() {
@@ -226,16 +217,11 @@
             }
 
             function report() {
-                socket.emit('report',{'roomID':roomID,'email':profile.getEmail()});
+                socket.emit('report',{'roomID':roomID,'email': email});
             }
 
-            function onSignIn(googleUser) {
-                // Useful data for your client-side scripts:
-                user = googleUser;
-                profile = googleUser.getBasicProfile();
-                $("#gLogin").hide();
+            function onSignIn() {
                 $("#onLoginCon").show();
-                fullName = profile.getName();
 
                 if(!alive) {
                     onlyShowDestroyDialogue();
@@ -259,10 +245,10 @@
             document.addEventListener('visibilitychange', function() {
                 if(document.visibilityState == "visible") {
                     document.getElementById("messagebox").blur();
-                    socket.emit('rename', {"fullName": fullName, "roomID": roomID, 'userID': user.getAuthResponse().id_token, 'email': profile.getEmail()});
+                    socket.emit('rename', {"fullName": fullName, "roomID": roomID, 'userID': userID, 'email': email});
                 }
                 else {
-                    socket.emit('rename', {"fullName": fullName + " is idle.", "roomID": roomID, 'userID': user.getAuthResponse().id_token, 'email': profile.getEmail()});
+                    socket.emit('rename', {"fullName": fullName + " is idle.", "roomID": roomID, 'userID': userID, 'email': email});
                 }
                 console.log(document.visibilityState);
             });
@@ -272,7 +258,7 @@
 
             window.addEventListener(eventName, function (e) {
                 if($("#messageContainer").is(':visible')) {
-                    socket.emit('leave', {'roomID':roomID, 'userID': user.getAuthResponse().id_token});
+                    socket.emit('leave', {'roomID':roomID, 'userID': userID});
                 }
             });
 

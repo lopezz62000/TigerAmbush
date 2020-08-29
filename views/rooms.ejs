@@ -24,41 +24,6 @@
         <!-- Including socket.io -->
         <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.0.4/socket.io.js"></script>
         <script src="/socket.io/socket.io.js"></script>
-
-        <!-- Including Google OAught API -->
-        <script src="https://apis.google.com/js/api:client.js"></script>
-        <meta name="google-signin-scope" content="profile email">
-        <meta name="google-signin-client_id" content="758290075776-i5a0a6680n51lo76p8qfignd0s5148jd.apps.googleusercontent.com">
-        <script src="https://apis.google.com/js/platform.js" async defer></script>
-
-        <!-- Google OAught API Script-->
-        <script>
-            var googleUser = {};
-            var startApp = function() {
-                gapi.load('auth2', function(){
-                    // Retrieve the singleton for the GoogleAuth library and set up the client.
-                    auth2 = gapi.auth2.init({
-                    client_id: '758290075776-i5a0a6680n51lo76p8qfignd0s5148jd.apps.googleusercontent.com',
-                    cookiepolicy: 'single_host_origin',
-                    // Request scopes in addition to 'profile' and 'email'
-                    //scope: 'additional_scope'
-                    });
-                    attachSignin(document.getElementById('customBtn'));
-                    attachSignin(document.getElementById('sign-in'));
-                });
-            };
-        
-            function attachSignin(element) {
-                console.log(element.id);
-                auth2.attachClickHandler(element, {},
-                    function (googleUser) {
-                        onSignIn(googleUser);
-                        //TODO: ADD WHAT HAPPENS ON SIGNIN
-                    }, function(error) {
-                        alert("Please try again. The following error occured: " + JSON.stringify(error, undefined, 2));
-                });
-            }
-        </script>
     </head>
     <body>
         <p id="appLink" style="display: none;"><%= appLink %></p>
@@ -76,7 +41,7 @@
                     <a href="#" onclick="showTerms()"><li class="nav-item">Terms of Use</li></a>
                     <a href="#" onclick="showTeam()"><li class="nav-item">Our Team</li></a>
                     <a href="#" style="display:none;" id="roomsRef" onclick="showRooms()"><li class="nav-item">Rooms</li></a>
-                    <a href="#" id="sign-inRef"><li class="nav-item" id="sign-in">Chat Now</li></a>   
+                    <a href="<%= appLink %>login" id="sign-inRef"><li class="nav-item" id="sign-in">Chat Now</li></a>   
                     <a href="#" style="display:none;" id="sign-out" onclick="signOut()"><li class="nav-item">Sign Out</li></a>
                 </ul>
             </div>
@@ -93,10 +58,7 @@
                     <span> Join our virtual chat rooms: study groups,
                     group bonding, watch parties and more.</span>
                 </p>
-                <div id="customBtn" class="customGPlusSignIn">
-                    <img src="google-icon.svg" height=20 style="position: absolute; top: 22%; left: 30%; transform: translate(-50%,-50%);"/>
-                    <span class="buttonText" style="position: absolute; top: 50%; left: 60%; transform: translate(-50%,-50%);">Sign In</span>
-                </div>
+                <button class="customGPlusSignIn" onclick="signIn()">Sign In</button>
                 <div id="iphone" class="d-none d-md-block">
                     <img src="iphone.png" alt="iPhone">
                 </div>
@@ -171,9 +133,9 @@
             </div>
             <br />
             <br />
+            <button id="prev" class="buttonClass roomsButtonClass" type="button" onclick="previousPage()">Previous Page</button>
+            <button id="next" class="buttonClass roomsButtonClass" type="button" onclick="nextPage()">Next Page</button>
         </div>
-        <button id="next" class="buttonClass roomsButtonClass" type="button" onclick="previousPage()">Previous Page</button>
-        <button id="next" class="buttonClass roomsButtonClass" type="button" onclick="nextPage()">Next Page</button>
         <br />
         <br />
         <!--------------------------- Terms of Use page --------------------------->
@@ -233,7 +195,7 @@
 
         <!-- initializing -->
         <script>
-            var appLink = document.getElementById("appLink").innerHTML;
+            var appLink = <%- JSON.stringify(appLink) %>;
             var socket = io.connect(appLink);
             var rooms;
             var roomIDs;
@@ -245,7 +207,7 @@
             var nickname;
             var pageNum = 0;
             var criteria = "";
-
+            var auth0User = <%- JSON.stringify(userData) %>;
             startApp();
         </script>
         <!-- running socket.io js -->
@@ -292,41 +254,22 @@
                 socket.emit('getRooms', id);
             }
         </script>
-        <!-- running Google OAuth js -->
+        <!-- running Auth0 -->
         <script>
-            function onSignIn(googleUser) {
-                // Useful data for your client-side scripts:
-                var profile = googleUser.getBasicProfile();
+            function signIn() {
+                window.location.href=appLink+"login";
+            }
 
-                if(!profile.getEmail().includes("@princeton.edu")) {
-                    alert("TigerAmbush is only available to the Princeton emails.");
-                    signOut();
-                    return;
-                }
-
-                // The ID token you need to pass to your backend:
-                id = googleUser.getAuthResponse().id_token;
-                fullName = profile.getName();
-                givenName = profile.getGivenName();
-                email = profile.getEmail();
-
-                localStorage.setItem("id", id);
-                localStorage.setItem("fullName", fullName);
-                localStorage.setItem("givenName", givenName);
-                localStorage.setItem("email", email);
-
+            function onSignIn() {
+                id = auth0User['id'];
+                fullName = auth0User['displayName'];
+                givenName = auth0User['displayName'];
+                email = auth0User['emails'][0]['value'];
                 afterSignIn();
             }
 
             function signOut() {
-                var auth2 = gapi.auth2.getAuthInstance();
-                auth2.signOut().then(function () {
-                    localStorage.removeItem("id");
-                    localStorage.removeItem("fullName");
-                    localStorage.removeItem("givenName");
-                    localStorage.removeItem("email");
-                    location.reload();
-                });
+                alert("Sign out not yet implemented");
             }
 
             function afterSignIn() {
@@ -349,12 +292,8 @@
                 });
             }
 
-            if (localStorage.getItem("fullName") != null) {
-                id = localStorage.getItem("id");
-                fullName = localStorage.getItem("fullName");
-                givenName = localStorage.getItem("givenName");
-                email = localStorage.getItem("email");
-                afterSignIn();
+            if(auth0User) {
+                onSignIn();
             }
         </script>
         <!-- rooms general functions -->
@@ -362,12 +301,14 @@
             function nextPage() {
                 pageNum++;
                 socket.emit('getRooms', id);
+                document.getElementById('next').blur();
             }
             function previousPage() {
                 if (pageNum != 0) {
                     pageNum--;
                     socket.emit('getRooms', id);
                 }
+                document.getElementById('prev').blur();
             }
             function refreshRooms(res) {
                 var roomsCon = $(".roomsCon").eq(0);

@@ -4,9 +4,83 @@ var server = app.listen(process.env.PORT || 3000);
 var io = require('socket.io')(server);
 const url = require('url');
 const https = require('https');
+var util = require('util');
 var natural = require('natural');
+const querystring = require('querystring');
 
 var appLink = process.env.APPLINK || 'http://localhost:3000/';
+var AUTH0_DOMAIN = process.env.AUTH0_DOMAIN || 'id50.auth0.com';
+var AUTH0_CLIENT_ID = process.env.AUTH0_CLIENT_ID || 'tLomgRqPFuPmSJHChGsNfMvP1ckQ0avc';
+var AUTH0_CLIENT_SECRET = process.env.AUTH0_CLIENT_SECRET || 'b2-m64pKtBmOyU_xUZRrVKLFJAsu6drtXNKRB8yb6SJsnoNYaVhgziWo07fxl9VH';
+var AUTH0_CALLBACK_URL = process.env.AUTH0_CALLBACK_URL || 'http://localhost:3000/callback';
+
+
+/****************
+* APP AUTH0 START 
+****************/
+
+var session = require('express-session');
+
+// config express-session
+var sess = {
+  secret: 'b2-m64pKtBmOyU_xUZRrVKLFJAsu6drtXNKRB8yb6SJsnoNYaVhgziWo07fxl9VH',
+  cookie: {},
+  resave: false,
+  saveUninitialized: true
+};
+
+if (app.get('env') === 'production') {
+  // Use secure cookies in production (requires SSL/TLS)
+  sess.cookie.secure = true;
+
+  // Uncomment the line below if your application is behind a proxy (like on Heroku)
+  // or if you're encountering the error message:
+  // "Unable to verify authorization request state"
+  app.set('trust proxy', 1);
+}
+
+app.use(session(sess));
+
+var passport = require('passport');
+var Auth0Strategy = require('passport-auth0');
+
+// Configure Passport to use Auth0
+var strategy = new Auth0Strategy(
+  {
+    domain: AUTH0_DOMAIN,
+    clientID: AUTH0_CLIENT_ID,
+    clientSecret: AUTH0_CLIENT_SECRET,
+    callbackURL: AUTH0_CALLBACK_URL
+  },
+  function (accessToken, refreshToken, extraParams, profile, done) {
+    // accessToken is the token to call Auth0 API (not needed in the most cases)
+    // extraParams.id_token has the JSON Web Token
+    // profile has all the information from the user
+    return done(null, profile);
+  }
+);
+
+passport.use(strategy);
+
+app.use(passport.initialize());
+app.use(passport.session());
+
+passport.serializeUser(function (user, done) {
+    done(null, user);
+});
+
+passport.deserializeUser(function (user, done) {
+    done(null, user);
+});
+
+/**************
+* APP AUTH0 END 
+**************/
+
+/********************
+* APP VARIABLES START 
+********************/
+
 var serverStatus = 'alive';
 var timeoutObjs = {};
 var rooms = {
@@ -71,7 +145,6 @@ var rooms = {
         'canDelete': false
     },
 };
-
 var adminEmails = ['zlopez@princeton.edu', 'byw2@princeton.edu', 'singl@princeton.edu'];
 var announcement = "";
 
@@ -92,42 +165,117 @@ tfidfRooms.push(JSON.stringify(rooms['2024']));
 tfidf.addDocument(JSON.stringify(rooms['Gap_Year']));
 tfidfRooms.push(JSON.stringify(rooms['Gap_Year']));
 
+/******************
+* APP VARIABLES END 
+******************/
+
+/*****************
+* APP ROUTES START
+*****************/
+
 app.set('view engine', 'ejs');
 
 app.use(express.static('public'));
 
 app.get('/', (req, res) => {
+    var userData = null;
+    if(req.user) {
+        const { _raw, _json, ...userProfile } = req.user;
+        userData = userProfile;
+    }
     res.render('rooms', {
-        "appLink":appLink
+        "appLink":appLink,
+        "userData": userData
     });
+});
+
+app.get('/login', passport.authenticate('auth0', {
+    scope: 'openid email profile'
+  }), function (req, res) {
+    res.redirect('/');
+  });
+  
+  // Perform the final stage of authentication and redirect to previously requested URL or '/user'
+app.get('/callback', function (req, res, next) {
+    passport.authenticate('auth0', function (err, user, info) {
+        if (err) { return next(err); }
+        if (!user) { return res.redirect('/login'); }
+        req.logIn(user, function (err) {
+        if (err) { return next(err); }
+        const returnTo = req.session.returnTo;
+        delete req.session.returnTo;
+        res.redirect(returnTo || '/');
+        });
+    })(req, res, next);
+});
+  
+  // Perform session logout and redirect to homepage
+app.get('/logout', (req, res) => {
+    req.logout();
+
+    var returnTo = req.protocol + '://' + req.hostname;
+    var port = req.connection.localPort;
+    if (port !== undefined && port !== 80 && port !== 443) {
+        returnTo += ':' + port;
+    }
+    var logoutURL = new url.URL(
+        util.format('https://%s/v2/logout', AUTH0_DOMAIN)
+    );
+    var searchString = querystring.stringify({
+        client_id: AUTH0_CLIENT_ID,
+        returnTo: returnTo
+    });
+    logoutURL.search = searchString;
+
+    res.redirect(logoutURL);
 });
 
 app.get('/chat', (req, res) => {
-    var hasPassword = false;
-    var alive = false;
-    var roomName = "Closed Room"
-    if(url.parse(req.url,true).query['roomID'] in rooms) {
-        alive = true;
-        hasPassword = (rooms[url.parse(req.url,true).query['roomID']]['password'] != "");
-        roomName = rooms[url.parse(req.url,true).query['roomID']]['roomName']
+    if(req.user) {
+        var hasPassword = false;
+        var alive = false;
+        var roomName = "Closed Room"
+        if(url.parse(req.url,true).query['roomID'] in rooms) {
+            alive = true;
+            hasPassword = (rooms[url.parse(req.url,true).query['roomID']]['password'] != "");
+            roomName = rooms[url.parse(req.url,true).query['roomID']]['roomName']
+        }
+        const { _raw, _json, ...userProfile } = req.user;
+        res.render('index', {
+            "roomID": url.parse(req.url,true).query['roomID'],
+            "appLink":appLink,
+            "hasPassword": hasPassword,
+            "alive": alive,
+            "roomName": roomName,
+            "announcement": announcement,
+            "userData": userProfile
+        });
     }
-    res.render('index', {
-        "roomID": url.parse(req.url,true).query['roomID'],
-        "appLink":appLink,
-        "hasPassword": hasPassword,
-        "alive": alive,
-        "roomName": roomName,
-        "announcement": announcement
-    });
+    else {
+        res.redirect('/');
+    }
 });
 
 app.get('/admin', (req, res) => {
-    res.render('admin', {
-        'rooms': JSON.stringify(rooms), 
-        "appLink":appLink, 
-        "announcement": announcement
-    });
+    if(req.user) {
+        res.render('admin', {
+            'rooms': JSON.stringify(rooms), 
+            "appLink":appLink, 
+            "announcement": announcement
+        });
+    }
+    else {
+        req.redirect('/');
+    }
 });
+
+/***************
+* APP ROUTES END
+***************/
+
+/******************
+* APP SOCKETS START
+******************/
 
 io.on('connection', (socket) => {
     socket.on('join', (data) => {
@@ -283,3 +431,7 @@ io.on('connection', (socket) => {
         io.sockets.emit('refreshRooms', {'rooms': rooms, 'serverStatus': serverStatus});
     });
 });
+
+/****************
+* APP SOCKETS END
+****************/
