@@ -258,14 +258,21 @@ app.get('/chat', (req, res) => {
 
 app.get('/admin', (req, res) => {
     if(req.user) {
-        res.render('admin', {
-            'rooms': JSON.stringify(rooms), 
-            "appLink":appLink, 
-            "announcement": announcement
-        });
+        const { _raw, _json, ...userProfile } = req.user;
+        if(adminEmails.indexOf(userProfile['emails'][0]['value']) != -1) {
+            res.render('admin', {
+                'rooms': JSON.stringify(rooms), 
+                "appLink":appLink, 
+                "announcement": announcement,
+                "userData": userProfile
+            });
+        }
+        else {
+            res.redirect('/');
+        }
     }
     else {
-        req.redirect('/');
+        res.redirect('/');
     }
 });
 
@@ -402,15 +409,6 @@ io.on('connection', (socket) => {
             resRooms[res[i][1]] = rooms[res[i][1]];
         }
         socket.emit('search'+userID, {'rooms': resRooms, 'serverStatus': serverStatus});
-    });
-
-    socket.on('adminlogin', (email) => {
-        if(adminEmails.indexOf(email) != -1) {
-            socket.emit('adminlogin'+email,'success');
-        }
-        else {
-            socket.emit('adminlogin'+email,'invalid');
-        }
     });
 
     socket.on('announce', (newAnnouncement) => {

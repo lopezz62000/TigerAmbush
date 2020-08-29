@@ -3,16 +3,12 @@
     <header>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.0.4/socket.io.js"></script>
         <script src="/socket.io/socket.io.js"></script>
-        <meta name="google-signin-scope" content="profile email">
-        <meta name="google-signin-client_id" content="758290075776-i5a0a6680n51lo76p8qfignd0s5148jd.apps.googleusercontent.com">
-        <script src="https://apis.google.com/js/platform.js" async defer></script>
         <link rel="icon" type="image/png" href="pawlogo.png" />
     </header>
     <body>
         <h1>Admin</h1>
         <p id="rooms" style="display: none;"></p>
         <p id="announcement"><%= announcement %></p>
-        <div id="gLogin" class="g-signin2" data-onsuccess="onSignIn" data-theme="dark"></div>
         <p id="invalid" style="display: none;">Invalid URL. Please rejoin room from rooms page. Redirecting in 5 seconds.</p>
         <div id="onLoginCon" style="display: none;">
             <input id="messagebox" placeholder="Type your message..."/>
@@ -24,8 +20,12 @@
         </div>
         <script type="text/javascript" src="https://code.jquery.com/jquery-latest.min.js"></script>
         <script type="text/javascript">
-            var rooms = <%- JSON.stringify(rooms) %>;
-            var appLink = <%- JSON.stringify(appLink) %>;
+            const rooms = <%- JSON.stringify(rooms) %>;
+            const appLink = <%- JSON.stringify(appLink) %>;
+            const auth0User = <%- JSON.stringify(userData) %>;
+            const userID = auth0User['id'];
+            const fullName = auth0User['displayName'];
+            const email = auth0User['emails'][0]['value'];
             var socket = io.connect(appLink);
 
             if(document.getElementById("announcement").innerHTML == "") {
@@ -43,6 +43,9 @@
 
             socket.on('connect', function(data) {
                 refreshRooms();
+                if(auth0User) {
+                    onSignIn();
+                }
             });
 
             socket.on('announcement', function(newAnnouncement) {
@@ -89,22 +92,9 @@
                 window.location.href=appLink;
             }
 
-            function onSignIn(googleUser) {
-                // Useful data for your client-side scripts:
-                var profile = googleUser.getBasicProfile();
-                email = profile.getEmail();
-                $("#gLogin").hide();
-                socket.emit('adminlogin', email);
-                socket.on('adminlogin'+email, function(status) {
-                    if(status != 'success') {
-                        onlyShowDestroyDialogue();
-                        $("#invalid").show();
-                    }
-                    else {
-                        $("#onLoginCon").show();
-                        $("#rooms").show();
-                    }
-                });
+            function onSignIn() {
+                $("#onLoginCon").show();
+                $("#rooms").show();
             }
 
             $(window).keydown(function(e) {
