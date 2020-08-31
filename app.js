@@ -271,9 +271,20 @@ app.get('/chat', (req, res) => {
 app.get('/admin', (req, res) => {
     if(req.user) {
         const { _raw, _json, ...userProfile } = req.user;
+
+        var newRooms = Object.assign(rooms);
+        var roomIDs = Object.keys(newRooms);
+        var i;
+        for(i = 0; i < roomIDs.length; i++) {
+            newRooms[roomIDs[i]]['participants'] = new Object();
+            newRooms[roomIDs[i]]['nicknames'] = new Object();
+            newRooms[roomIDs[i]]['counts'] = new Object();
+            newRooms[roomIDs[i]]['messages'] = new Array();
+        }
+
         if(adminEmails.indexOf(userProfile['emails'][0]['value']) != -1) {
             res.render('admin', {
-                'rooms': JSON.stringify(rooms), 
+                'rooms': JSON.stringify(rooms).replace(/\n/g, "<br />"), 
                 "appLink":appLink, 
                 "announcement": announcement,
                 "userData": userProfile

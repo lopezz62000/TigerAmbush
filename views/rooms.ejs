@@ -41,7 +41,7 @@
                     <a href="#" onclick="showTerms()"><li class="nav-item">Terms of Use</li></a>
                     <a href="#" onclick="showTeam()"><li class="nav-item">Our Team</li></a>
                     <a href="#" style="display:none;" id="roomsRef" onclick="showRooms()"><li class="nav-item">Rooms</li></a>
-                    <a href="<%= appLink %>login" id="sign-inRef"><li class="nav-item" id="sign-in">Chat Now</li></a>   
+                    <a href="<%= appLink %>login" id="sign-inRef"><li class="nav-item" id="sign-in" onclick="signIn()">Chat Now</li></a>   
                     <a href="#" style="display:none;" id="sign-out" onclick="signOut()"><li class="nav-item">Sign Out</li></a>
                 </ul>
             </div>
@@ -257,6 +257,7 @@
         <!-- running Auth0 -->
         <script>
             function signIn() {
+                localStorage.removeItem("signedOut");
                 window.location.href=appLink+"login";
             }
 
@@ -269,7 +270,8 @@
             }
 
             function signOut() {
-                alert("Sign out not yet implemented");
+                localStorage.setItem("signedOut", "true");
+                window.location.reload();
             }
 
             function afterSignIn() {
@@ -292,7 +294,7 @@
                 });
             }
 
-            if(auth0User) {
+            if(auth0User && localStorage.getItem("signedOut") == null) {
                 onSignIn();
             }
         </script>
