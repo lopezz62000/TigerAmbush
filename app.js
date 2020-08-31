@@ -91,6 +91,8 @@ var rooms = {
         'description': 'This is the default chat. Anyone can come join! Unlike other chats, this room will stay open even if there is no one in it.',
         'openRandomJoin': true,
         'participants': {},
+        'nicknames': {},
+        'counts': {},
         'messages': new Array(),
         'canDelete': false
     },
@@ -101,6 +103,8 @@ var rooms = {
         'description': 'This is for the Class of 2021.',
         'openRandomJoin': true,
         'participants': {},
+        'nicknames': {},
+        'counts': {},
         'messages': new Array(),
         'canDelete': false
     },
@@ -111,6 +115,8 @@ var rooms = {
         'description': 'This is for the Class of 2022.',
         'openRandomJoin': true,
         'participants': {},
+        'nicknames': {},
+        'counts': {},
         'messages': new Array(),
         'canDelete': false
     },
@@ -121,6 +127,8 @@ var rooms = {
         'description': 'This is for the Class of 2023.',
         'openRandomJoin': true,
         'participants': {},
+        'nicknames': {},
+        'counts': {},
         'messages': new Array(),
         'canDelete': false
     },
@@ -131,6 +139,8 @@ var rooms = {
         'description': 'This is for the Class of 2024.',
         'openRandomJoin': true,
         'participants': {},
+        'nicknames': {},
+        'counts': {},
         'messages': new Array(),
         'canDelete': false
     }, 
@@ -141,6 +151,8 @@ var rooms = {
         'description': 'This is for people in a Gap Year.',
         'openRandomJoin': true,
         'participants': {},
+        'nicknames': {},
+        'counts': {},
         'messages': new Array(),
         'canDelete': false
     },
@@ -291,16 +303,32 @@ io.on('connection', (socket) => {
                 clearTimeout(timeoutObjs[data['roomID']]);
                 delete timeoutObjs[data['roomID']];
             }
-            rooms[data['roomID']]['participants'][data['userID']] = data['fullName'] + " (" + data['email'] + ")";
-            io.sockets.emit('disperse'+data['roomID'], {"message": rooms[data['roomID']]['participants'][data['userID']] + " has joined the chat.", "email":"room bot", "userID": "-1"});
+            if(data['userID'] in rooms[data['roomID']]['participants']) {
+                rooms[data['roomID']]['counts'][data['userID']] = rooms[data['roomID']]['counts'][data['userID']] + 1;
+            }
+            else {
+                rooms[data['roomID']]['participants'][data['userID']] = data['fullName'] + " (" + data['email'] + ")";
+                rooms[data['roomID']]['counts'][data['userID']] = 1;
+                rooms[data['roomID']]['nicknames'][data['userID']] = data['fullName'];
+                io.sockets.emit('disperse'+data['roomID'], {"message": rooms[data['roomID']]['participants'][data['userID']] + " has joined the chat.", "email":"room bot", "userID": "-1"});
+            }
             io.sockets.emit('enter'+data['roomID'], rooms[data['roomID']]['participants']);
             io.sockets.emit('refreshRooms', {'rooms': rooms, 'serverStatus': serverStatus});
         }
     });
 
+    socket.on('statusUpdate', (data) => {
+        if(data['roomID'] in rooms && data['userID'] in rooms[data['roomID']]['participants']) {
+            var nickname = rooms[data['roomID']]['nicknames'][data['userID']];
+            rooms[data['roomID']]['participants'][data['userID']] = nickname + data['status'] + " (" + data['email'] + ")";
+            io.sockets.emit('enter'+data['roomID'], rooms[data['roomID']]['participants']);
+        }
+    });
+
     socket.on('rename', (data) => {
         if(data['roomID'] in rooms && data['userID'] in rooms[data['roomID']]['participants']) {
-            rooms[data['roomID']]['participants'][data['userID']] = data['fullName'] + " (" + data['email'] + ")";
+            rooms[data['roomID']]['nicknames'][data['userID']] = data['nickname'];
+            rooms[data['roomID']]['participants'][data['userID']] = data['nickname'] + " (" + data['email'] + ")";
             io.sockets.emit('enter'+data['roomID'], rooms[data['roomID']]['participants']);
         }
     });
@@ -319,6 +347,10 @@ io.on('connection', (socket) => {
     });
 
     function deleteRoom(roomID) {
+        if(!rooms[roomID]['canDelete']) {
+            rooms[roomID]['messages'] = new Array();
+            return;
+        }
         delete rooms[roomID];
 
         tfidf = new TfIdf();
@@ -336,12 +368,17 @@ io.on('connection', (socket) => {
         var roomID = data['roomID'];
         var userID = data['userID'];
         if(roomID in rooms) {
-            io.sockets.emit('disperse'+data['roomID'], {"message":rooms[roomID]['participants'][userID] + " has left the chat.", "userID":"-1", "email":"room bot"});
             if(userID in rooms[roomID]['participants']) {
-                delete rooms[roomID]['participants'][userID];
+                rooms[roomID]['counts'][userID] = rooms[roomID]['counts'][userID] - 1;
+                if(rooms[roomID]['counts'][userID] == 0) {
+                    io.sockets.emit('disperse'+data['roomID'], {"message":rooms[roomID]['participants'][userID] + " has left the chat.", "userID":"-1", "email":"room bot"});
+                    delete rooms[roomID]['participants'][userID];
+                    delete rooms[roomID]['counts'][userID];
+                    delete rooms[roomID]['nicknames'][userID];
+                }
             }
             io.sockets.emit('enter'+data['roomID'], rooms[data['roomID']]['participants']);
-            if(Object.keys(rooms[roomID]['participants']).length == 0 && rooms[roomID]['canDelete']) {
+            if(Object.keys(rooms[roomID]['participants']).length == 0) {
                 timeoutObjs[roomID] = setTimeout(deleteRoom, 150000, roomID);
             }
         }
@@ -349,9 +386,10 @@ io.on('connection', (socket) => {
     });
 
     socket.on('send', (data) => {
-        if(data['roomID'] in rooms) {
-            rooms[data['roomID']]['messages'].push({"message": data['message'], "email": data['email']});
-            io.sockets.emit('disperse'+data['roomID'], {"message": data['message'], "email": data['email'], "userID": data["userID"]});
+        if(data['roomID'] in rooms && data['userID'] in rooms[data['roomID']]['participants']) {
+            var message = rooms[data['roomID']]['nicknames'][data["userID"]] + ' : ' + data['message'];
+            rooms[data['roomID']]['messages'].push({"message": message, "email": data['email']});
+            io.sockets.emit('disperse'+data['roomID'], {"message": message, "email": data['email'], "userID": data["userID"]});
         }
     });
 
@@ -381,6 +419,8 @@ io.on('connection', (socket) => {
             'description': data['description'],
             'openRandomJoin': data['openRandomJoin'],
             'participants': {},
+            'nicknames': {},
+            'counts': {},
             'messages': new Array(),
             'canDelete': true
         };

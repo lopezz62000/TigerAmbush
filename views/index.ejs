@@ -66,6 +66,7 @@
             const alive = <%- JSON.stringify(alive) %>;
             const socket = io.connect(appLink);
             var validateListenerExists = false;
+            var alreadyReviewed = false;
 
             if(document.getElementById("announcement").innerHTML == "") {
                 $("#announcement").hide();
@@ -117,7 +118,7 @@
                 socket.emit('join', {"fullName": fullName, "roomID": roomID, 'userID': userID, 'email': email});
                 socket.on('disperse'+roomID, function(data) {
                     /* Audio link for notification */ 
-                    if (document.hidden) {
+                    if (document.visibilityState != "visible" && alreadyReviewed && data['userID'] != userID) {
                         var audio = new Audio("notif.mp3"); 
                         audio.volume = 0.3;
                         audio.play();
@@ -145,7 +146,7 @@
 
             function send() {
                 if(document.getElementById("messagebox").value != "") {
-                    socket.emit('send', {"message": fullName + ": " + document.getElementById("messagebox").value, "roomID": roomID, "email": email, "userID": userID});
+                    socket.emit('send', {"message": document.getElementById("messagebox").value, "roomID": roomID, "email": email, "userID": userID});
                     document.getElementById("messagebox").value = "";
                 }
                 document.getElementById("messagebox").focus();
@@ -178,8 +179,7 @@
             }
 
             function save() {
-                fullName = document.getElementById("nickname").value;
-                socket.emit('rename', {"fullName": fullName, "roomID": roomID, 'userID': userID, 'email': email});
+                socket.emit('rename', {"nickname": document.getElementById("nickname").value, "roomID": roomID, 'userID': userID, 'email': email});
                 $("#renameCon").hide();
             }
 
@@ -193,11 +193,11 @@
                 window.scrollBy(0, -400); // Scroll 100px to the right
                 const messagebox = document.getElementById('messagebox');
                 messagebox.scrollIntoView(false);
-                socket.emit('rename', {"fullName": fullName + " is typing...", "roomID": roomID, 'userID': userID, 'email': email});
+                socket.emit('statusUpdate', {"status": " is typing...", "roomID": roomID, 'userID': userID, 'email': email});
             }
 
             function notTyping() {
-                socket.emit('rename', {"fullName": fullName, "roomID": roomID, 'userID': userID, 'email': email});
+                socket.emit('statusUpdate', {"status": '', "roomID": roomID, 'userID': userID, 'email': email});
             }
 
             function showRenameCon() {
@@ -245,10 +245,11 @@
             document.addEventListener('visibilitychange', function() {
                 if(document.visibilityState == "visible") {
                     document.getElementById("messagebox").blur();
-                    socket.emit('rename', {"fullName": fullName, "roomID": roomID, 'userID': userID, 'email': email});
+                    socket.emit('statusUpdate', {"status": '', "roomID": roomID, 'userID': userID, 'email': email});
+                    alreadyReviewed = true;
                 }
                 else {
-                    socket.emit('rename', {"fullName": fullName + " is idle.", "roomID": roomID, 'userID': userID, 'email': email});
+                    socket.emit('statusUpdate', {"status": " is idle.", "roomID": roomID, 'userID': userID, 'email': email});
                 }
                 console.log(document.visibilityState);
             });

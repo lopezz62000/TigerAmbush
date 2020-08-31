@@ -68,7 +68,7 @@
                 var roomIDs = Object.keys(res);
                 var i;
                 for(i = 0; i < roomIDs.length; i++) {
-                    res[roomIDs[i]]['participants'] = new Object();
+                    //res[roomIDs[i]]['participants'] = new Object();
                     res[roomIDs[i]]['messages'] = new Array();
                 }
                 document.getElementById("rooms").innerHTML = JSON.stringify(res);
