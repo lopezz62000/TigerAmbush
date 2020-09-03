@@ -4,18 +4,18 @@
         <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.0.4/socket.io.js"></script>
         <script src="/socket.io/socket.io.js"></script>
         <title><%= roomName %></title>
-        
+        <meta name="viewport" content="width=device-width, initial-scale=0.52, maximum-scale=0.52, user-scalable=no">
         <link rel="stylesheet" href="styles.css">
         <link rel="icon" type="image/png" href="pawlogo.png" />
     </header>
     <body style="text-align:center; ">
         <div style="margin:auto;">
-            <div style="height: 140px;">
+            <div>
                 <table style="margin:auto;">
                     <tr>
-                        <td><img src="pawlogo.png" alt="logo" height="50px" width="50px"></td>
+                        <td><img src="pawlogo.png" alt="logo" style="height: min(6vw, 6vh); width: min(6vw, 6vh);"></td>
                         <td></td>
-                        <td><strong><h1 style="font-size: 2.55vw; color: white; text-shadow: 0 4px 6px rgba(143, 142, 142, 0.8);"><%= roomName %></h1></strong></td>
+                        <td><strong><h1 style="font-size: min(5vw, 5vh); color: white; text-shadow: 0 4px 6px rgba(143, 142, 142, 0.8);"><%= roomName %></h1></strong></td>
                     </tr>
                 </table>
                 <hr class="chat-hr"/>
@@ -25,17 +25,19 @@
             <p id="invalid" style="display: none;">Invalid URL. Please rejoin room from rooms page. Redirecting in 5 seconds.</p>
             <div class="pClass" id="onLoginCon" style="display: none;">
                 <p class="pClass" id="destroyed" style="display: none;">This room has been removed. Redirecting to rooms page in 5 seconds.</p>
-                <div id="messageContainer" class="messageCon" style="overflow:scroll; height: 300px; width: 50%; min-width: 600px; margin: 0 auto;">
+                <div id="messageContainer" class="messageCon" style="overflow:scroll; height: 50vh; width: 50%; min-width: 600px; margin: 0 auto;">
                     <div class="message" style="display: none;" onclick="showDetails(this)">
-                        <p class="messageText" style="height: 10px; color: white; font-size: 16px; font-weight:bold; text-align:left; text-shadow: 1px 2px 2px #8a719a;"></p>
+                        <p class="messageText" style="color: white; font-size: min(1.8vh,2vw); font-weight:bold; text-align:left; text-shadow: 1px 2px 2px #8a719a; word-wrap: break-word;"></p>
                         <p class="messageSender" style="height: 10px; display: none; color: white; font-size: 12px; text-align:left;"></p>
                     </div>
                 </div>
                 <br />
                 <hr class="chat-hr" id="lowerHr"/>
                 <br />
-                <input class="inputClass" id="messagebox" onfocusout="notTyping()" onfocusin="typing()" style="width: 37.5%; min-width: 447px;" placeholder="Type your message..."/>
-                <button class="buttonClass" id="sendBtn" type="button" onclick="send()">Send</button>
+                <div style="width: 50%; min-width: 600px; margin: 0 auto;">
+                    <textarea class="messageAreaClass" id="messagebox" onfocusout="notTyping()" onfocusin="typing()" oninput="resize()" placeholder="Type your message..."></textarea>
+                    <button class="sendButtonClass" id="sendBtn" type="button" onclick="send()">Send</button>
+                </div>
                 <br />
                 <br />
                 <p id="participantsList" class="pClass"></p>
@@ -67,6 +69,8 @@
             const socket = io.connect(appLink);
             var validateListenerExists = false;
             var alreadyReviewed = false;
+            var messageCount = 0;
+            document.getElementById("messagebox").style.height = "50px";
 
             if(document.getElementById("announcement").innerHTML == "") {
                 $("#announcement").hide();
@@ -125,7 +129,7 @@
                     }
                     var newMessage = $(".message").eq(0).clone().show();
                     $(".messageCon").append(newMessage);
-                    newMessage.children(".messageText").eq(0).text(data["message"]);
+                    document.getElementsByClassName("messageText")[++messageCount].insertAdjacentHTML('beforeend',data["message"].replace(/(?:\r\n|\r|\n)/g, '<br>'));
                     newMessage.children(".messageSender").eq(0).text("Sent by " + data["email"]);
                     if(data["userID"] == userID) {
                         newMessage.children(".messageText").eq(0).css('text-shadow','1px 2px 3px #925c29');
@@ -149,8 +153,15 @@
                     socket.emit('send', {"message": document.getElementById("messagebox").value, "roomID": roomID, "email": email, "userID": userID});
                     document.getElementById("messagebox").value = "";
                 }
+                document.getElementById("messagebox").style.height = "50px";
                 document.getElementById("messagebox").focus();
                 document.getElementById("sendBtn").blur();
+            }
+
+            function resize() {
+                document.getElementById("messagebox").style.height = "";
+                var height = Math.max(document.getElementById("messagebox").scrollHeight, 50);
+                document.getElementById("messagebox").style.height = "min(12vh," + height + "px)";
             }
 
             function showDetails(container) {
@@ -271,7 +282,10 @@
                         }
                         else {
                             if($("#messagebox").is(':focus')) {
-                                send();
+                                if(!e.shiftKey) {
+                                    event.preventDefault();
+                                    send();
+                                }
                             }
                             else {
                                 save();
