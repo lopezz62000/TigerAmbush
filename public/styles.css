@@ -101,7 +101,7 @@ body {
 	display: inline !important;
 	list-style-type: none !important;
 	vertical-align: middle !important;
-	padding: 20px 0px; 
+	padding: 20px 0px;
 	/*padding: 20px 50px; */
 }
 
@@ -369,9 +369,9 @@ INDEX.EJS STYLES
 	-o-transition: 200ms linear 0s;
 	transition: 200ms linear 0s;
 	font-family: 'Montserrat', sans-serif !important;
-	font-size: min(1.8vh,2vw);
+	font-size: min(1.8vh, 2vw);
 	font-weight: bold;
-	width: 74%; 
+	width: 74%;
 	min-width: 440px;
 	resize: none;
 }
@@ -394,11 +394,13 @@ INDEX.EJS STYLES
 	padding-left: 6px;
 }
 
-.inputClass::placeholder, .messageAreaClass::placeholder {
+.inputClass::placeholder,
+.messageAreaClass::placeholder {
 	color: white;
 }
 
-.inputClass::selection, .messageAreaClass::selection {
+.inputClass::selection,
+.messageAreaClass::selection {
 	color: #fcd0a1;
 }
 
@@ -569,5 +571,66 @@ INDEX.EJS STYLES
 	input[type="tel"],
 	input[type="url"] {
 		font-size: 16px;
+	}
+}
+
+/* MOBILE */
+#landingMob {
+	display: none;
+}
+
+@media screen and (max-width: 768px) {
+	.navbar,
+	#landingCon {
+		display: none !important;
+	}
+	#landingMob {
+		display: block;
+		text-align: center !important;
+	}
+	#landingMob img {
+		margin-top: 15vh;
+		height: 40vw;
+		width: 40vw;
+	}
+
+	#landingMob button {
+		height: 7vh;
+		width: 50% !important;
+		border-radius: 4vh;
+		font-size: 3vw;
+		text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+		box-shadow: 1px 1px 10px rgba(0, 0, 0, 0.1);
+	}
+	#landingMob h1 {
+		margin: 2vh 16px;
+	}
+	.pad {
+		margin-top: 3vh !important;
+		margin-bottom: 3vh !important;
+	}
+	.customGPlusSignIn {
+		margin-top: 4vh;
+	}
+	.mob-link {
+		color: white;
+		margin: 0 auto !important;
+		text-align: center;
+		padding: 0;
+		margin-top: 3vh !important;
+	}
+	.mob-link a {
+		text-decoration: none !important;
+		list-style-type: none;
+	}
+	.mob-link li {
+		margin: .5vh 0;
+		color: rgb(240, 230, 230);
+		/* opacity: 80%; */
+		font-size: 2.5vw;
+	}
+	#termsCon,
+	#teamCon {
+		padding-bottom: 10vh;
 	}
 }
