@@ -398,6 +398,7 @@ io.on('connection', (socket) => {
 
     socket.on('send', (data) => {
         if(data['roomID'] in rooms && data['userID'] in rooms[data['roomID']]['participants']) {
+            console.log(data['message']);
             var message = rooms[data['roomID']]['nicknames'][data["userID"]] + ' : ' + data['message'];
             rooms[data['roomID']]['messages'].push({"message": message, "email": data['email']});
             io.sockets.emit('disperse'+data['roomID'], {"message": message, "email": data['email'], "userID": data["userID"]});
