@@ -27,8 +27,8 @@ body {
 .navbar,
 .navbar-nav {
 	background: transparent !important;
-	text-align: left;
-	margin-left: 5%;
+	text-align: center; 
+	margin-right: 17%; 
 	line-height: 50px;
 }
 
@@ -110,6 +110,7 @@ body {
 	padding: 20px 50px;
 	border-radius: 40px;
 	white-space: nowrap;
+	align-items: right;
 }
 
 #termsTeam {
