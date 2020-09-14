@@ -29,7 +29,7 @@ body {
 	background: transparent !important;
 	text-align: center; 
 	margin-left: 5%;
-	margin-right: 17%;
+	margin-right: 6%;
 	line-height: 50px;
 }
 
@@ -62,6 +62,7 @@ body {
 
 .navbar-brand {
 	margin-left: 14px !important;
+	margin-right: 25%;
 }
 
 .header-shadow {
@@ -71,12 +72,7 @@ body {
 .links {
 	padding: 0px;
 	margin: 0px;
-	/* display: inline !important;
-	list-style-type: none !important;
-	vertical-align: middle !important; */
 	margin-top: 4.3rem;
-	/* float: right; */
-	margin-left: 25%;
 }
 
 .header-shadow a {
