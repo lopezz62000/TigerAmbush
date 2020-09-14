@@ -28,7 +28,8 @@ body {
 .navbar-nav {
 	background: transparent !important;
 	text-align: center; 
-	margin-right: 17%; 
+	margin-left: 5%;
+	margin-right: 17%;
 	line-height: 50px;
 }
 
