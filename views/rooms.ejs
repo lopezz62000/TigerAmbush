@@ -81,8 +81,8 @@
         <!--------------------------- Rooms page --------------------------->
         <div class="roomsPageCon" id="topMenuBar" style="display: none;">
             <br />
-            <div style="text-align: left; align-self: left; width: 50%; display: none;">
-                <label class="pClass" style="font-weight: bold; display: none;">Active Users:</label><br />
+            <div style="text-align: left; align-self: left; width: 50%;">
+                <label id="activeUsers" class="pClass" style="display: none; font-weight: bold; display: none;">Active Users:</label><br />
             </div>
             <br />
             <div class="header3 justify-content-around" style="display: flex; flex-direction: row;">
@@ -297,6 +297,7 @@
                 showRooms();
                 $("#emailHeader").show();
                 $("#roomHeader").show();
+                $("#activeUsers").show();
                 $("#newRoomBtn").show();
                 $("#loadingRooms").show();
                 $("#searchbox").show();
@@ -334,6 +335,7 @@
             function refreshRooms(res) {
                 var roomsCon = $(".roomsCon").eq(0);
                 var roomEntries = roomsCon.children();
+                var totalUsers = 0;
                 for(i = 1; i < roomEntries.length; i++) {
                     roomEntries.eq(i).remove();
                 } 
@@ -341,6 +343,7 @@
                     $("#deadServer").show();
                     $("#emailHeader").hide();
                     $("#roomHeader").hide();
+                    $("#activeUsers").hide();
                     $("#newRoomBtn").hide();
                     $("#loadingRooms").hide();
                     $("#searchbox").hide();
@@ -388,7 +391,9 @@
                     dataCon.children(".roomName").eq(0).text(rooms[roomIDs[j]]['roomName']);
                     dataCon.children(".numUsers").eq(0).text("Number of Active Users: "+Object.keys(rooms[roomIDs[j]]['participants']).length);
                     document.getElementsByClassName("roomDetails")[i+1].insertAdjacentHTML('beforeend',rooms[roomIDs[j]]['description'].replace(/\n/g, "<br />"));
+                    totalUsers += Object.keys(rooms[roomIDs[j]]['participants']).length;
                 }
+                $("#activeUsers").text("Active Users: " + totalUsers);
                 if(roomIDs.length == 0) {
                     $("#noRooms").show();
                 }
